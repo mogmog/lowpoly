@@ -8,6 +8,18 @@ import { Controller, Scene } from 'react-scrollmagic';
 import { Tween, Timeline } from 'react-gsap';
 import './App.css'
 
+import ApolloClient from "apollo-boost";
+
+import { ApolloProvider } from "react-apollo";
+
+import { Query } from "react-apollo";
+import gql from "graphql-tag";
+
+const client = new ApolloClient({
+    uri: "https://graphqlmogmogplatts.herokuapp.com/v1alpha1/graphql"
+});
+
+//"https://graphqlmogmogplatts.herokuapp.com/v1alpha1/graphql"
 const StickyStyled = styled.div`
   
    
@@ -131,15 +143,77 @@ class App extends React.Component {
      //console.log(this.state.st);
 
 
+
     //return <MapHolder zoom={this.state.st/1000}/>;
 
     return ( <StickyStyled>
 
-       
+
 
         <div>
 
-            <Controller ref={(c) => this.c = c}>
+
+            <ApolloProvider client={client}><Query
+                query={gql`query {
+                                  trip {
+
+                                    id
+                                    name
+
+                                    trip_cards {
+                                      card {
+                                        camera
+                                        content
+                                        id
+                                        offset
+                                        duration
+                                        height
+                                      }
+                                    }
+
+                                  }
+                                }`}
+                                            >
+                {({ loading, error, data }) => {
+                    if (loading) return <p>Loading...</p>;
+                    if (error) return <p>Error :(</p>;
+
+                    if (data.trip.length != 1) return <div>wtf</div>
+
+                    const trip = data.trip[0];
+
+                    return <div >
+
+
+                        <Controller ref={(c) => this.c = c}>
+
+                            <MapHolder zoom={this.state.st}/>
+
+                                {trip.trip_cards.map(({card}) =>
+
+                                    <Scene key={card.id} duration={card.duration} pin={false} offset={card.offset} >
+                                        {(progresss, event) => (
+                                            <div className="sticky" style={{height: card.height}}>
+                                                <STWatcher update={(st) => this.setState({st})} progress={progresss}/>
+
+                                                {card.content.text && <div className="smallsection" > {card.content.text}️</div>}
+
+                                            </div>
+                                        )}
+
+                                    </Scene>
+
+                                )}
+
+                        </Controller>
+                    </div>
+
+
+                }}
+
+            </Query></ApolloProvider>
+
+         {/*   <Controller ref={(c) => this.c = c}>
 
                 <MapHolder zoom={this.state.st}/>
 
@@ -213,7 +287,7 @@ class App extends React.Component {
 
 
 
-            </Controller>
+            </Controller>*/}
         </div>
         <div className="section" />
     </StickyStyled>)

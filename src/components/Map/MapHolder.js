@@ -102,8 +102,9 @@ export default class MapHolder extends Component {
 
                         camera: {
                             position: [-3.915, 13.529, 10139105.09],
-                            heading: 23.28,
-                            tilt: 11.91
+                            heading: 3.28,
+
+                            tilt: 1.91
                         },
 
                         ui: {
@@ -113,7 +114,7 @@ export default class MapHolder extends Component {
 
                             lighting: {
                                 // enable shadows for all the objects in a scene
-                                directShadowsEnabled: true,
+                                directShadowsEnabled: false,
                                 ambientOcclusionEnabled : false
                                 // set the date and a time of the day for the current camera location
 
@@ -130,11 +131,28 @@ export default class MapHolder extends Component {
                         },
                     });
 
+                    view.when(x=> {
 
+                        var camera = view.camera.clone();
+                        var center = view.center.clone();
+                        var scale = view.scale;
 
+                        var i = 0;
 
+                        self.rotator = window.setInterval(d=> {
 
+                            var newCenter = center.clone();
+                            newCenter.x -= i * scale /300 ;
+                            i++;
 
+                            view.goTo({
+                                center: newCenter,
+                                scale: scale,
+                                heading: camera.heading,
+                                tilt: camera.tilt
+                            }, { animate: false });
+                        }, 1/30);
+                    })
 
 
                     self.esriLoaderContext = {
@@ -191,35 +209,8 @@ export default class MapHolder extends Component {
 
            if (this.esriLoaderContext && this.esriLoaderContext.view && this.esriLoaderContext.view.camera) {
 
-               if (this.props.zoom < 0.9) {
-
-                    const direction = this.props.zoom < prevProps.zoom ? -1 : 1;
-
-                    //console.log(direction);
-
-                   var camera = that.esriLoaderContext.view.camera.clone();
-                   var center = that.esriLoaderContext.view.center.clone();
-                   var scale = that.esriLoaderContext.view.scale;
-
-                   var newCenter = center.clone();
-                   newCenter.x -= this.props.zoom * direction * scale /50 ;
-                   //newCenter.z = 1 * scale/50;
-                   //camera.position.z = 10139105.09;
-                   //console.log(newCenter);
-
-                   that.esriLoaderContext.view.goTo({
-                       center: newCenter,
-                       scale: scale,
-
-                       heading: camera.heading,
-                       tilt: camera.tilt
-                   }, { animate: false });
-
-                      /* that.esriLoaderContext.view.goTo(shiftCamera(direction * 45), {
-                           easing: "out-expo",
-                           duration : 1500
-                       });*/
-               } else if (this.props.zoom > 0.9) {
+               if (this.props.zoom > 0.5) {
+                   window.clearInterval(this.rotator);
                    that.esriLoaderContext.view.goTo(getLoc(42,42, 500500), {
                        duration : 1500
                    });
