@@ -2,10 +2,12 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Parallax,  ParallaxLayer } from 'react-spring/renderprops-addons'
 import MapHolder from "./components/Map/MapHolder";
+import CardAdder from "./components/CardAdder";
 
 import styled from 'styled-components';
 import { Controller, Scene } from 'react-scrollmagic';
-import { Tween, Timeline } from 'react-gsap';
+import { TweenMax } from 'gsap/all';
+
 import './App.css'
 
 import ApolloClient from "apollo-boost";
@@ -18,6 +20,44 @@ import gql from "graphql-tag";
 const client = new ApolloClient({
     uri: "https://graphqlmogmogplatts.herokuapp.com/v1alpha1/graphql"
 });
+
+
+const ADD_LOCATION = gql`
+    mutation insert_locations($objects: [locations_insert_input!]! ) {
+        insert_locations(objects: $objects) {
+            returning {
+                id
+                longitude
+                longitude
+                altitude
+                date
+
+            }
+        }
+    }`;
+
+const  params = {
+    "objects": [
+        {
+
+            "longitude": 34.345,
+            "latitude": 23.23,
+            "altitude": 3.45,
+            "date" : "2019-03-12 01:45:00Z",
+            "trip_id" : 1
+        }
+    ]
+};
+
+// console.log(client);
+// client.mutate({mutation : ADD_LOCATION}, params);
+
+client.mutate({
+    variables: params,
+    mutation: ADD_LOCATION,
+
+})
+
 
 //"https://graphqlmogmogplatts.herokuapp.com/v1alpha1/graphql"
 const StickyStyled = styled.div`
@@ -34,17 +74,11 @@ background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(
   .smallsection {
     
     
-    height: 35vh;
+    height: 100vh;
     font-size: 5em;
     position: relative;
     color: white;
-    background: rgba(27, 29, 35, 0.6);
-    z-index: 99999999999999;
     opacity: 0.8;
-   
-    
-  
-   opacity: 0.8;
   
   }
   
@@ -54,7 +88,7 @@ background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(
      z-index:99999;
      position: relative;
     width: 100%;
-     height: 100vh;
+    
     & .animation {
       width: 100vw;
       height: 100vh;
@@ -129,26 +163,35 @@ class STWatcher extends React.Component {
 
 class App extends React.Component {
 
-  state = {st : 0.1}
+  state = {st : 0.1, showButtons : false, card : null}
 
+    testTop = () => {
 
+      (this.c.state.controller.scrollTo(d=> {
+          TweenMax.to(window, 0.5, {scrollTo : {y : 0}})
+      }));
+
+        (this.c.state.controller.scrollTo(1));
+
+    }
 
     test = () => {
-        window.scroll({top: 1500, left: 0, behavior: 'smooth' })
+
+
+      (this.c.state.controller.scrollTo(d=> {
+          TweenMax.to(window, 0.5, {scrollTo : {y : 500}})
+      }));
+
+        (this.c.state.controller.scrollTo(1));
 
   }
 
   render() {
 
-     //console.log(this.state.st);
-
-
-
-    //return <MapHolder zoom={this.state.st/1000}/>;
-
     return ( <StickyStyled>
 
 
+        <a onClick={this.test}> test </a>
 
         <div>
 
@@ -160,7 +203,7 @@ class App extends React.Component {
                                     id
                                     name
 
-                                    trip_cards {
+                                    trip_cards(order_by: {card_id: asc}) {
                                       card {
                                         camera
                                         content
@@ -180,23 +223,40 @@ class App extends React.Component {
 
                     if (data.trip.length != 1) return <div>wtf</div>
 
-                    const trip = data.trip[0];
+
+                    const cards = data.trip[0].trip_cards;
+
+                   // return  <MapHolder zoom={this.state.st}/>
 
                     return <div >
-
+                        <CardAdder visible={this.state.showButtons}/>
 
                         <Controller ref={(c) => this.c = c}>
 
-                            <MapHolder zoom={this.state.st}/>
+                            <pre style={{position : 'fixed', top : 0, left : 0}}> {this.state.card && this.state.card.id} </pre>
 
-                                {trip.trip_cards.map(({card}) =>
+                             <MapHolder scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
+                                {cards && cards.map(({card}) =>
 
-                                    <Scene key={card.id} duration={card.duration} pin={false} offset={card.offset} >
+                                    <Scene ref={card.id} key={card.id} duration={card.duration} pin={card.content.pin} offset={card.offset} >
                                         {(progresss, event) => (
                                             <div className="sticky" style={{height: card.height}}>
-                                                <STWatcher update={(st) => this.setState({st})} progress={progresss}/>
 
-                                                {card.content.text && <div className="smallsection" > {card.content.text}️</div>}
+                                                <STWatcher update={(st) => this.setState({card, st})} progress={progresss}/>
+
+                                                <a onClick={this.testTop}> testTop </a>
+
+                                                {card.content.pin && <pre> {JSON.stringify(event)} </pre>}
+                                                {card.content.text && <div className="smallsection" >
+
+                                                    {card.content.images && card.content.images.map(d=> <img src={d.url} /> ) }
+
+                                                    <span Xstyle={{opacity : ((progresss < 0.9 ? 1 : 1- progresss))}}> { card.content.text}️ </span>
+                                                  {/*  <button onClick={() => this.setState({showButtons : true})}> + </button>*/}
+                                                </div>}
+
+
+
 
                                             </div>
                                         )}

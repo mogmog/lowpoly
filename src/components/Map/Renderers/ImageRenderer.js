@@ -6,19 +6,17 @@ import * as THREE from 'three';
 
 import AbstractRenderer from './AbstractRenderer';
 
+import Image3D from '../Entities/Image3D';
+import ImageFrame from '../Entities/ImageFrame';
+import Image3DContainer from '../Entities/Image3DContainer';
+import Image3DContainerCarousel from '../Entities/Image3DContainerCarousel';
 
+export default class ImageRenderer extends AbstractRenderer
+{
 
-import Terrain from '../Entities/Terrain'
-import Noise from '../Entities/Noise'
-
-
-
-export default class ImageRenderer extends AbstractRenderer {
-
-  constructor(esriLoaderContext, images, trackcurve, meshes) {
+  constructor(esriLoaderContext, images, trackcurve)
+  {
     super();
-
-
 
     this.esriLoaderContext = esriLoaderContext;
 
@@ -28,44 +26,31 @@ export default class ImageRenderer extends AbstractRenderer {
     this.vertexIdx = 0;
     this.ambient = null; // three.js ambient light source
 
+    console.log(images);
+
     this.images = images;
-    this.meshes = meshes;
 
-
+    this.geo_curve_path = [
+      // should be set by trackcurve !
+      [-110.7395240072906, 32.33625842258334, 2500],
+      [-110.7395240072906, 32.33625842258334, 2500],
+      [-110.7395240072906, 32.34625842258334, 2500],
+    ].map(x => {
+      x[0] = x[0] + Math.random() / 10;
+      x[1] = x[1] + Math.random() / 10;
+      return x;
+    });
   }
 
+  showImage(image) {
 
+    const imageOnMap = this.images3dContainer.children.find((_image) => _image.config.id === image.id);
 
-  setPosition(worldPosition, object3d) {
-    let pos = [0, 0, 0];
+    if (imageOnMap) {
+      Image3D.zoomToCamera(imageOnMap, this.camera);
+    }
 
-    this.esriLoaderContext.externalRenderers.toRenderCoordinates(
-      this.esriLoaderContext.view,
-      worldPosition,
-      0,
-      this.esriLoaderContext.SpatialReference.WGS84,
-      pos,
-      0,
-      1
-    );
-    object3d.position.set(pos[0], pos[1], pos[2]);
-
-    let transform = new THREE.Matrix4();
-    let arr = this.esriLoaderContext.externalRenderers.renderCoordinateTransformAt(
-      this.esriLoaderContext.view,
-      worldPosition,
-      this.esriLoaderContext.SpatialReference.WGS84,
-      new Array(16)
-    );
-    transform.fromArray(arr);
-    transform.decompose(object3d.position, object3d.quaternion, object3d.scale);
-
-    const m2 = new THREE.Matrix4();
-    m2.makeRotationX(THREE.Math.degToRad(90));
-    transform.multiply(m2);
-    object3d.setRotationFromMatrix(transform);
   }
-
 
   /**
    * Setup function, called once by the ArcGIS JS API.
@@ -79,6 +64,36 @@ export default class ImageRenderer extends AbstractRenderer {
 
     var view = context.view; //this.esriLoaderContext.view;
 
+    function setPosition(worldPosition, object3d)
+    {
+      let pos = [0, 0, 0];
+
+      externalRenderers.toRenderCoordinates(
+          view,
+          worldPosition,
+          0,
+          SpatialReference.WGS84,
+          pos,
+          0,
+          1
+      );
+      object3d.position.set(pos[0], pos[1], pos[2]);
+
+      let transform = new THREE.Matrix4();
+      let arr = externalRenderers.renderCoordinateTransformAt(
+          view,
+          worldPosition,
+          SpatialReference.WGS84,
+          new Array(16)
+      );
+      transform.fromArray(arr);
+      transform.decompose(object3d.position, object3d.quaternion, object3d.scale);
+
+      const m2 = new THREE.Matrix4();
+      m2.makeRotationX(THREE.Math.degToRad(90));
+      transform.multiply(m2);
+      object3d.setRotationFromMatrix(transform);
+    }
 
     // initialize the three.js renderer
     //////////////////////////////////////////////////////////////////////////////////////
@@ -104,7 +119,7 @@ export default class ImageRenderer extends AbstractRenderer {
 
     var originalSetRenderTarget = this.renderer.setRenderTarget.bind(this.renderer);
 
-    this.renderer.setRenderTarget = function (target) {
+    this.renderer.setRenderTarget = function(target) {
       originalSetRenderTarget(target);
       if (target == null) {
         context.bindRenderTarget();
@@ -126,17 +141,63 @@ export default class ImageRenderer extends AbstractRenderer {
 
     // set positions ----------------
 
- /*markers*/
+    //lat longs
+    const curve_path = [];
 
+    this.geo_curve_path.forEach(x => {
+      let pos = [0, 0, 0];
+      externalRenderers.toRenderCoordinates(view, x, 0, SpatialReference.WGS84, pos, 0, 1);
+      curve_path.push(new THREE.Vector3(pos[0], pos[1], pos[2])); // we make all coords in global world coord sys !
+    });
 
+    let curve = new THREE.CatmullRomCurve3(curve_path);
 
-    const noise = Noise.generate();
-    this.terrain = new Terrain( noise, 1024, 4, 64 );
-    this.scene.add( this.terrain );
+    this.images3dContainer = new Image3DContainer(curve);
 
+    let imgs = this.images.map(config => new ImageFrame(config));
 
+    for (let i = 0; i < imgs.length; i++)
+    {
+      this.images3dContainer.add(imgs[i]);
+    }
 
+    for (let i = 0; i < this.images3dContainer.children.length; i++)
+    {
+      let image3d = this.images3dContainer.children[i];
 
+      setPosition( image3d.config.location.geometry.coordinates, image3d);
+    }
+
+    // create curve
+    //var tubeGeometry = new THREE.TubeBufferGeometry(curve, 50, 200, 28, false);
+    //var material = new THREE.MeshNormalMaterial({
+    //  side: THREE.FrontSide,
+    //  transparent: true,
+    //  opacity: 0.3,
+    //});
+    //this.route = new THREE.Mesh(tubeGeometry, material);
+
+    if (true)
+    {
+
+      this.images3DContainerCarousel = new Image3DContainerCarousel();
+
+      setPosition(
+          [
+            42.6210941952765,
+            42.06134876641631,
+            600.7899992370605
+          ], this.images3DContainerCarousel);
+
+      let imgs = this.images.map(config => new ImageFrame(config));
+
+      for (let i = 0; i < imgs.length; i++)
+      {
+        this.images3DContainerCarousel.add(imgs[i]);
+      }
+
+    }
+    //
 
     this.start();
 
@@ -144,6 +205,9 @@ export default class ImageRenderer extends AbstractRenderer {
     context.resetWebGLState();
   }
 
+
+
+  onSwipe(isLeft, event) {}
 
   render(context) {
 
@@ -162,18 +226,27 @@ export default class ImageRenderer extends AbstractRenderer {
     // draw the scene
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    //this.renderer.state.reset();
+    this.renderer.state.reset();
 
-   // this.renderer.state.setBlending(THREE.NoBlending); // 0.97 fix !
+    this.renderer.state.setBlending(THREE.NoBlending); // 0.97 fix !
 
-   // this.renderer.render(this.scene, this.camera);
+    this.renderer.render(this.scene, this.camera);
 
     // cleanup
     context.resetWebGLState();
   }
 
   start() {
-    //this.scene.add(this.markerContainer);
+
+    // this.scene.add(this.route);
+
+    this.scene.add(this.images3dContainer);
+
+    if ( this.images3DContainerCarousel )
+    {
+      this.scene.add(this.images3DContainerCarousel);
+    }
+
     this.scene.add(new THREE.AmbientLight(0xeeeeee));
   }
 }
