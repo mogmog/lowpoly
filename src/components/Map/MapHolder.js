@@ -5,7 +5,7 @@ import './MapHolder.css';
 
 import * as THREE from 'three'; //leave this in?
 import ImageRenderer from './Renderers/ImageRenderer';
-//import RouteRenderer from './Renderers/RouteRenderer';
+import RouteRenderer from './Renderers/RouteRenderer';
 
 const options = {
     url: 'https://js.arcgis.com/4.9',
@@ -150,6 +150,7 @@ export default class MapHolder extends Component {
                         layers: [greyTileLayer],
                     });
 
+
                     const view = new SceneView({
                         map: map,
 
@@ -158,7 +159,7 @@ export default class MapHolder extends Component {
                         alphaCompositingEnabled: false,
 
                         camera: {
-                            position: [0,0, 2000705.09],
+                            position: [42.6210941952765, 42.06134876641631, 1600.7899992370605],
                             heading: 3.28,
 
                             tilt: -40.91
@@ -191,7 +192,7 @@ export default class MapHolder extends Component {
 
                         var i = 0;
 
-                        self.rotator = window.setInterval(d=> {
+                        if (false) self.rotator = window.setInterval(d=> {
 
                             var newCenter = center.clone();
                             newCenter.x -= i * scale /300 ;
@@ -226,10 +227,10 @@ export default class MapHolder extends Component {
                     const images = [{"description":{"title":"Lagoon"},"id":1,"location":{"geometry":{"coordinates":[42,42,400.79999923706055],"type":"Point"},"properties":{},"type":"Feature"}},{"description":{"title":"church"},"id":2,"location":{"geometry":{"coordinates":[42,42.1,400.79999923706055],"type":"Point"},"properties":{},"type":"Feature"}}];
                     //const { images } = self.props;
 
-                    //self.routeRenderer = new RouteRenderer(self.esriLoaderContext, this.props.route);
+                    self.routeRenderer = new RouteRenderer(self.esriLoaderContext);
                     self.imageRenderer = new ImageRenderer(self.esriLoaderContext, images);
 
-                    //externalRenderers.add(view, self.routeRenderer);
+                    externalRenderers.add(view, self.routeRenderer);
                     externalRenderers.add(view, self.imageRenderer);
 
                 }
@@ -264,7 +265,7 @@ export default class MapHolder extends Component {
            if (this.esriLoaderContext && this.esriLoaderContext.view && this.esriLoaderContext.view.camera) {
 
                if (camera.style === 'followPath') {
-                   window.clearInterval(this.rotator);
+                   this.rotator && window.clearInterval(this.rotator);
 
                    that.esriLoaderContext.view.goTo(this.getLoc(camera.destination[0], camera.destination[1] + this.props.zoom /20, 5705), {
                        animate : false

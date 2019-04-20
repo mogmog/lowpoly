@@ -226,7 +226,7 @@ class App extends React.Component {
 
                     const cards = data.trip[0].trip_cards;
 
-                   // return  <MapHolder zoom={this.state.st}/>
+                    //return  <MapHolder zoom={this.state.st}/>
 
                     return <div >
                         <CardAdder visible={this.state.showButtons}/>
@@ -247,11 +247,11 @@ class App extends React.Component {
                                                 <a onClick={this.testTop}> testTop </a>
 
                                                 {card.content.pin && <pre> {JSON.stringify(event)} </pre>}
-                                                {card.content.text && <div className="smallsection" >
+                                                { <div className="smallsection" >
 
-                                                    {card.content.images && card.content.images.map(d=> <img src={d.url} /> ) }
+                                                    {card.content.images && card.content.images.map((d, i)=> <img key={i} style={{'width' : '100%'}} src={d.url} /> ) }
 
-                                                    <span Xstyle={{opacity : ((progresss < 0.9 ? 1 : 1- progresss))}}> { card.content.text}️ </span>
+                                                    <span> { card.content.text}️ </span>
                                                   {/*  <button onClick={() => this.setState({showButtons : true})}> + </button>*/}
                                                 </div>}
 

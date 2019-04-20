@@ -8,6 +8,7 @@
         "@mobiscroll/react": "^4.6.1",
         "@stickyroll/stickyroll": "^1.1.5",
         "@svgr/webpack": "4.1.0",
+        "@turf/turf": "^5.1.6",
         "@tweenjs/tween.js": "^17.2.0",
         "antd": "^3.10.0",
         "antd-mobile": "^2.2.11",

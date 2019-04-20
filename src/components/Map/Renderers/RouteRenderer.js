@@ -8,7 +8,10 @@ import * as turf from '@turf/turf';
 
 import AbstractRenderer from './AbstractRenderer';
 
+
 import RouteEntity from '../Entities/RouteEntity';
+import Image3DContainerCarousel from "../Entities/Image3DContainerCarousel";
+import ImageFrame from "../Entities/ImageFrame";
 
 export default class RouteRenderer extends AbstractRenderer {
   constructor(esriLoaderContext) {
@@ -19,22 +22,16 @@ export default class RouteRenderer extends AbstractRenderer {
     this.renderer = null; // three.js renderer
     this.camera = null; // three.js camera
     this.scene = null; // three.js scene
-    this.vertexIdx = 0;
-    this.ambient = null; // three.js ambient light source
 
     this.geo_curve_path = [
-      [121.6330941952765, 25.06334876641631, 19.799999237060547],
-      [121.63292722776532, 25.06322412751615, 19],
-      [121.63276956416667, 25.063085993751884, 19.799999237060547],
-      [121.63261651061475, 25.062967473641038, 21.600000381469727],
-      [121.63244836963713, 25.062837218865752, 21.799999237060547],
-      [121.63230814039707, 25.06270512007177, 24.399999618530273],
-      [121.63216346874833, 25.062573524191976, 23.600000381469727],
-      [121.63202122785151, 25.062446538358927, 23.399999618530273],
-      [121.63186809048057, 25.0623011123389, 25],
-      [121.63173724897206, 25.0621578656137, 25.600000381469727],
+      [42.6210941952765, 42.06134876641631, 1600.7899992370605],
+      [41.6210941952765, 43.06134876641631, 1600.7899992370605],
+      [40.6210941952765, 44.06134876641631, 1600.7899992370605]
+
 
     ];
+
+
   }
 
   /**
@@ -48,32 +45,14 @@ export default class RouteRenderer extends AbstractRenderer {
     var externalRenderers = this.esriLoaderContext.externalRenderers;
     var SpatialReference = this.esriLoaderContext.SpatialReference;
 
-    var view = context.view; //this.esriLoaderContext.view;
+    var view = context.view;
 
-    const pts = [];
+    this.route = new RouteEntity(this.geo_curve_path);
 
-   /* //lat longs
-    const curve_path = [];
-    const simplificationTolerance = 0.0001;
 
-    let geojson = turf.lineString(this.geo_curve_path);
-    let options = { tolerance: simplificationTolerance, highQuality: true };
-    let simplified = turf.simplify(geojson, options);
 
-    simplified.geometry.coordinates.forEach(x => {
-      let pos = [0, 0, 0];
-      externalRenderers.toRenderCoordinates(view, x, 0, SpatialReference.WGS84, pos, 0, 1);
-      curve_path.push(new THREE.Vector3(pos[0], pos[1], pos[2])); // we make all coords in global world coord sys !
-    });
 
-    const curve = new THREE.CatmullRomCurve3(curve_path);*/
 
-    this.route = new RouteEntity();
-
-    this.route.updateRoute(this.geo_curve_path, externalRenderers, view, SpatialReference);
-
-    this.currentStep = 0.0;
-    this.route.setProgress(this.currentStep);
 
     // initialize the three.js renderer
     //////////////////////////////////////////////////////////////////////////////////////
@@ -105,6 +84,8 @@ export default class RouteRenderer extends AbstractRenderer {
       }
     };
 
+
+
     ///////////////////////////////////////////////////////////////////////////////////////
 
     self.scene = new THREE.Scene();
@@ -118,6 +99,9 @@ export default class RouteRenderer extends AbstractRenderer {
     // Projection matrix can be copied directly
     this.camera.projectionMatrix.fromArray(cam.projectionMatrix);
 
+
+    this.route.updateRoute(this.geo_curve_path, externalRenderers, view, SpatialReference, cam);
+
     this.start();
 
     // cleanup after ourselfs
@@ -126,11 +110,11 @@ export default class RouteRenderer extends AbstractRenderer {
 
 
 
-  onSwipe(isLeft, event) {}
+
 
   render(context) {
 
-    var view = context.view; //this.esriLoaderContext.view;
+    var view = context.view;
 
     // update camera parameters
     ///////////////////////////////////////////////////////////////////////////////////
@@ -177,7 +161,7 @@ export default class RouteRenderer extends AbstractRenderer {
       .onUpdate(
         function(tween_obj)
         {
-          object.setProgress(tween_obj.persent);
+         // object.setProgress(tween_obj.persent);
         })
       .onComplete(function() {
 
