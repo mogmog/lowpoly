@@ -226,7 +226,7 @@ class App extends React.Component {
 
                     const cards = data.trip[0].trip_cards;
 
-                    //return  <MapHolder zoom={this.state.st}/>
+                   // return  <MapHolder zoom={this.state.st}/>
 
                     return <div >
                         <CardAdder visible={this.state.showButtons}/>

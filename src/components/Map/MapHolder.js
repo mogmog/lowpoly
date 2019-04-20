@@ -159,7 +159,7 @@ export default class MapHolder extends Component {
                         alphaCompositingEnabled: false,
 
                         camera: {
-                            position: [42.6210941952765, 42.06134876641631, 1600.7899992370605],
+                            position: [42.6210941952765, 42.06134876641631, 16000000.7899992370605],
                             heading: 3.28,
 
                             tilt: -40.91
@@ -192,7 +192,7 @@ export default class MapHolder extends Component {
 
                         var i = 0;
 
-                        if (false) self.rotator = window.setInterval(d=> {
+                        if (true) self.rotator = window.setInterval(d=> {
 
                             var newCenter = center.clone();
                             newCenter.x -= i * scale /300 ;
