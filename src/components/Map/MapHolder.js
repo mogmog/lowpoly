@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import esriLoader from 'esri-loader';
-
+import TWEEN from '@tweenjs/tween.js';
 import './MapHolder.css';
 
 import * as THREE from 'three'; //leave this in?
@@ -18,6 +18,7 @@ export default class MapHolder extends Component {
 
     constructor() {
         super();
+        this.animate = this.animate.bind(this);
     }
 
 
@@ -104,6 +105,8 @@ export default class MapHolder extends Component {
                                 responseType: 'image',
                             }).then(
                                 function(response) {
+
+
                                     // when esri request resolves successfully
                                     // get the image from the response
                                     var image = response.data;
@@ -131,21 +134,16 @@ export default class MapHolder extends Component {
 
                     // Create a new instance of the TintLayer and set its properties
                     const greyTileLayer = new GreyLayer({
-                        opacity : 0.7,
+                        opacity : 1,
                         urlTemplate:
                             'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
                         title: 'Black and White',
                     });
 
 
-                    var worldGround = new ElevationLayer({
-                        url:
-                            'http://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer',
-                        visible: true,
-                    });
 
                     const map = new WebMap({
-                        basemap: 'satellite',
+
                         ground: 'world-elevation',
                         layers: [greyTileLayer],
                     });
@@ -156,14 +154,9 @@ export default class MapHolder extends Component {
 
                         container: 'viewDiv',
 
-                        alphaCompositingEnabled: false,
+                        alphaCompositingEnabled: true,
 
-                        camera: {
-                            position: [42.6210941952765, 42.06134876641631, 16000000.7899992370605],
-                            heading: 3.28,
-
-                            tilt: -40.91
-                        },
+                        camera: {"position":{"spatialReference":{"latestWkid":3857,"wkid":102100},"x":4772110.9585181475,"y":4872224.983658101,"z":2177.963514206931},"heading":170.57907650732923,"tilt":79.68402200568227},
 
                         ui: {
                             components: []
@@ -172,15 +165,19 @@ export default class MapHolder extends Component {
 
 
                             background: {
-                                type: 'color', // autocasts as new ColorBackground()
-                                // set the color alpha to 0 for full transparency
-                                color: [0, 177, 244, 0.5],
+                                type: "color",
+                                color: [255, 252, 244, 0]
                             },
+
                             // disable stars
                             starsEnabled: true,
                             //disable atmosphere
                             atmosphereEnabled: true,
                         },
+                    });
+
+                    view.watch('camera', function(newValue, oldValue, property, object) {
+                        console.log(property , newValue);
                     });
 
                     view.when(x=> {
@@ -192,10 +189,10 @@ export default class MapHolder extends Component {
 
                         var i = 0;
 
-                        if (true) self.rotator = window.setInterval(d=> {
+                        if (false) self.rotator = window.setInterval(d=> {
 
                             var newCenter = center.clone();
-                            newCenter.x -= i * scale /300 ;
+                            newCenter.x -= i * scale /3000 ;
                             i++;
 
                             view.goTo({
@@ -233,6 +230,8 @@ export default class MapHolder extends Component {
                     externalRenderers.add(view, self.routeRenderer);
                     externalRenderers.add(view, self.imageRenderer);
 
+                    window.requestAnimationFrame(self.animate);
+
                 }
             )
             .catch(err => {
@@ -260,7 +259,7 @@ export default class MapHolder extends Component {
 
         if (this.props.zoom !== prevProps.zoom) {
 
-           console.log(this.props.zoom);
+          // console.log(this.props.zoom);
 
            if (this.esriLoaderContext && this.esriLoaderContext.view && this.esriLoaderContext.view.camera) {
 
@@ -282,6 +281,29 @@ export default class MapHolder extends Component {
     componentDidMount() {
         this.esriLoad();
         //this.props.scrollToTop();
+    }
+
+    animate(time) {
+        window.requestAnimationFrame(this.animate);
+
+        if (!this.animate.last_tweens_count) this.animate.last_tweens_count = 0;
+
+        let tweens_count = Object.keys(TWEEN._tweens).length;
+
+        if (tweens_count || this.animate.last_tweens_count != tweens_count) {
+            TWEEN.update(time);
+
+            if (
+                this.esriLoaderContext &&
+                this.esriLoaderContext.externalRenderers &&
+                this.esriLoaderContext.view &&
+                this.esriLoaderContext.view._stage
+            ) {
+                this.esriLoaderContext.externalRenderers.requestRender(this.esriLoaderContext.view);
+            }
+        }
+
+        this.animate.last_tweens_count = tweens_count;
     }
 
     render() {

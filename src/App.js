@@ -74,11 +74,11 @@ background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(
   .smallsection {
     
     
-    height: 100vh;
+   
     font-size: 5em;
     position: relative;
     color: white;
-    opacity: 0.8;
+    opacity: 1;
   
   }
   
@@ -226,7 +226,7 @@ class App extends React.Component {
 
                     const cards = data.trip[0].trip_cards;
 
-                   // return  <MapHolder zoom={this.state.st}/>
+                    return  <MapHolder zoom={this.state.st}/>
 
                     return <div >
                         <CardAdder visible={this.state.showButtons}/>
@@ -249,7 +249,7 @@ class App extends React.Component {
                                                 {card.content.pin && <pre> {JSON.stringify(event)} </pre>}
                                                 { <div className="smallsection" >
 
-                                                    {card.content.images && card.content.images.map((d, i)=> <img key={i} style={{'width' : '100%'}} src={d.url} /> ) }
+                                                    {card.content.images && card.content.images.map((d, i)=> <img key={i} style={{'width' : '100%', height: 'auto'}} src={d.url} /> ) }
 
                                                     <span> { card.content.text}️ </span>
                                                   {/*  <button onClick={() => this.setState({showButtons : true})}> + </button>*/}
