@@ -10,6 +10,8 @@ import { TweenMax } from 'gsap/all';
 
 import './App.css'
 
+import {Button} from 'antd';
+
 import ApolloClient from "apollo-boost";
 
 import { ApolloProvider } from "react-apollo";
@@ -21,8 +23,31 @@ const client = new ApolloClient({
     uri: "https://graphqlmogmogplatts.herokuapp.com/v1alpha1/graphql"
 });
 
+const GET_TRIP = gql`query {
+    trip(where: {id: {_eq: 1}}) {
+        id
+        locations(order_by: {date: asc}) {
+            latitude
+            longitude
+            date
 
-const ADD_LOCATION = gql`
+        }
+
+        cards {
+            camera
+            content
+            id
+            offset
+            duration
+            height
+        }
+    }
+
+}
+
+`;
+
+/*const ADD_LOCATION = gql`
     mutation insert_locations($objects: [locations_insert_input!]! ) {
         insert_locations(objects: $objects) {
             returning {
@@ -47,22 +72,20 @@ const  params = {
             "trip_id" : 1
         }
     ]
-};
+};*/
 
 // console.log(client);
 // client.mutate({mutation : ADD_LOCATION}, params);
 
-client.mutate({
+/*client.mutate({
     variables: params,
     mutation: ADD_LOCATION,
 
-})
+})*/
 
 
 //"https://graphqlmogmogplatts.herokuapp.com/v1alpha1/graphql"
 const StickyStyled = styled.div`
-  
-   
   
   .section {
     height: 100vh;
@@ -89,12 +112,7 @@ background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(
      position: relative;
     width: 100%;
     
-    & .animation {
-      width: 100vw;
-      height: 100vh;
-      
-      
-    }
+   
     .heading {
       position: absolute;
       height: 100%;
@@ -163,7 +181,7 @@ class STWatcher extends React.Component {
 
 class App extends React.Component {
 
-  state = {st : 0.1, showButtons : false, card : null}
+  state = {st : 0.1, showButtons : false, card : null, index : 0}
 
     testTop = () => {
 
@@ -191,31 +209,13 @@ class App extends React.Component {
     return ( <StickyStyled>
 
 
-        <a onClick={this.test}> test </a>
+    {/*    <a onClick={this.test}> {this.state.index } </a>*/}
 
         <div>
 
 
             <ApolloProvider client={client}><Query
-                query={gql`query {
-                                  trip {
-
-                                    id
-                                    name
-
-                                    trip_cards(order_by: {card_id: asc}) {
-                                      card {
-                                        camera
-                                        content
-                                        id
-                                        offset
-                                        duration
-                                        height
-                                      }
-                                    }
-
-                                  }
-                                }`}
+                query={GET_TRIP}
                                             >
                 {({ loading, error, data }) => {
                     if (loading) return <p>Loading...</p>;
@@ -223,40 +223,36 @@ class App extends React.Component {
 
                     if (data.trip.length != 1) return <div>wtf</div>
 
+                    const cards = data.trip[0].cards;
 
-                    const cards = data.trip[0].trip_cards;
+                    console.log(cards);
+                    return  <MapHolder zoom={this.state.st} locations={data.trip[0].locations}/>
 
-                    return  <MapHolder zoom={this.state.st}/>
-
+                   // return <div> {JSON.stringify(cards)} </div>
                     return <div >
-                        <CardAdder visible={this.state.showButtons}/>
+
 
                         <Controller ref={(c) => this.c = c}>
 
-                            <pre style={{position : 'fixed', top : 0, left : 0}}> {this.state.card && this.state.card.id} </pre>
+                            <pre style={{position : 'fixed', transform : 'translate(0,-10px)', height: '50px', top : 0, left : 0}}> {this.state.index } </pre>
 
-                             <MapHolder scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
-                                {cards && cards.map(({card}) =>
+                             <MapHolder locations={data.trip[0].locations} scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
+
+                             {cards && cards.map((card, index) =>
 
                                     <Scene ref={card.id} key={card.id} duration={card.duration} pin={card.content.pin} offset={card.offset} >
                                         {(progresss, event) => (
                                             <div className="sticky" style={{height: card.height}}>
 
-                                                <STWatcher update={(st) => this.setState({card, st})} progress={progresss}/>
+                                                <STWatcher update={(st) => this.setState({card, st, index})} progress={progresss}/>
 
-                                                <a onClick={this.testTop}> testTop </a>
-
-                                                {card.content.pin && <pre> {JSON.stringify(event)} </pre>}
                                                 { <div className="smallsection" >
 
                                                     {card.content.images && card.content.images.map((d, i)=> <img key={i} style={{'width' : '100%', height: 'auto'}} src={d.url} /> ) }
 
                                                     <span> { card.content.text}️ </span>
-                                                  {/*  <button onClick={() => this.setState({showButtons : true})}> + </button>*/}
+                                                    <button onClick={() => this.setState({showButtons : true})}> + </button>
                                                 </div>}
-
-
-
 
                                             </div>
                                         )}
@@ -264,6 +260,13 @@ class App extends React.Component {
                                     </Scene>
 
                                 )}
+
+
+                            <Scene key={'new'} duration={'100vh'}   >
+                                <div className="sticky" style={{border: '2px solid black'}}>
+                                    <CardAdder visible={this.state.showButtons}/>
+                                </div>
+                            </Scene>
 
                         </Controller>
                     </div>

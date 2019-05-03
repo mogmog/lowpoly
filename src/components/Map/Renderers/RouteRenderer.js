@@ -8,13 +8,12 @@ import * as turf from '@turf/turf';
 
 import AbstractRenderer from './AbstractRenderer';
 
+import RouteEntityMesh from '../Entities/RouteEntityMesh';
+//import RouteEntity from '../Entities/RouteEntity';
 
-import RouteEntity from '../Entities/RouteEntity';
-import Image3DContainerCarousel from "../Entities/Image3DContainerCarousel";
-import ImageFrame from "../Entities/ImageFrame";
 
 export default class RouteRenderer extends AbstractRenderer {
-  constructor(esriLoaderContext) {
+  constructor(esriLoaderContext , paths) {
     super();
 
     this.esriLoaderContext = esriLoaderContext;
@@ -23,71 +22,7 @@ export default class RouteRenderer extends AbstractRenderer {
     this.camera = null; // three.js camera
     this.scene = null; // three.js scene
 
-    this.geo_curve_path = [
-      [
-        42.8704202846265,
-        40.02966235244786,
-        2099.657375873945
-      ],
-      [
-        42.87211869744003,
-        40.03113720496235,
-        2036.89979246589
-      ],
-      [
-        42.87198297446272,
-        40.03262750718271,
-        1900.839241186053
-      ],
-      [
-        42.87082980490037,
-        40.03345572830564,
-        1926.279232576324
-      ],
-      [
-        42.86886442808706,
-        40.03400846524369,
-        2011.649432186644
-      ],
-      [
-        42.86706941202392,
-        40.0347672031743,
-        2082.440245441202
-      ],
-      [
-        42.86635185101711,
-        40.03532606629669,
-        2055.201799807556
-      ],
-      [
-        42.8658668958608,
-        40.03598607110853,
-        2040.463115691764
-      ],
-      [
-        42.8658668958608,
-        40.03598607110853,
-        2040.463115691764
-      ],
-      [
-        42.8658668958608,
-        40.03598607110853,
-        2040.463115691764
-      ],
-
-      [
-        42.8658668958608,
-        41.63598607110853,
-        2040.463115691764
-      ],
-
-      [
-        42.8658668958608,
-        43.63598607110853,
-        2040.463115691764
-      ]
-    ];
-
+    this.geo_curve_path = paths;
 
   }
 
@@ -104,7 +39,6 @@ export default class RouteRenderer extends AbstractRenderer {
 
     var view = context.view;
 
-    this.route = new RouteEntity(this.geo_curve_path);
 
 
 
@@ -157,7 +91,12 @@ export default class RouteRenderer extends AbstractRenderer {
     this.camera.projectionMatrix.fromArray(cam.projectionMatrix);
 */
 
-    this.route.updateRoute(this.geo_curve_path, externalRenderers, view, SpatialReference, cam);
+    //this.route = new RouteEntityMesh(this.geo_curve_path);
+   // this.route.updateRoute(this.geo_curve_path, externalRenderers, view, SpatialReference, cam);
+
+    //this.meshline = new RouteEntity();
+    this.meshline = new RouteEntityMesh();
+    this.meshline.updateRoute(this.geo_curve_path[0], externalRenderers, view, SpatialReference, cam);
 
     this.start();
 
@@ -200,36 +139,37 @@ export default class RouteRenderer extends AbstractRenderer {
 
   start() {
 //alert(1)
-    this.scene.add(this.route);
+   // this.scene.add(this.route);
+    this.scene.add(this.meshline);
 
     this.scene.add(new THREE.AmbientLight(0xeeeeee));
 
-    var object = this.route;
-var cam = this.camera;
-    //this.route
+    //var route     = this.route;
+    var meshline  = this.meshline;
 
-    object.tween = new TWEEN.Tween(
-      {
-        persent: 0,
-      })
-      .to(
+    var cam = this.camera;
+
+    meshline.tween = new TWEEN.Tween(
         {
-          persent : 1
-        },
-        15000)
-      .onUpdate(
-        function(tween_obj)
-        {
-
-         // console.log(cam);
-
-          object.setProgress(tween_obj.persent);
+          persent: 0,
         })
-      .onComplete(function() {
+        .to(
+            {
+              persent : 1
+            },
+            150000)
+        .onUpdate(
+            function(tween_obj)
+            { meshline.setProgress(tween_obj.persent);
+            })
+        .onComplete(function() {
 
-        delete object.tween;
-      }).delay(5000)
+          delete meshline.tween;
+        }).delay(2000).start();
 
-      .start();
+
+
+
+
   }
 }
