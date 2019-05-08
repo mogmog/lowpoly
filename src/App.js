@@ -8,6 +8,8 @@ import styled from 'styled-components';
 import { Controller, Scene } from 'react-scrollmagic';
 import { TweenMax } from 'gsap/all';
 
+import Logo from './mountain.svg';
+
 import './App.css'
 
 import {Button} from 'antd';
@@ -33,8 +35,9 @@ const GET_TRIP = gql`query {
 
         }
 
-        cards {
+        cards(order_by: {id : desc}) {
             camera
+            type
             content
             id
             offset
@@ -107,7 +110,7 @@ background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(
   
   .sticky, .sticky2 {
     text-align:center;
-     height: 100vh;
+    
      z-index:99999;
      position: relative;
     width: 100%;
@@ -206,6 +209,7 @@ class App extends React.Component {
 
   render() {
 
+    //return  <img src={Logo} />
     return ( <StickyStyled>
 
 
@@ -226,7 +230,7 @@ class App extends React.Component {
                     const cards = data.trip[0].cards;
 
                     console.log(cards);
-                    return  <MapHolder zoom={this.state.st} locations={data.trip[0].locations}/>
+                    //return  <MapHolder zoom={this.state.st} locations={data.trip[0].locations}/>
 
                    // return <div> {JSON.stringify(cards)} </div>
                     return <div >
@@ -242,16 +246,20 @@ class App extends React.Component {
 
                                     <Scene ref={card.id} key={card.id} duration={card.duration} pin={card.content.pin} offset={card.offset} >
                                         {(progresss, event) => (
-                                            <div className="sticky" style={{height: card.height}}>
+                                            <div className="sticky" Xstyle={{height: card.height}}>
 
                                                 <STWatcher update={(st) => this.setState({card, st, index})} progress={progresss}/>
 
-                                                { <div className="smallsection" >
-
-                                                    {card.content.images && card.content.images.map((d, i)=> <img key={i} style={{'width' : '100%', height: 'auto'}} src={d.url} /> ) }
-
+                                                { card.type === 'Text' && <div className="smallsection" >
                                                     <span> { card.content.text}️ </span>
-                                                    <button onClick={() => this.setState({showButtons : true})}> + </button>
+                                                </div>}
+
+                                                { card.type === 'Image' && <div className="smallsection" >
+                                                    {card.content.images && card.content.images.map((d, i)=> <img key={i} style={{'width' : '100%', height: 'auto'}} src={d.url} /> ) }
+                                                </div>}
+
+                                                { card.type === 'Graphic' && <div className="smallsection" >
+                                                    <img style={{zoom : card.content.zoom || 1}} src={Logo} />
                                                 </div>}
 
                                             </div>
@@ -262,8 +270,11 @@ class App extends React.Component {
                                 )}
 
 
-                            <Scene key={'new'} duration={'100vh'}   >
-                                <div className="sticky" style={{border: '2px solid black'}}>
+
+                            <Scene key={'new'}     >
+
+
+                                <div style={{border: '2px solid black', height : '100%', 'zIndex':99999,  position: 'relative', width: '100%' }}>
                                     <CardAdder visible={this.state.showButtons}/>
                                 </div>
                             </Scene>

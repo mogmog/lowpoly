@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import gql from "graphql-tag";
 import { Mutation } from "react-apollo";
 import {Button, Carousel} from "antd";
-import 'antd/dist/antd.css';  // or 'antd/dist/antd.less'
+import 'antd/dist/antd.css';
+import TextEditor from "./TextEditor";  // or 'antd/dist/antd.less'
 const ADD_CARDS = gql`
     mutation insert_cards($objects: [cards_insert_input!]!) {
         insert_cards(objects: $objects) {
@@ -21,16 +22,20 @@ const AddCard = () => {
         <Mutation mutation={ADD_CARDS}>
             {(addTodo, { data }) => {
 
-                let create = e => {
+                let create = e => (type, params) => {
                     e.preventDefault();
-                    addTodo({ variables: {"objects" : [{"trip_id" : 1, "type" : "Text", "height" : "100vh", "camera":  {"test" :33}, "content":  {"text" :"this is plain text"}}]} });
+                    addTodo(params);
                 };
 
                 return  <form style={{'transform' : 'translateY(100%)'}}>
 
-                            <Carousel>
-                                <div><h1> Add some text</h1> <Button onClick={create} style={{width : '70%', height : '100px', marginBottom : '10px'}}>Add</Button> </div>
-                                <div><h1> Add an image </h1> <Button onClick={create} style={{width : '70%', height : '100px', marginBottom : '10px'}}>Add</Button></div>
+                            <Carousel accessibility={false} swipe={true}>
+                                <div> <TextEditor/>  <Button onClick={create('Text', {"objects" : [{"trip_id" : 1, "type" : "Text", "height" : "100vh", "camera":  {"test" :33}, "content":  {"text" :"this is plain text"}}]})} style={{width : '70%', height : '100px', marginBottom : '10px'}}>Add</Button> </div>
+
+                                <div><h1> Add an photo </h1> <Button onClick={create('Photo', {"objects" : [{"trip_id" : 1, "type" : "Text", "height" : "100vh", "camera":  {"test" :33}, "content":  {"text" :"this is plain text"}}]})} style={{width : '70%', height : '100px', marginBottom : '10px'}}>Add</Button></div>
+
+                                <div><h1> Add an graphic </h1> <Button onClick={create('Graphic',{"objects" : [{"trip_id" : 1, "type" : "Text", "height" : "100vh", "camera":  {"test" :33}, "content":  {"text" :"this is plain text"}}]})} style={{width : '70%', height : '100px', marginBottom : '10px'}}>Add</Button></div>
+
                                 <div><h1> ADd spacer gap</h1></div>
 
                             </Carousel>
