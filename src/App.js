@@ -8,7 +8,9 @@ import styled from 'styled-components';
 import { Controller, Scene } from 'react-scrollmagic';
 import { TweenMax } from 'gsap/all';
 
-import Logo from './mountain.svg';
+//import Logo from '../public/svg/mountain.svg';
+
+
 
 import './App.css'
 
@@ -26,6 +28,11 @@ const client = new ApolloClient({
 });
 
 const GET_TRIP = gql`query {
+
+    graphics {
+        filename
+    }
+    
     trip(where: {id: {_eq: 1}}) {
         id
         locations(order_by: {date: asc}) {
@@ -259,7 +266,7 @@ class App extends React.Component {
                                                 </div>}
 
                                                 { card.type === 'Graphic' && <div className="smallsection" >
-                                                    <img style={{zoom : card.content.zoom || 1}} src={Logo} />
+                                                  {/*  <img style={{zoom : card.content.zoom || 1}} src={Logo} />*/}
                                                 </div>}
 
                                             </div>
@@ -275,7 +282,7 @@ class App extends React.Component {
 
 
                                 <div style={{border: '2px solid black', height : '100%', 'zIndex':99999,  position: 'relative', width: '100%' }}>
-                                    <CardAdder visible={this.state.showButtons}/>
+                                    <CardAdder graphics={data.graphics} visible={this.state.showButtons}/>
                                 </div>
                             </Scene>
 
