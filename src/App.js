@@ -241,9 +241,10 @@ class App extends React.Component {
 
                     const cards = data.trip[0].cards;
 
-                    console.log(cards);
+                    console.log(data.trip[0].locations);
                     //return  <MapHolder zoom={this.state.st} locations={data.trip[0].locations}/>
 
+                    return   <MapHolder locations={data.trip[0].locations} scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
                    // return <div> {JSON.stringify(cards)} </div>
                     return <div >
 
@@ -265,7 +266,7 @@ class App extends React.Component {
 
                              <MapHolder locations={data.trip[0].locations} scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
 
-                             {cards && cards.map((card, index) =>
+                             {true && cards && cards.map((card, index) =>
 
                                     <Scene ref={card.id} key={card.id} duration={card.duration || '100%'} pin={card.content.pin} offset={card.offset || 0} >
                                         {(progresss, event) => (

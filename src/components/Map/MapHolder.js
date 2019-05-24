@@ -166,9 +166,9 @@ export default class MapHolder extends Component {
 
                         camera : {position: {
 
-                            latitude: 40.21414266,
-                            longitude: 20.64729,
-                            z: 2000,
+                            latitude: 40.22951170601195,
+                            longitude: 20.35729,
+                            z: 6000,
                             spatialReference: { wkid: 3857 }
                         }},
 
@@ -194,7 +194,7 @@ export default class MapHolder extends Component {
                     });
 
                     view.watch('camera', function(newValue, oldValue, property, object) {
-                   //     console.log(property , newValue);
+                        console.log(property , newValue);
                     });
 
                     view.when(x=> {

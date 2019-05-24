@@ -8,8 +8,8 @@ import * as turf from '@turf/turf';
 
 import AbstractRenderer from './AbstractRenderer';
 
-import RouteEntityMesh from '../Entities/RouteEntityMesh';
-//import RouteEntity from '../Entities/RouteEntity';
+//import RouteEntityMesh from '../Entities/RouteEntityMesh';
+import RouteEntity from '../Entities/RouteEntity';
 
 
 export default class RouteRenderer extends AbstractRenderer {
@@ -95,7 +95,7 @@ export default class RouteRenderer extends AbstractRenderer {
    // this.route.updateRoute(this.geo_curve_path, externalRenderers, view, SpatialReference, cam);
 
     //this.meshline = new RouteEntity();
-    this.meshline = new RouteEntityMesh();
+    this.meshline = new RouteEntity();
     this.meshline.updateRoute(this.geo_curve_path[0], externalRenderers, view, SpatialReference, cam);
 
     this.start();

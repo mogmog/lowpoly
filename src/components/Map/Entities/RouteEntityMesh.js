@@ -5,7 +5,7 @@ const getRandomFloat = (min, max) => (Math.random() * (max - min) + min);
 
 let dashArray = 10,
      dashOffset = 0.0,
-     dashRatio = 0.6;
+     dashRatio = 0.2;
 
 export default class RouteEntityMesh extends THREE.Group {
 
@@ -26,7 +26,7 @@ export default class RouteEntityMesh extends THREE.Group {
     path.forEach(x => {
       let pos = [0, 0, 0];
       externalRenderers.toRenderCoordinates(view, x, 0, SpatialReference.WGS84, pos, 0, 1);
-      geometry.vertices.push(new THREE.Vector3(pos[0], pos[1], pos[2] + 5.0)); // we make all coords in global world coord sys !
+      geometry.vertices.push(new THREE.Vector3(pos[0], pos[1], pos[2] + 15.0)); // we make all coords in global world coord sys !
      // console.log(path);
     });
 
