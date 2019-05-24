@@ -294,7 +294,7 @@ export default class MapHolder extends Component {
     componentDidUpdate(prevProps, prevState) {
 
         let that = this;
-        const camera = this.props.card.camera;
+        const camera = this.props.card && this.props.card.camera;
 
         if (this.props.zoom !== prevProps.zoom) {
 

@@ -9,6 +9,10 @@ import { isKeyHotkey } from 'is-hotkey'
 import { Button, Icon, Toolbar } from './components'
 import './TextEditor.css'
 
+
+import CKEditor from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
 /**
  * Define the default node type.
  *
@@ -114,34 +118,29 @@ class TextEditor extends React.Component {
             <div className={'TextEditor'}>
 
 
-                <Toolbar>
-                    {this.renderMarkButton('bold', 'format_bold')}
-                    {this.renderMarkButton('italic', 'format_italic')}
-                    {this.renderMarkButton('underlined', 'format_underlined')}
-                    {this.renderMarkButton('code', 'code')}
-                    {this.renderBlockButton('heading-one', 'looks_one')}
-                    {this.renderBlockButton('heading-two', 'looks_two')}
-                    {this.renderBlockButton('block-quote', 'format_quote')}
-                    {this.renderBlockButton('numbered-list', 'format_list_numbered')}
-                    {this.renderBlockButton('bulleted-list', 'format_list_bulleted')}
 
-                    {EMOJIS.map((emoji, i) => (
-                        <Button key={i} onMouseDown={e => this.onClickEmoji(e, emoji)}>
-                            <Icon>{emoji}</Icon>
-                        </Button>
-                    ))}
 
-                </Toolbar>
-                <Editor
-                    schema={schema}
-                    autoFocus
-                    ref={this.ref}
-                    value={this.state.value}
-                    onChange={this.onChange}
-                    onKeyDown={this.onKeyDown}
-                    renderNode={this.renderNode}
-                    renderMark={this.renderMark}
+
+                <CKEditor
+                    editor={ ClassicEditor }
+                    data="<p>Hello from CKEditor 5!</p>"
+                    onInit={ editor => {
+                        // You can store the "editor" and use when it is needed.
+                        console.log( 'Editor is ready to use!', editor );
+                    } }
+                    onChange={ ( event, editor ) => {
+                        const data = editor.getData();
+                        console.log( { event, editor, data } );
+                    } }
+                    onBlur={ editor => {
+                        console.log( 'Blur.', editor );
+                    } }
+                    onFocus={ editor => {
+                        console.log( 'Focus.', editor );
+                    } }
                 />
+
+
             </div>
             </Fragment>
         )

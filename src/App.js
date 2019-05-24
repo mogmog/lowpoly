@@ -3,18 +3,21 @@ import ReactDOM from 'react-dom'
 import { Parallax,  ParallaxLayer } from 'react-spring/renderprops-addons'
 import MapHolder from "./components/Map/MapHolder";
 import CardAdder from "./components/CardAdder";
+import ReactSVG from 'react-svg';
 
 import styled from 'styled-components';
 import { Controller, Scene } from 'react-scrollmagic';
 import { TweenMax } from 'gsap/all';
 
+import AddButton from './components/AddButton'
+
 //import Logo from '../public/svg/mountain.svg';
 
-
+import 'antd/dist/antd.css';
 
 import './App.css'
 
-import {Button} from 'antd';
+import {Button, Drawer} from 'antd';
 
 import ApolloClient from "apollo-boost";
 
@@ -35,14 +38,14 @@ const GET_TRIP = gql`query {
     
     trip(where: {id: {_eq: 1}}) {
         id
-        locations(order_by: {date: asc}) {
+        locations(order_by: {date: desc}) {
             latitude
             longitude
             date
 
         }
 
-        cards(order_by: {id : desc}) {
+        cards(order_by: {id : asc}) {
             camera
             type
             content
@@ -191,28 +194,28 @@ class STWatcher extends React.Component {
 
 class App extends React.Component {
 
-  state = {st : 0.1, showButtons : false, card : null, index : 0}
+  state = {st : 0.1, showButtons : false, card : null, index : 0, visible : false}
 
-    testTop = () => {
+    testTop = (index) => {
 
-      (this.c.state.controller.scrollTo(d=> {
-          TweenMax.to(window, 0.5, {scrollTo : {y : 0}})
-      }));
+        //var start = scene.scrollOffset();
+        //var end = scene.scrollOffset() + scene.duration();
 
-        (this.c.state.controller.scrollTo(1));
+        window.scrollTo({
+            top: window.scrollY - ( 1* window.innerHeight),
+            behavior: 'smooth',
+        })
+
+       // console.log(this.c);
+     /* (this.c.state.controller.scrollTo(d=> {
+          TweenMax.to(window, 2.5, {scrollTo : 5702 })
+      }));*/
+
+        //(this.c.state.controller.scrollTo('#theid' + index -1));
 
     }
 
-    test = () => {
 
-
-      (this.c.state.controller.scrollTo(d=> {
-          TweenMax.to(window, 0.5, {scrollTo : {y : 500}})
-      }));
-
-        (this.c.state.controller.scrollTo(1));
-
-  }
 
   render() {
 
@@ -220,7 +223,9 @@ class App extends React.Component {
     return ( <StickyStyled>
 
 
-    {/*    <a onClick={this.test}> {this.state.index } </a>*/}
+        <AddButton onClick={() => this.setState({visible : true})}/>
+
+       {/* <a onClick={this.testTop}> {this.state.index } </a>*/}
 
         <div>
 
@@ -242,18 +247,29 @@ class App extends React.Component {
                    // return <div> {JSON.stringify(cards)} </div>
                     return <div >
 
+                        <Drawer
+                            title="Add"
+                            placement={'top'}
+                            closable={true}
+                            height = '90vh'
+                            style={{zIndex : 99999999}}
+                            onClose={() => this.setState({visible : false})}
+                            visible={this.state.visible}
+                        >
+
+                            <CardAdder cards={cards} scrollTo={this.testTop} refetch={GET_TRIP} graphics={data.graphics} visible={true}/>
+
+                        </Drawer>
 
                         <Controller ref={(c) => this.c = c}>
-
-                            <pre style={{position : 'fixed', transform : 'translate(0,-10px)', height: '50px', top : 0, left : 0}}> {this.state.index } </pre>
 
                              <MapHolder locations={data.trip[0].locations} scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
 
                              {cards && cards.map((card, index) =>
 
-                                    <Scene ref={card.id} key={card.id} duration={card.duration} pin={card.content.pin} offset={card.offset} >
+                                    <Scene ref={card.id} key={card.id} duration={card.duration || '100%'} pin={card.content.pin} offset={card.offset || 0} >
                                         {(progresss, event) => (
-                                            <div className="sticky" Xstyle={{height: card.height}}>
+                                            <div id={`theid${index}`} className="sticky" style={{height: '100vh'}}>
 
                                                 <STWatcher update={(st) => this.setState({card, st, index})} progress={progresss}/>
 
@@ -265,8 +281,15 @@ class App extends React.Component {
                                                     {card.content.images && card.content.images.map((d, i)=> <img key={i} style={{'width' : '100%', height: 'auto'}} src={d.url} /> ) }
                                                 </div>}
 
-                                                { card.type === 'Graphic' && <div className="smallsection" >
-                                                  {/*  <img style={{zoom : card.content.zoom || 1}} src={Logo} />*/}
+
+                                                { card.type === 'Graphic' && <div className="smallsection" style={{width : '100%'}}>
+
+                                                    <ReactSVG
+                                                        beforeInjection={svg => {
+                                                            svg.setAttribute('style', 'width: 100%;');
+                                                        }}
+                                                        wrapper="span" src={`./svg/${card.content.filename}`}/>
+
                                                 </div>}
 
                                             </div>
@@ -278,13 +301,10 @@ class App extends React.Component {
 
 
 
-                            <Scene key={'new'}     >
+                           {/* <Scene key={'new'}  duration={'100%'} height={'200px'}   >
 
-
-                                <div style={{border: '2px solid black', height : '100%', 'zIndex':99999,  position: 'relative', width: '100%' }}>
-                                    <CardAdder graphics={data.graphics} visible={this.state.showButtons}/>
-                                </div>
-                            </Scene>
+                                <h1 block type='primary' onClick={()=> this.setState({visible : true})}>Add</h1>
+                            </Scene>*/}
 
                         </Controller>
                     </div>

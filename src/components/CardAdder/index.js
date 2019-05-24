@@ -17,27 +17,44 @@ const ADD_CARDS = gql`
     }
 `;
 
-const AddCard = ({graphics}) => {
+const AddCard = ({cards, graphics, refetch, scrollTo}) => {
 
     return (
-        <Mutation mutation={ADD_CARDS}>
+        <Mutation mutation={ADD_CARDS} refetchQueries={[{query : refetch}]}>
             {(addTodo, { data }) => {
 
-                let create = e => (type, params) => {
-                    e.preventDefault();
-                    addTodo(params);
+                let create = (params) => {
+                   //e.preventDefault();
+
+                    addTodo({variables : {"objects" : [params]}}).then(d=> {
+                        scrollTo(cards.length);
+                    });
+
                 };
 
-                return  <form style={{'transform' : 'translateY(100%)'}}>
+                return  <form >
 
                             <Carousel accessibility={false} swipe={true}>
-                                <div> <TextEditor/>  <Button onClick={create('Text', {"objects" : [{"trip_id" : 1, "type" : "Text", "height" : "100vh", "camera":  {"test" :33}, "content":  {"text" :"this is plain text"}}]})} style={{width : '70%', height : '100px', marginBottom : '10px'}}>Add</Button> </div>
+
+                                <div style={{height : '400px', overflow : 'scroll'}}>
+
+                                    {/*<p style={{fontSize : '100%'}} contentEditable={true}>I can be editted</p>*/}
+                                    <TextEditor/>
+
+                                    <Button onClick={() => create( {"trip_id" : 1, "type" : "Text", "height" : "100vh", "camera":  {"test" :33}, "content":  {"text" :"this is plain text"}})} style={{width : '70%', height : '100px', marginBottom : '10px'}}>Add</Button> </div>
+
+                                {/*  <div> <TextEditor/>  <Button onClick={create('Text', {"objects" : [{"trip_id" : 1, "type" : "Text", "height" : "100vh", "camera":  {"test" :33}, "content":  {"text" :"this is plain text"}}]})} style={{width : '70%', height : '100px', marginBottom : '10px'}}>Add</Button> </div>
 
                                 <div><h1> Add an photo </h1> <Button onClick={create('Photo', {"objects" : [{"trip_id" : 1, "type" : "Text", "height" : "100vh", "camera":  {"test" :33}, "content":  {"text" :"this is plain text"}}]})} style={{width : '70%', height : '100px', marginBottom : '10px'}}>Add</Button></div>
+*/}
+                                <div><h1> Add an graphic </h1>
 
-                                <div><h1> Add an graphic </h1> <GraphicsGrid graphics={graphics}/> <Button onClick={create('Graphic',{"objects" : [{"trip_id" : 1, "type" : "Text", "height" : "100vh", "camera":  {"test" :33}, "content":  {"text" :"this is plain text"}}]})} style={{width : '70%', height : '100px', marginBottom : '10px'}}>Add</Button></div>
+                                    <GraphicsGrid onClick={(filename) => create({"trip_id" : 1, "type" : "Graphic", "height" : "100vh", "camera":  {"test" :33}, "content":  {filename : filename}} )} graphics={graphics}/>
 
+                                {/*<Button onClick={create('Graphic',{"objects" : [{"trip_id" : 1, "type" : "Text", "height" : "100vh", "camera":  {"test" :33}, "content":  {"text" :"this is plain text"}}]})} style={{width : '70%', height : '100px', marginBottom : '10px'}}>Add</Button></div>
+*/}
                                 <div><h1> ADd spacer gap</h1></div>
+                                </div>
 
                             </Carousel>
 

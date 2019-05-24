@@ -1,0 +1,12 @@
+.TextEditor h1 {
+ font-size: 6em;
+  color: #c9cc1b;
+}
+
+.TextEditor .icon {
+ display: inline-block;
+ color: #444444;
+ width: 1em;
+ height: 1em;
+ fill: currentColor;
+}

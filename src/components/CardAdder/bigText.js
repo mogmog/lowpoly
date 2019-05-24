@@ -10,16 +10,9 @@ let bigText = {
     document: {
       nodes: [
 
-        { match: { type: 'heading-one' }, min: 1 },
-      ],
-      normalize: (editor, { code, node, child, index }) => {
-        switch (code) {
-          case 'child_type_invalid': {
-            return editor.setNodeByKey(child.key, 'heading-one')
-          }
 
-        }
-      },
+      ],
+
     },
   },
   "initial" : {

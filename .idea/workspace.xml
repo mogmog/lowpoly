@@ -5,63 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ff3ebd58-9c8c-4d58-a92c-0acb6f85511f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/public/acorn.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/acorn.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/apple.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/balloons.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/bear.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/bee.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/beehive.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/bench.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/bicycle.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/bird.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/birdhouse.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/bush.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/butterfly.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/caterpillar.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/chick.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/deer.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/dragonfly.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/duck.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/flamingo.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/flower-pot.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/flowers.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/forest.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/fountain.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/fox.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/gnome.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/grasshopper.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/grill.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/hammock.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/hedgehog.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/hot-air-balloon.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/hummingbird.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/juice.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/ladybug.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/log.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/mountain.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/mushroom.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/nest.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/orange.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/owl.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/picnic-basket.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/pinwheel.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/rabbit.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/roller-skate.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/shovel.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/snail.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/squirrel.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/strawberry.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/sun.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/tree.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/tulips.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/svg/watering-can.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/CardAdder/GraphicsGrid/acorn.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/CardAdder/GraphicsGrid/index.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/CardAdder/GraphicsGrid/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/AddButton/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/CardAdder/GraphicsGrid/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/CardAdder/GraphicsGrid/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/CardAdder/TextEditor.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/CardAdder/TextEditor.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/CardAdder/bigText.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/CardAdder/bigText.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/CardAdder/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/CardAdder/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Map/MapHolder.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Map/MapHolder.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -77,11 +30,56 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/App.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="250">
-              <caret line="265" column="55" lean-forward="true" selection-start-line="265" selection-start-column="55" selection-end-line="265" selection-end-column="55" />
+            <state relative-caret-position="259">
+              <caret line="259" column="32" selection-start-line="259" selection-start-column="32" selection-end-line="259" selection-end-column="32" />
               <folding>
                 <element signature="e#0#25#0" expanded="true" />
-                <element signature="e#419#437#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/components/AddButton/index.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="30">
+              <caret line="5" column="52" selection-start-line="5" selection-start-column="52" selection-end-line="5" selection-end-column="52" />
+              <folding>
+                <element signature="e#0#25#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/components/CardAdder/bigText.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="45">
+              <caret line="14" selection-start-line="14" selection-end-line="14" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/components/CardAdder/components.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret selection-end-line="1" selection-end-column="36" />
+              <folding>
+                <element signature="e#0#25#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/components/Map/MapHolder.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="3780">
+              <caret line="303" selection-start-line="303" selection-end-line="303" />
+              <folding>
+                <element signature="e#0#51#0" expanded="true" />
+                <element signature="e#2462#5082#0" />
               </folding>
             </state>
           </provider>
@@ -90,32 +88,11 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/components/CardAdder/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="176">
-              <caret line="37" column="57" selection-start-line="37" selection-start-column="57" selection-end-line="37" selection-end-column="57" />
+            <state relative-caret-position="292">
+              <caret line="41" column="40" selection-start-line="41" selection-start-column="40" selection-end-line="41" selection-end-column="40" />
               <folding>
                 <element signature="e#0#41#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/components/CardAdder/GraphicsGrid/index.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="8" column="7" lean-forward="true" selection-start-line="8" selection-start-column="7" selection-end-line="8" selection-end-column="7" />
-              <folding>
-                <element signature="e#0#41#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/components/CardAdder/GraphicsGrid/index.css">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="10" column="4" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="4" />
             </state>
           </provider>
         </entry>
@@ -128,17 +105,29 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/components/CardAdder/TextEditor.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="10" column="1" selection-start-line="10" selection-start-column="1" selection-end-line="10" selection-end-column="1" />
+            <state relative-caret-position="30">
+              <caret line="2" selection-start-line="2" selection-end-line="2" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/components/CardAdder/TextEditor.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="210">
+              <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
+              <folding>
+                <element signature="e#0#36#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/components/CardAdder/TextEditor.js">
+        <entry file="file://$PROJECT_DIR$/package.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="9" selection-start-line="9" selection-end-line="9" selection-end-column="25" />
+            <state relative-caret-position="178">
+              <caret line="74" column="73" selection-start-line="74" selection-start-column="18" selection-end-line="74" selection-end-column="73" />
             </state>
           </provider>
         </entry>
@@ -208,7 +197,6 @@
         <option value="$PROJECT_DIR$/src/serviceWorker.js" />
         <option value="$PROJECT_DIR$/src/components/Map/Entities/MeshLineEntity.js" />
         <option value="$PROJECT_DIR$/src/components/CardAdder/index.css" />
-        <option value="$PROJECT_DIR$/src/components/Map/MapHolder.js" />
         <option value="$PROJECT_DIR$/src/components/Map/Entities/RouteEntity.js" />
         <option value="$PROJECT_DIR$/src/components/Map/Renderers/RouteRenderer.js" />
         <option value="$PROJECT_DIR$/src/components/Map/Entities/RouteEntityMesh.js" />
@@ -218,13 +206,15 @@
         <option value="$PROJECT_DIR$/package.json" />
         <option value="$PROJECT_DIR$/src/components/CardAdder/value.json" />
         <option value="$PROJECT_DIR$/src/components/CardAdder/bigTExt.js" />
-        <option value="$PROJECT_DIR$/src/components/CardAdder/bigText.js" />
         <option value="$PROJECT_DIR$/src/components/CardAdder/TextEditor.css" />
-        <option value="$PROJECT_DIR$/src/components/CardAdder/TextEditor.js" />
+        <option value="$PROJECT_DIR$/src/components/CardAdder/GraphicsGrid/index.css" />
+        <option value="$PROJECT_DIR$/src/components/CardAdder/GraphicsGrid/index.js" />
+        <option value="$PROJECT_DIR$/src/components/Map/MapHolder.js" />
+        <option value="$PROJECT_DIR$/src/components/AddButton/index.js" />
         <option value="$PROJECT_DIR$/src/App.js" />
         <option value="$PROJECT_DIR$/src/components/CardAdder/index.js" />
-        <option value="$PROJECT_DIR$/src/components/CardAdder/GraphicsGrid/index.js" />
-        <option value="$PROJECT_DIR$/src/components/CardAdder/GraphicsGrid/index.css" />
+        <option value="$PROJECT_DIR$/src/components/CardAdder/bigText.js" />
+        <option value="$PROJECT_DIR$/src/components/CardAdder/TextEditor.js" />
       </list>
     </option>
   </component>
@@ -232,9 +222,9 @@
     <dismissed value="$PROJECT_DIR$/package.json" />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="8" />
-    <option name="y" value="44" />
-    <option name="width" value="1189" />
+    <option name="x" value="-1113" />
+    <option name="y" value="-1123" />
+    <option name="width" value="1190" />
     <option name="height" value="911" />
   </component>
   <component name="ProjectView">
@@ -242,7 +232,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -253,23 +242,26 @@
             <path>
               <item name="lowpolytest" type="b2602c69:ProjectViewProjectNode" />
               <item name="lowpolytest" type="462c0819:PsiDirectoryNode" />
-              <item name="public" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="lowpolytest" type="b2602c69:ProjectViewProjectNode" />
-              <item name="lowpolytest" type="462c0819:PsiDirectoryNode" />
-              <item name="public" type="462c0819:PsiDirectoryNode" />
-              <item name="svg" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="lowpolytest" type="b2602c69:ProjectViewProjectNode" />
               <item name="lowpolytest" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="components" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="lowpolytest" type="b2602c69:ProjectViewProjectNode" />
+              <item name="lowpolytest" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="components" type="462c0819:PsiDirectoryNode" />
+              <item name="CardAdder" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -353,7 +345,12 @@
       <workItem from="1557216026562" duration="1413000" />
       <workItem from="1557343090295" duration="4578000" />
       <workItem from="1557582353503" duration="51000" />
-      <workItem from="1557582421959" duration="4747000" />
+      <workItem from="1557582421959" duration="8719000" />
+      <workItem from="1557681716042" duration="4771000" />
+      <workItem from="1557737103372" duration="677000" />
+      <workItem from="1557777121255" duration="1291000" />
+      <workItem from="1558033278981" duration="2729000" />
+      <workItem from="1558194173887" duration="1681000" />
     </task>
     <task id="LOCAL-00001" summary="more changes">
       <created>1555765719256</created>
@@ -390,16 +387,23 @@
       <option name="project" value="LOCAL" />
       <updated>1557350049962</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="added svg">
+      <created>1557671051787</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1557671051787</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="170722000" />
+    <option name="totallyTimeSpent" value="185843000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="8" y="44" width="1189" height="911" extended-state="0" />
+    <frame x="111" y="107" width="1190" height="911" extended-state="0" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.7932862" visible="true" weight="0.29109588" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.7932862" visible="true" weight="0.25320786" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="npm" order="2" sideWeight="0.20671378" side_tool="true" weight="0.27852854" />
       <window_info id="Favorites" order="3" side_tool="true" />
@@ -411,9 +415,9 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info active="true" anchor="bottom" id="Version Control" order="8" visible="true" weight="0.3931624" />
+      <window_info anchor="bottom" id="Version Control" order="8" weight="0.3858364" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
-      <window_info anchor="bottom" id="Terminal" order="10" weight="0.34554335" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.35042736" />
       <window_info anchor="bottom" id="TypeScript" order="11" weight="0.32914287" />
       <window_info anchor="bottom" id="GraphQL" order="12" weight="0.32918552" />
       <window_info anchor="bottom" id="Messages" order="13" />
@@ -452,10 +456,10 @@
     <MESSAGE value="more changes" />
     <MESSAGE value="half working meshline" />
     <MESSAGE value="wip" />
-    <option name="LAST_COMMIT_MESSAGE" value="wip" />
+    <MESSAGE value="added svg" />
+    <option name="LAST_COMMIT_MESSAGE" value="added svg" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/components/Map/Renderers/MeshRenderer.js" />
     <entry file="file://$PROJECT_DIR$/src/components/Map/Renderers/AbstractRenderer.js">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -678,17 +682,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/Map/MapHolder.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2175">
-          <caret line="196" column="21" selection-start-line="196" selection-start-column="21" selection-end-line="196" selection-end-column="21" />
-          <folding>
-            <element signature="e#0#51#0" expanded="true" />
-            <element signature="e#2462#5082#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/components/Map/Renderers/RouteRenderer.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="360">
@@ -699,20 +692,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/Map/MapHolder.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="13" selection-start-line="13" selection-end-line="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="178">
-          <caret line="74" column="5" selection-start-line="74" selection-start-column="5" selection-end-line="74" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/node_modules/slate/lib/slate.es.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="35145">
@@ -720,87 +699,125 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/CardAdder/bigText.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" selection-start-line="8" selection-end-line="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/public/svg/mountain.svg">
       <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/CardAdder/components.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" selection-start-line="1" selection-end-line="1" selection-end-column="36" />
-        </state>
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/public/svg/bird.svg">
       <provider selected="true" editor-type-id="images" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/CardAdder/TextEditor.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="1" selection-start-line="10" selection-start-column="1" selection-end-line="10" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/CardAdder/TextEditor.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" selection-start-line="9" selection-end-line="9" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/svg/bee.svg">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/App.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="250">
-          <caret line="265" column="55" lean-forward="true" selection-start-line="265" selection-start-column="55" selection-end-line="265" selection-end-column="55" />
-          <folding>
-            <element signature="e#0#25#0" expanded="true" />
-            <element signature="e#419#437#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/svg/bee.svg" />
     <entry file="file://$PROJECT_DIR$/public/acorn.svg">
       <provider selected="true" editor-type-id="images" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/components/CardAdder/GraphicsGrid/acorn.svg">
       <provider selected="true" editor-type-id="images" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/CardAdder/index.css">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/CardAdder/index.js">
+    <entry file="file://$PROJECT_DIR$/src/components/CardAdder/GraphicsGrid/index.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
-          <caret line="37" column="57" selection-start-line="37" selection-start-column="57" selection-end-line="37" selection-end-column="57" />
-          <folding>
-            <element signature="e#0#41#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="150">
+          <caret line="10" column="4" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/Map/MapHolder.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="13" selection-start-line="13" selection-end-line="13" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/components/CardAdder/GraphicsGrid/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="7" lean-forward="true" selection-start-line="8" selection-start-column="7" selection-end-line="8" selection-end-column="7" />
+        <state relative-caret-position="195">
+          <caret line="16" column="26" selection-start-line="11" selection-start-column="129" selection-end-line="16" selection-end-column="26" />
           <folding>
             <element signature="e#0#41#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/CardAdder/GraphicsGrid/index.css">
+    <entry file="file://$PROJECT_DIR$/src/components/AddButton/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="4" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="4" />
+        <state relative-caret-position="30">
+          <caret line="5" column="52" selection-start-line="5" selection-start-column="52" selection-end-line="5" selection-end-column="52" />
+          <folding>
+            <element signature="e#0#25#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/CardAdder/components.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret selection-end-line="1" selection-end-column="36" />
+          <folding>
+            <element signature="e#0#25#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/Map/MapHolder.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3780">
+          <caret line="303" selection-start-line="303" selection-end-line="303" />
+          <folding>
+            <element signature="e#0#51#0" expanded="true" />
+            <element signature="e#2462#5082#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/CardAdder/index.css">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/CardAdder/TextEditor.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" selection-start-line="2" selection-end-line="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="178">
+          <caret line="74" column="73" selection-start-line="74" selection-start-column="18" selection-end-line="74" selection-end-column="73" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/App.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="259">
+          <caret line="259" column="32" selection-start-line="259" selection-start-column="32" selection-end-line="259" selection-end-column="32" />
+          <folding>
+            <element signature="e#0#25#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/CardAdder/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="292">
+          <caret line="41" column="40" selection-start-line="41" selection-start-column="40" selection-end-line="41" selection-end-column="40" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/CardAdder/bigText.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="14" selection-start-line="14" selection-end-line="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/CardAdder/TextEditor.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
+          <folding>
+            <element signature="e#0#36#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
