@@ -3,10 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="ff3ebd58-9c8c-4d58-a92c-0acb6f85511f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Map/Entities/RouteEntityMesh.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Map/Entities/RouteEntityMesh.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Map/MapHolder.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Map/MapHolder.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Map/MapHolder.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Map/MapHolder.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Map/Renderers/RouteRenderer.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Map/Renderers/RouteRenderer.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -50,8 +47,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/components/Map/Renderers/RouteRenderer.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="167">
-              <caret line="97" column="35" selection-start-line="97" selection-start-column="35" selection-end-line="97" selection-end-column="35" />
+            <state relative-caret-position="329">
+              <caret line="26" lean-forward="true" selection-start-line="26" selection-end-line="26" />
               <folding>
                 <element signature="e#10#41#0" expanded="true" />
               </folding>
@@ -60,10 +57,19 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/components/Map/Entities/RouteEntity.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1315">
+              <caret line="1039" column="54" selection-start-line="1039" selection-start-column="48" selection-end-line="1039" selection-end-column="54" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/components/Map/Entities/RouteEntityMesh.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="105">
-              <caret line="7" column="20" selection-start-line="7" selection-start-column="20" selection-end-line="7" selection-end-column="20" />
+            <state relative-caret-position="420">
+              <caret line="28" column="73" selection-start-line="28" selection-start-column="73" selection-end-line="28" selection-end-column="73" />
               <folding>
                 <element signature="e#0#31#0" expanded="true" />
               </folding>
@@ -186,8 +192,8 @@
         <option value="$PROJECT_DIR$/src/components/Map/MapHolder.css" />
         <option value="$PROJECT_DIR$/src/App.js" />
         <option value="$PROJECT_DIR$/src/components/Map/MapHolder.js" />
-        <option value="$PROJECT_DIR$/src/components/Map/Entities/RouteEntityMesh.js" />
         <option value="$PROJECT_DIR$/src/components/Map/Renderers/RouteRenderer.js" />
+        <option value="$PROJECT_DIR$/src/components/Map/Entities/RouteEntityMesh.js" />
       </list>
     </option>
   </component>
@@ -195,10 +201,10 @@
     <dismissed value="$PROJECT_DIR$/package.json" />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-1862" />
-    <option name="y" value="-1352" />
-    <option name="width" value="1229" />
-    <option name="height" value="1208" />
+    <option name="x" value="92" />
+    <option name="y" value="75" />
+    <option name="width" value="1321" />
+    <option name="height" value="923" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -331,7 +337,7 @@
       <workItem from="1556902308231" duration="7435000" />
       <workItem from="1557216026562" duration="1413000" />
       <workItem from="1557343090295" duration="4064000" />
-      <workItem from="1558712215989" duration="2350000" />
+      <workItem from="1558712215989" duration="3477000" />
     </task>
     <task id="LOCAL-00001" summary="more changes">
       <created>1555765719256</created>
@@ -361,17 +367,23 @@
       <option name="project" value="LOCAL" />
       <updated>1556890352471</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="for upwork">
+      <created>1558714726297</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1558714726297</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="167760000" />
+    <option name="totallyTimeSpent" value="168887000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1862" y="-1352" width="1229" height="1208" extended-state="0" />
-    <editor active="true" />
+    <frame x="92" y="75" width="1321" height="923" extended-state="0" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.7932862" visible="true" weight="0.29056293" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.7932862" visible="true" weight="0.27" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="npm" order="2" sideWeight="0.20671378" side_tool="true" weight="0.27852854" />
       <window_info id="Favorites" order="3" side_tool="true" />
@@ -383,9 +395,9 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="8" visible="true" weight="0.23566309" />
+      <window_info anchor="bottom" id="Version Control" order="8" weight="0.2355606" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
-      <window_info anchor="bottom" id="Terminal" order="10" weight="0.3594848" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.38146812" />
       <window_info anchor="bottom" id="TypeScript" order="11" weight="0.32914287" />
       <window_info anchor="bottom" id="GraphQL" order="12" weight="0.32918552" />
       <window_info anchor="bottom" id="Messages" order="13" />
@@ -424,7 +436,8 @@
     <MESSAGE value="more changes" />
     <MESSAGE value="half working meshline" />
     <MESSAGE value="wip" />
-    <option name="LAST_COMMIT_MESSAGE" value="wip" />
+    <MESSAGE value="for upwork" />
+    <option name="LAST_COMMIT_MESSAGE" value="for upwork" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/Terrain.js">
@@ -621,13 +634,6 @@
     <entry file="file://$PROJECT_DIR$/src/components/CardAdder/index.css">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/Map/Entities/RouteEntity.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15555">
-          <caret line="1039" column="54" selection-start-line="1039" selection-start-column="48" selection-end-line="1039" selection-end-column="54" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/components/Map/Entities/MeshLineEntity.js">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -717,10 +723,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/Map/Entities/RouteEntity.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1315">
+          <caret line="1039" column="54" selection-start-line="1039" selection-start-column="48" selection-end-line="1039" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/components/Map/Entities/RouteEntityMesh.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="7" column="20" selection-start-line="7" selection-start-column="20" selection-end-line="7" selection-end-column="20" />
+        <state relative-caret-position="420">
+          <caret line="28" column="73" selection-start-line="28" selection-start-column="73" selection-end-line="28" selection-end-column="73" />
           <folding>
             <element signature="e#0#31#0" expanded="true" />
           </folding>
@@ -729,8 +742,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/components/Map/Renderers/RouteRenderer.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="167">
-          <caret line="97" column="35" selection-start-line="97" selection-start-column="35" selection-end-line="97" selection-end-column="35" />
+        <state relative-caret-position="329">
+          <caret line="26" lean-forward="true" selection-start-line="26" selection-end-line="26" />
           <folding>
             <element signature="e#10#41#0" expanded="true" />
           </folding>
