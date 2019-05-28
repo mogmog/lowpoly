@@ -21,9 +21,6 @@ export default class MapHolder extends Component {
         this.animate = this.animate.bind(this);
     }
 
-
-
-
     esriLoad() {
         var self = this;
 
@@ -77,9 +74,6 @@ export default class MapHolder extends Component {
                      Graphic,
                  ]) => {
 
-
-
-
                     const GreyLayer = BaseTileLayer.createSubclass({
                         properties: {
                             urlTemplate: null,
@@ -105,7 +99,6 @@ export default class MapHolder extends Component {
                                 responseType: 'image',
                             }).then(
                                 function(response) {
-
 
                                     // when esri request resolves successfully
                                     // get the image from the response
@@ -146,8 +139,6 @@ export default class MapHolder extends Component {
                         visible: false,
                     });
 
-
-
                     const map = new WebMap({
 
                         ground: 'world-elevation',
@@ -162,7 +153,6 @@ export default class MapHolder extends Component {
                         container: 'viewDiv',
 
                         alphaCompositingEnabled: true,
-
 
                         camera : {position: {
 
@@ -179,7 +169,6 @@ export default class MapHolder extends Component {
                             components: []
                         },
                         environment: {
-
 
                             background: {
                                 type: "color",
@@ -206,19 +195,20 @@ export default class MapHolder extends Component {
 
                         var i = 0;
 
-                        if (false) self.rotator = window.setInterval(d=> {
+                        if (false) 
+                            self.rotator = window.setInterval(d=> {
 
-                            var newCenter = center.clone();
-                            newCenter.x -= i * scale /3000 ;
-                            i++;
+                                var newCenter = center.clone();
+                                newCenter.x -= i * scale /3000 ;
+                                i++;
 
-                            view.goTo({
-                                center: newCenter,
-                                scale: scale,
-                                heading: camera.heading,
-                                tilt: camera.tilt
-                            }, { animate: false });
-                        }, 1/30);
+                                view.goTo({
+                                    center: newCenter,
+                                    scale: scale,
+                                    heading: camera.heading,
+                                    tilt: camera.tilt
+                                }, { animate: false });
+                            }, 1/30);
                     })
 
 
@@ -244,33 +234,92 @@ export default class MapHolder extends Component {
                     var polyline = {
                         type: 'polyline',
                         paths: geojson,
-
-
                     };
 
                     worldGround.queryElevation(new Polyline(polyline)).then(result => {
+
                         console.log("result");
                         console.log(result);
+
+                        /*const canvas_parent = context.gl.canvas.parentElement;
+                        canvas = document.createElement('canvas');
+                        canvas.style.position = 'absolute';
+                        canvas.style.top = '0px';
+                        canvas.style.left = '0px';
+                        canvas.style.pointerEvents = "none";
+                        canvas_parent.appendChild(canvas);*/
+
+                        const afterRender = [];
+
+                        const externalRendererAdd = externalRenderers.add.bind(
+                            externalRenderers
+                        );
+
+                        externalRenderers.add = (a,b) => {
+
+                            externalRendererAdd(a,b);
+
+                            afterRender.push(b);
+                        };
+
+                        const externalRendererRemove = externalRenderers.remove.bind(
+                            externalRenderers
+                        );
+
+                        externalRenderers.remove = (a,b) => {
+
+                            externalRendererRemove(a,b);
+
+                            const i = afterRender.indexOf(b);
+
+                            if (i > -1) {
+                                afterRender.splice(i, 1);
+                            }   
+                        };
+
+                        const renderBase = self.esriLoaderContext.view._stage.view._viewport.render.bind(
+                            self.esriLoaderContext.view._stage.view._viewport
+                        );
+
+                        self.esriLoaderContext.view._stage.view._viewport.render = (a) => {
+
+                            const view = self.esriLoaderContext.view;
+
+                            renderBase(a);
+
+                            for (let i = 0; i < afterRender.length; i++) {
+
+                                const renderer = afterRender[i];
+
+                                if (renderer.afterRender) {
+
+                                    renderer.afterRender(view);
+                                }
+                            }
+
+                            console.log('after render')
+                        };
+
 
                         self.routeRenderer = new RouteRenderer(self.esriLoaderContext, result.geometry.paths);
 
                         externalRenderers.add(view, self.routeRenderer);
 
+                        const images = [{"description":{"title":"Lagoon"},"id":1,"location":{"geometry":{"coordinates":[42,42,400.79999923706055],"type":"Point"},"properties":{},"type":"Feature"}},{"description":{"title":"church"},"id":2,"location":{"geometry":{"coordinates":[42,42.1,400.79999923706055],"type":"Point"},"properties":{},"type":"Feature"}}];
+                        //const { images } = self.props;
+    
+                        // self.routeRenderer = new RouteRenderer(self.esriLoaderContext);
+                        // self.imageRenderer = new ImageRenderer(self.esriLoaderContext, images);
+    
+                        //externalRenderers.add(view, self.routeRenderer);
+                        //externalRenderers.add(view, self.imageRenderer);
+
                     }).catch(d=> {
+
                         console.log(d);
                     });
 
-                    const images = [{"description":{"title":"Lagoon"},"id":1,"location":{"geometry":{"coordinates":[42,42,400.79999923706055],"type":"Point"},"properties":{},"type":"Feature"}},{"description":{"title":"church"},"id":2,"location":{"geometry":{"coordinates":[42,42.1,400.79999923706055],"type":"Point"},"properties":{},"type":"Feature"}}];
-                    //const { images } = self.props;
-
-                   // self.routeRenderer = new RouteRenderer(self.esriLoaderContext);
-                    //self.imageRenderer = new ImageRenderer(self.esriLoaderContext, images);
-
-                    //externalRenderers.add(view, self.routeRenderer);
-                    //externalRenderers.add(view, self.imageRenderer);
-
                     window.requestAnimationFrame(self.animate);
-
                 }
             )
             .catch(err => {
@@ -305,17 +354,18 @@ export default class MapHolder extends Component {
                if (camera.style === 'followPath') {
                    this.rotator && window.clearInterval(this.rotator);
 
-                   that.esriLoaderContext.view.goTo(this.getLoc(camera.destination[0], camera.destination[1] + this.props.zoom /20, 5705), {
-                       animate : false
-                   });
+                    that.esriLoaderContext.view.goTo(
+                        this.getLoc(camera.destination[0], camera.destination[1] + this.props.zoom /20, 5705), 
+                        {
+                            animate : false
+                        }
+                    );
 
                }
 
            }
         }
-
-        }
-
+    }
 
     componentDidMount() {
         this.esriLoad();

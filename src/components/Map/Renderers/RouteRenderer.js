@@ -8,12 +8,15 @@ import * as turf from '@turf/turf';
 
 import AbstractRenderer from './AbstractRenderer';
 
-import RouteEntity from '../Entities/RouteEntityMesh';
-//import RouteEntity from '../Entities/RouteEntity';
-
+// import RouteEntity from '../Entities/RouteEntityMesh';
+import RouteEntity from '../Entities/RouteEntity';
 
 export default class RouteRenderer extends AbstractRenderer {
-  constructor(esriLoaderContext , paths) {
+
+  constructor(
+    esriLoaderContext, 
+    paths
+  ) {
     super();
 
     this.esriLoaderContext = esriLoaderContext;
@@ -24,6 +27,7 @@ export default class RouteRenderer extends AbstractRenderer {
 
     this.geo_curve_path = paths;
 
+    this.extenalCanvas = null; // extenalCanvas;
   }
 
   /**
@@ -39,18 +43,38 @@ export default class RouteRenderer extends AbstractRenderer {
 
     var view = context.view;
 
-
-
-
-
-
-
     // initialize the three.js renderer
     //////////////////////////////////////////////////////////////////////////////////////
-    this.renderer = new THREE.WebGLRenderer({
-      context: context.gl,
-      //premultipliedAlpha: false
-    });
+
+    let canvas = null;
+
+    if (true) {
+
+      const canvas_parent = context.gl.canvas.parentElement;
+
+      canvas = this.extenalCanvas = document.createElement('canvas');
+      canvas.style.position = 'absolute';
+      canvas.style.top = '0px';
+      canvas.style.left = '0px';
+      canvas.style.pointerEvents = "none";
+
+      canvas_parent.appendChild(canvas);
+    }
+
+    this.renderer = new THREE.WebGLRenderer(
+      this.extenalCanvas ? 
+      {
+        canvas : canvas,
+        alpha : true
+        // premultipliedAlpha: false
+      } : 
+      {
+        context: context.gl,
+        // premultipliedAlpha: false
+      }
+    );
+
+
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(context.camera.fullWidth, context.camera.fullHeight);
 
@@ -75,14 +99,12 @@ export default class RouteRenderer extends AbstractRenderer {
       }
     };
 
-
-
     ///////////////////////////////////////////////////////////////////////////////////////
 
     self.scene = new THREE.Scene();
 
     // setup the camera
-    var cam = context.camera;
+    const cam = context.camera;
    /* this.camera = new THREE.PerspectiveCamera(cam.fovY, cam.aspect, cam.near, cam.far);
     this.camera.position.set(cam.eye[0], cam.eye[1], cam.eye[2]);
     this.camera.up.set(cam.up[0], cam.up[1], cam.up[2]);
@@ -98,23 +120,66 @@ export default class RouteRenderer extends AbstractRenderer {
     this.meshline = new RouteEntity();
     this.meshline.updateRoute(this.geo_curve_path[0], externalRenderers, view, SpatialReference, cam);
 
-    this.start();
+    this.init();
 
     // cleanup after ourselfs
     context.resetWebGLState();
   }
 
+  init() {
 
+    // const route = this.route;
+    const meshline  = this.meshline;
 
+    meshline.setProgress(0);
 
+    this.scene.add(meshline);
+
+    this.scene.add(new THREE.AmbientLight(0xeeeeee));
+
+    meshline.tween = new TWEEN.Tween(
+    {
+      persent: 0,
+    })
+    .to(
+        {
+          persent : 1
+        },
+        150000)
+    .onUpdate(
+        function(tween_obj)
+        { 
+          meshline.setProgress(tween_obj.persent);
+        })
+    .onComplete(function() {
+
+      delete meshline.tween;
+    }).delay(2000).start();
+  }
 
   render(context) {
 
-    var view = context.view;
+    this.renderContext = context;
+
+    if (this.extenalCanvas) {
+
+      const size = this.renderer.getSize();
+
+      const rect = context.gl.canvas.getBoundingClientRect();
+      
+      const width = Math.floor(rect.width);
+      const height = Math.floor(rect.height);
+
+      if (size.width !== width || size.height !== height) {
+
+        this.renderer.setPixelRatio(window.devicePixelRatio);
+        this.renderer.setSize(width, height);
+      }
+    }
 
     // update camera parameters
     ///////////////////////////////////////////////////////////////////////////////////
-    var cam = context.camera;
+    const cam = context.camera;
     this.camera = new THREE.PerspectiveCamera(cam.fov, cam.aspect, cam.near, cam.far);
     this.camera.position.set(cam.eye[0], cam.eye[1], cam.eye[2]);
     this.camera.up.set(cam.up[0], cam.up[1], cam.up[2]);
@@ -131,45 +196,11 @@ export default class RouteRenderer extends AbstractRenderer {
 
     this.renderer.render(this.scene, this.camera);
 
-
-
     // cleanup
     context.resetWebGLState();
   }
 
-  start() {
-//alert(1)
-   // this.scene.add(this.route);
-    this.scene.add(this.meshline);
 
-    this.scene.add(new THREE.AmbientLight(0xeeeeee));
-
-    //var route     = this.route;
-    var meshline  = this.meshline;
-
-    var cam = this.camera;
-
-    meshline.tween = new TWEEN.Tween(
-        {
-          persent: 0,
-        })
-        .to(
-            {
-              persent : 1
-            },
-            150000)
-        .onUpdate(
-            function(tween_obj)
-            { meshline.setProgress(tween_obj.persent);
-            })
-        .onComplete(function() {
-
-          delete meshline.tween;
-        }).delay(2000).start();
-
-
-
-
-
+  afterRender (view) {
   }
 }

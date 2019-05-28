@@ -4,9 +4,11 @@
 //
 //
 
-import * as THREE from 'three';
+import * as _three from 'three';
 import * as TWEEN from '@tweenjs/tween.js';
 import * as turf from "@turf/turf/index";
+
+const THREE = _three; // extension fix - ad hoc
 
 export default class RouteEntity extends THREE.Group {
 
@@ -86,6 +88,9 @@ export default class RouteEntity extends THREE.Group {
 
     this.add(this.route1);
     this.add(this.route2);
+    
+    // material.depthWrite = false;
+    // materialAnim.depthWrite = false;
   }
 
   setProgress(persentage)
@@ -1037,7 +1042,7 @@ THREE.ExtrudeBufferGeometryWithLength = function( shapes, options ) {
 THREE.ExtrudeBufferGeometryWithLength.prototype = Object.create( THREE.BufferGeometry.prototype );
 THREE.ExtrudeBufferGeometryWithLength.prototype.constructor = THREE.ExtrudeBufferGeometryWithLength;
 
-THREE.ExtrudeBufferGeometryWithLength.prototype.toJSON = function () {
+/*THREE.ExtrudeBufferGeometryWithLength.prototype.toJSON = function () {
 
   var data = THREE.BufferGeometry.prototype.toJSON.call( this );
 
@@ -1046,4 +1051,4 @@ THREE.ExtrudeBufferGeometryWithLength.prototype.toJSON = function () {
 
   return toJSON( shapes, options, data );
 
-};
+};*/
