@@ -8,8 +8,9 @@ import * as turf from '@turf/turf';
 
 import AbstractRenderer from './AbstractRenderer';
 
-// import RouteEntity from '../Entities/RouteEntityMesh';
-import RouteEntity from '../Entities/RouteEntity';
+import RouteEntity from '../Entities/RouteEntityMesh';
+
+//import RouteEntity from '../Entities/RouteEntity';
 
 export default class RouteRenderer extends AbstractRenderer {
 
@@ -35,13 +36,10 @@ export default class RouteRenderer extends AbstractRenderer {
    */
   setup(context)
   {
+    const externalRenderers = this.esriLoaderContext.externalRenderers;
+    const SpatialReference = this.esriLoaderContext.SpatialReference;
 
-    var self = this;
-
-    var externalRenderers = this.esriLoaderContext.externalRenderers;
-    var SpatialReference = this.esriLoaderContext.SpatialReference;
-
-    var view = context.view;
+    const view = context.view;
 
     // initialize the three.js renderer
     //////////////////////////////////////////////////////////////////////////////////////
@@ -99,37 +97,34 @@ export default class RouteRenderer extends AbstractRenderer {
       }
     };
 
-    ///////////////////////////////////////////////////////////////////////////////////////
-
-    self.scene = new THREE.Scene();
+    this.scene = new THREE.Scene();
 
     // setup the camera
     const cam = context.camera;
-   /* this.camera = new THREE.PerspectiveCamera(cam.fovY, cam.aspect, cam.near, cam.far);
-    this.camera.position.set(cam.eye[0], cam.eye[1], cam.eye[2]);
-    this.camera.up.set(cam.up[0], cam.up[1], cam.up[2]);
-    this.camera.lookAt(new THREE.Vector3(cam.center[0], cam.center[1], cam.center[2]));
-    // Projection matrix can be copied directly
-    this.camera.projectionMatrix.fromArray(cam.projectionMatrix);
-*/
 
-    //this.route = new RouteEntityMesh(this.geo_curve_path);
-   // this.route.updateRoute(this.geo_curve_path, externalRenderers, view, SpatialReference, cam);
-
-    //this.meshline = new RouteEntity();
-    this.meshline = new RouteEntity();
-    this.meshline.updateRoute(this.geo_curve_path[0], externalRenderers, view, SpatialReference, cam);
-
-    this.init();
+    this.init(
+      this.geo_curve_path[0],
+      externalRenderers, 
+      view, 
+      SpatialReference, 
+      cam
+    );
 
     // cleanup after ourselfs
     context.resetWebGLState();
   }
 
-  init() {
+  init( 
+    path,
+    externalRenderers, 
+    view, 
+    SpatialReference, 
+    cam
+    ) {
 
-    // const route = this.route;
-    const meshline  = this.meshline;
+    const meshline = this.meshline = new RouteEntity();
+
+    this.meshline.updateRoute(path, externalRenderers, view, SpatialReference, cam);
 
     meshline.setProgress(0);
 
@@ -147,20 +142,25 @@ export default class RouteRenderer extends AbstractRenderer {
         },
         150000)
     .onUpdate(
-        function(tween_obj)
-        { 
-          meshline.setProgress(tween_obj.persent);
-        })
-    .onComplete(function() {
+      obj =>
+      { 
+        meshline.setProgress(obj.persent);
+      })
+    .onComplete(
+      () => {
 
-      delete meshline.tween;
-    }).delay(2000).start();
+        delete meshline.tween;
+      })
+    .delay(2000)
+    .start();
   }
 
   render(context) {
 
     this.renderContext = context;
 
+    const size = this.renderer.getSize();
+    
     if (this.extenalCanvas) {
 
       const size = this.renderer.getSize();
@@ -186,6 +186,16 @@ export default class RouteRenderer extends AbstractRenderer {
     this.camera.lookAt(new THREE.Vector3(cam.center[0], cam.center[1], cam.center[2]));
     // Projection matrix can be copied directly
     this.camera.projectionMatrix.fromArray(cam.projectionMatrix);
+
+    if (this.meshline && this.meshline.trail_material) {
+
+      const trail_material = this.meshline.trail_material;
+
+      trail_material.uniforms.resolution.value.copy( new THREE.Vector2(size.width, size.height) );
+
+      trail_material.uniforms.near.value = cam.near;
+      trail_material.uniforms.far.value = cam.far;
+    }
 
     // draw the scene
     /////////////////////////////////////////////////////////////////////////////////////////////////////

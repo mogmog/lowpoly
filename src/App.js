@@ -242,10 +242,18 @@ class App extends React.Component {
                     const cards = data.trip[0].cards;
 
                     console.log(data.trip[0].locations);
-                    //return  <MapHolder zoom={this.state.st} locations={data.trip[0].locations}/>
 
-                    return   <MapHolder locations={data.trip[0].locations} scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
-                   // return <div> {JSON.stringify(cards)} </div>
+                    //return <MapHolder zoom={this.state.st} locations={data.trip[0].locations}/>
+
+                    return <MapHolder 
+                        locations={data.trip[0].locations} 
+                        scrollToTop={this.testTop} 
+                        zoom={this.state.st} 
+                        card={this.state.card}
+                    />
+                   
+                    // return <div> {JSON.stringify(cards)} </div>
+                    
                     return <div >
 
                         <Drawer

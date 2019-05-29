@@ -1,67 +1,133 @@
 import * as THREE from 'three';
-import MeshLine from 'three.meshline';
+import THREE_MeshLine from 'three.meshline';
 
-const getRandomFloat = (min, max) => (Math.random() * (max - min) + min);
-
-let dashArray = 2,
-     dashOffset = 0.0,
-     dashRatio = 0.2;
+const MeshLine = THREE_MeshLine.MeshLine;
+const MeshLineMaterial = THREE_MeshLine.MeshLineMaterial;
 
 export default class RouteEntityMesh extends THREE.Group {
 
-  constructor () {
+  constructor(){
+
     super();
+
+    this.trail_curve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(),
+      new THREE.Vector3()
+    ]);
+
+    this.trail_length = 100;
+
+    this.trail_progress = 0;
   }
 
   setProgress(value) {
-    //if (this.material.uniforms.dashOffset.value < -2) return;
-    this.material.uniforms.dashOffset.value -= 0.000100;
+
+    this.trail_progress = value;
+  
+    const v = new THREE.Vector3();
+
+    this.trail_curve.getPoint(value, v);
+
+    this.trail_line.advance( v );
   }
 
-  updateRoute(path, externalRenderers, view, SpatialReference, camera)
-  {
+  changeTrailLength(value) { // 100 - 250
 
-    let geometry = new THREE.Geometry();
+    if (value < 10) {
+      value = 10;
+    } else if (value > 500) {
+      value = 500;
+    } else {
+      value = 100;
+    }
+
+    this.trail_length = value;
+  
+    this.createMeshLine();
+
+    this.setProgress(this.trail_progress);
+  }
+
+  updateRoute(path, externalRenderers, view, SpatialReference)
+  {
+    const curve_path = [];
 
     path.forEach(x => {
+
       let pos = [0, 0, 0];
-      externalRenderers.toRenderCoordinates(view, x, 0, SpatialReference.WGS84, pos, 0, 1);
-      geometry.vertices.push(new THREE.Vector3(pos[0], pos[1], pos[2] + 55.0)); // we make all coords in global world coord sys !
-     // console.log(path);
+
+      externalRenderers.toRenderCoordinates(
+        view, x, 0, SpatialReference.WGS84, pos, 0, 1);
+
+      curve_path.push(
+        new THREE.Vector3(pos[0], pos[1], pos[2]));// + 55.0));
+        // we make all coords in global world coord sys !
     });
 
-    let line = new MeshLine.MeshLine();
+    this.trail_curve = new THREE.CatmullRomCurve3(curve_path);
 
-    line.setGeometry( geometry);
+    this.createMeshLine();
 
-    var resolution = new THREE.Vector2( window.innerWidth, window.innerHeight );
-
-    this.material = new MeshLine.MeshLineMaterial( {
-      useMap: false,
-      color: new THREE.Color( 0xffd300 ),
-      opacity: 0.3,
-      transparent : true,
-      resolution: resolution,
-      sizeAttenuation: false,
-      depthWrite: false,
-      lineWidth: 20,
-      near : camera.near,
-      far : camera.far,
-      dashArray,
-      dashOffset,
-
-      // increment him to animate the dash
-
-      // 0.5 -> balancing ; 0.1 -> more line : 0.9 -> more void
-      dashRatio,
-
-    });
-
-    this.add(new THREE.Mesh(line.geometry, this.material));
-
-
+    this.setProgress(this.trail_progress);
   }
 
+  createMeshLine() {
 
+    while(this.children.length) {
+
+      this.remove(this.children[0]);
+    }
+
+    if (this.trail_geometry) {
+
+      this.trail_geometry.dispose();
+    }
+
+    if (this.trail_material) {
+
+      this.trail_material.dispose();
+    }
+
+    const trail_geometry = new THREE.Geometry();
+
+    for (let i = 0; i < this.trail_length; i++) {
+
+      trail_geometry.vertices.push(this.position.clone());
+    }
+
+    // Create the line mesh
+    this.trail_line = new MeshLine();
+    
+    this.trail_line.setGeometry( trail_geometry,  function( p ) { return p; }  ); // makes width taper
+    // this.trail_line.setGeometry( trail_geometry );
+    
+    this.trail_material = this.createMaterial();
+
+    this.trail_mesh = new THREE.Mesh( this.trail_line.geometry, this.trail_material ); 
+
+		this.trail_mesh.frustumCulled = false;
+
+    this.add(this.trail_mesh);
+  }
+
+  createMaterial() {
+
+    const resolution = new THREE.Vector2( window.innerWidth, window.innerHeight );
+
+    return new MeshLineMaterial( {
+      resolution: resolution,
+      map: null,
+      useMap: false,
+      color: new THREE.Color( 0xffd300 ),
+      opacity: 0.5,
+      blending: THREE.AdditiveBlending,
+			transparent: false,
+      sizeAttenuation: true,
+      depthWrite: false,
+      lineWidth: 100,
+      near : 1, //camera.near,
+      far : 1000, // camera.far,
+    });
+  }
 
 }

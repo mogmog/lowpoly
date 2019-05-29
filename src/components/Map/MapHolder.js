@@ -297,7 +297,7 @@ export default class MapHolder extends Component {
                                 }
                             }
 
-                            console.log('after render')
+                            // console.log('after render')
                         };
 
 
@@ -306,6 +306,7 @@ export default class MapHolder extends Component {
                         externalRenderers.add(view, self.routeRenderer);
 
                         const images = [{"description":{"title":"Lagoon"},"id":1,"location":{"geometry":{"coordinates":[42,42,400.79999923706055],"type":"Point"},"properties":{},"type":"Feature"}},{"description":{"title":"church"},"id":2,"location":{"geometry":{"coordinates":[42,42.1,400.79999923706055],"type":"Point"},"properties":{},"type":"Feature"}}];
+                        
                         //const { images } = self.props;
     
                         // self.routeRenderer = new RouteRenderer(self.esriLoaderContext);
