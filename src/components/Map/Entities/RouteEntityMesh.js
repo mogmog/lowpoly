@@ -20,7 +20,7 @@ export default class RouteEntityMesh extends THREE.Group {
     this.trail_progress = 0;
   }
 
-  onRender(resolution, camera) {
+  onBeforRender(resolution, camera) {
 
     if (this.trail_material) {
 
@@ -67,6 +67,8 @@ export default class RouteEntityMesh extends THREE.Group {
   {
     const curve_path = [];
 
+    const zAddition = 100;
+
     path.forEach(x => {
 
       let pos = [0, 0, 0];
@@ -75,7 +77,7 @@ export default class RouteEntityMesh extends THREE.Group {
         view, x, 0, SpatialReference.WGS84, pos, 0, 1);
 
       curve_path.push(
-        new THREE.Vector3(pos[0], pos[1], pos[2]));// + 55.0));
+        new THREE.Vector3(pos[0], pos[1], pos[2] + zAddition));
         // we make all coords in global world coord sys !
     });
 
@@ -90,17 +92,19 @@ export default class RouteEntityMesh extends THREE.Group {
 
     while(this.children.length) {
 
-      this.remove(this.children[0]);
-    }
+      const obj = this.children[0];
 
-    if (this.trail_geometry) {
+      if (obj.geometry) {
 
-      this.trail_geometry.dispose();
-    }
+        obj.geometry.dispose();
+      }
+  
+      if (obj.material) {
+  
+        obj.material.dispose();
+      }
 
-    if (this.trail_material) {
-
-      this.trail_material.dispose();
+      this.remove(obj);
     }
 
     const trail_geometry = new THREE.Geometry();
@@ -143,6 +147,8 @@ export default class RouteEntityMesh extends THREE.Group {
 			transparent: false,
       sizeAttenuation: true,
       depthWrite: false,
+      depthTest: true,
+      depthFunc: THREE.AlwaysDepth,
       lineWidth: 100,
       near : 1, //camera.near,
       far : 1000, // camera.far,

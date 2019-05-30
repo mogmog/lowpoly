@@ -4,13 +4,14 @@
 
 import * as THREE from 'three';
 import * as TWEEN from '@tweenjs/tween.js';
-import * as turf from '@turf/turf';
+
+// import * as turf from '@turf/turf';
 
 import AbstractRenderer from './AbstractRenderer';
 
 import RouteEntity from '../Entities/RouteEntityMesh';
 
-//import RouteEntity from '../Entities/RouteEntity';
+// import RouteEntity from '../Entities/RouteEntity';
 
 export default class RouteRenderer extends AbstractRenderer {
 
@@ -46,7 +47,7 @@ export default class RouteRenderer extends AbstractRenderer {
 
     let canvas = null;
 
-    if (true) {
+    /*if (false) {
 
       const canvas_parent = context.gl.canvas.parentElement;
 
@@ -57,18 +58,16 @@ export default class RouteRenderer extends AbstractRenderer {
       canvas.style.pointerEvents = "none";
 
       canvas_parent.appendChild(canvas);
-    }
+    }*/
 
     this.renderer = new THREE.WebGLRenderer(
       this.extenalCanvas ? 
       {
         canvas : canvas,
         alpha : true
-        // premultipliedAlpha: false
       } : 
       {
-        context: context.gl,
-        // premultipliedAlpha: false
+        context: context.gl
       }
     );
 
@@ -132,28 +131,32 @@ export default class RouteRenderer extends AbstractRenderer {
 
     this.scene.add(new THREE.AmbientLight(0xeeeeee));
 
-    meshline.tween = new TWEEN.Tween(
-    {
-      persent: 0,
-    })
-    .to(
-        {
-          persent : 1
-        },
-        150000)
-    .onUpdate(
-      obj =>
-      { 
-        meshline.setProgress(obj.persent);
+    if (true) {
+      
+      meshline.tween = new TWEEN.Tween(
+      {
+        persent: 0,
       })
-    .onComplete(
-      () => {
+      .to(
+          {
+            persent : 1
+          },
+          150000)
+      .onUpdate(
+        obj =>
+        { 
+          meshline.setProgress(obj.persent);
+        })
+      .onComplete(
+        () => {
 
-        delete meshline.tween;
-      })
-    .delay(2000)
-    .start();
+          delete meshline.tween;
+        })
+      .delay(2000)
+      .start();
+    }
   }
+
 
   setTrailLength(value) {
 
@@ -167,9 +170,12 @@ export default class RouteRenderer extends AbstractRenderer {
 
     this.renderContext = context;
 
-    const size = this.renderer.getSize();
+    const size = {
+      width: context.gl.drawingBufferWidth,
+      height: context.gl.drawingBufferHeight
+    };
     
-    if (this.extenalCanvas) {
+    /*if (this.extenalCanvas) {
 
       const size = this.renderer.getSize();
 
@@ -183,7 +189,7 @@ export default class RouteRenderer extends AbstractRenderer {
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(width, height);
       }
-    }
+    }*/
 
     // update camera parameters
     ///////////////////////////////////////////////////////////////////////////////////
@@ -195,17 +201,14 @@ export default class RouteRenderer extends AbstractRenderer {
     // Projection matrix can be copied directly
     this.camera.projectionMatrix.fromArray(cam.projectionMatrix);
 
-    if (this.meshline && this.meshline.onRender) {
-
-      this.meshline.onRender(size, cam);
-    }
-
     // draw the scene
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
     this.renderer.state.reset();
 
     this.renderer.state.setBlending(THREE.NoBlending); // 0.97 fix !
+
+    this.meshline.onBeforRender(size, cam);
 
     this.renderer.render(this.scene, this.camera);
 

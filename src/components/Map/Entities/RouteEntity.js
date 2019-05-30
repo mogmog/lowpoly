@@ -19,10 +19,26 @@ export default class RouteEntity extends THREE.Group {
     this.currentPersentage = -1;
   }
 
+  onBeforRender(resolution, camera) {}
+
   updateRoute(path, externalRenderers, view, SpatialReference)
   {
-    while (this.children.length)
-      this.remove(this.children[0]);
+    while(this.children.length) {
+
+      const obj = this.children[0];
+
+      if (obj.geometry) {
+
+        obj.geometry.dispose();
+      }
+  
+      if (obj.material) {
+  
+        obj.material.dispose();
+      }
+
+      this.remove(obj);
+    }
 
     //lat longs
     const curve_path = [];
@@ -32,10 +48,13 @@ export default class RouteEntity extends THREE.Group {
     let options = { tolerance: simplificationTolerance, highQuality: true };
     let simplified = turf.simplify(geojson, options);
 
+    const zAddition = 100;
+
     simplified.geometry.coordinates.forEach(x => {
       let pos = [0, 0, 0];
       externalRenderers.toRenderCoordinates(view, x, 0, SpatialReference.WGS84, pos, 0, 1);
-      curve_path.push(new THREE.Vector3(pos[0], pos[1], pos[2] + 10)); // we make all coords in global world coord sys !
+      curve_path.push(new THREE.Vector3(pos[0], pos[1], pos[2] + zAddition)); 
+      // we make all coords in global world coord sys !
     });
 
     const curve = new THREE.CatmullRomCurve3(curve_path);
@@ -55,24 +74,29 @@ export default class RouteEntity extends THREE.Group {
 
     const geometry = new THREE.ExtrudeBufferGeometry(squareShape, extrudeSettings);
 
-    var material = new THREE.MeshPhongMaterial({
+    const material = new THREE.MeshPhongMaterial({
       side: THREE.FrontSide,
       transparent: true,
       opacity: 0.1,
       color: 0xffdb58,
+      depthWrite: false,
+      depthTest: true,
+      depthFunc: THREE.AlwaysDepth,
+    });
+
+    const materialAnim = new MeshPhongCustomMaterial({
+      color: 0xffdb58,
+      side: THREE.FrontSide,
+      transparent: true,
+      opacity: 0.8,
+      depthWrite: false,
+      depthTest: true,
+      depthFunc: THREE.AlwaysDepth,
     });
 
     this.route1 = new THREE.Mesh(geometry, material);
 
     var geometryAnim = new THREE.ExtrudeBufferGeometryWithLength(squareShape, extrudeSettings);
-
-    // material
-    var materialAnim = new MeshPhongCustomMaterial({
-      color: 0xffdb58,
-      side: THREE.FrontSide,
-      transparent: true,
-      opacity: 0.8,
-    });
 
     // mesh
     this.route2 = new THREE.Mesh(geometryAnim, materialAnim);
@@ -88,9 +112,6 @@ export default class RouteEntity extends THREE.Group {
 
     this.add(this.route1);
     this.add(this.route2);
-    
-    // material.depthWrite = false;
-    // materialAnim.depthWrite = false;
   }
 
   setProgress(persentage)
