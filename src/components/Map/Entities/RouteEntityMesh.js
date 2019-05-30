@@ -20,6 +20,19 @@ export default class RouteEntityMesh extends THREE.Group {
     this.trail_progress = 0;
   }
 
+  onRender(resolution, camera) {
+
+    if (this.trail_material) {
+
+      const trail_material = this.trail_material;
+
+      trail_material.uniforms.resolution.value.copy( new THREE.Vector2(resolution.width, resolution.height) );
+
+      trail_material.uniforms.near.value = camera.near;
+      trail_material.uniforms.far.value = camera.far;
+    }
+  }
+
   setProgress(value) {
 
     this.trail_progress = value;
@@ -31,14 +44,16 @@ export default class RouteEntityMesh extends THREE.Group {
     this.trail_line.advance( v );
   }
 
-  changeTrailLength(value) { // 100 - 250
+  setTrailLength(value) { // 100 - 500
+
+    if (isNaN(value)) {
+      value = 100;
+    }
 
     if (value < 10) {
       value = 10;
     } else if (value > 500) {
       value = 500;
-    } else {
-      value = 100;
     }
 
     this.trail_length = value;
@@ -90,9 +105,13 @@ export default class RouteEntityMesh extends THREE.Group {
 
     const trail_geometry = new THREE.Geometry();
 
+    const start_v = new THREE.Vector3();
+
+    this.trail_curve.getPoint(this.trail_progress, start_v);
+
     for (let i = 0; i < this.trail_length; i++) {
 
-      trail_geometry.vertices.push(this.position.clone());
+      trail_geometry.vertices.push(start_v.clone());
     }
 
     // Create the line mesh

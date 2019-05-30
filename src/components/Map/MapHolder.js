@@ -14,10 +14,13 @@ const options = {
 
 export default class MapHolder extends Component {
 
-    state = {zoom : 0};
+    state = {
+        zoom : 0,
+        tailRangeInputValue : 100
+    };
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.animate = this.animate.bind(this);
     }
 
@@ -374,6 +377,7 @@ export default class MapHolder extends Component {
     }
 
     animate(time) {
+
         window.requestAnimationFrame(this.animate);
 
         if (!this.animate.last_tweens_count) this.animate.last_tweens_count = 0;
@@ -396,7 +400,36 @@ export default class MapHolder extends Component {
         this.animate.last_tweens_count = tweens_count;
     }
 
+    tailRangeInputChange(event) {
+
+        const value = parseInt(event.target.value);
+
+        this.setState({tailRangeInputValue: value});
+
+        if (this.routeRenderer) {
+
+            this.routeRenderer.setTrailLength(value);
+        }
+    }
+
     render() {
-        return <Fragment><div id="viewDiv" className={'viewDiv'} /></Fragment>;
+        const self = this;
+        return (
+        <Fragment>
+
+            <div 
+                id="viewDiv" 
+                className={'viewDiv'} />
+
+            <input 
+                style = {{position:'absolute', top:'10px', left: '20px', zIndex : 100, width:'300px'}}
+                id="tail_range_input" 
+                type="range" 
+                min="50" max="400" 
+                value={self.state.tailRangeInputValue} 
+                onChange={(event) => {self.tailRangeInputChange(event);}}
+                step="5"/>
+
+        </Fragment>);
     }
 }

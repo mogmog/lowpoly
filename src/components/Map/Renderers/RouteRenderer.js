@@ -155,6 +155,14 @@ export default class RouteRenderer extends AbstractRenderer {
     .start();
   }
 
+  setTrailLength(value) {
+
+    if (this.meshline && this.meshline.setTrailLength) {
+
+      this.meshline.setTrailLength(value);
+    }
+  }
+
   render(context) {
 
     this.renderContext = context;
@@ -187,14 +195,9 @@ export default class RouteRenderer extends AbstractRenderer {
     // Projection matrix can be copied directly
     this.camera.projectionMatrix.fromArray(cam.projectionMatrix);
 
-    if (this.meshline && this.meshline.trail_material) {
+    if (this.meshline && this.meshline.onRender) {
 
-      const trail_material = this.meshline.trail_material;
-
-      trail_material.uniforms.resolution.value.copy( new THREE.Vector2(size.width, size.height) );
-
-      trail_material.uniforms.near.value = cam.near;
-      trail_material.uniforms.far.value = cam.far;
+      this.meshline.onRender(size, cam);
     }
 
     // draw the scene

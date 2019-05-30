@@ -109,8 +109,6 @@ background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(
   
   .smallsection {
     
-    
-   
     font-size: 5em;
     position: relative;
     color: white;
@@ -174,10 +172,6 @@ background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(
 
 `;
 
-
-
-
-
 class STWatcher extends React.Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -196,32 +190,29 @@ class App extends React.Component {
 
   state = {st : 0.1, showButtons : false, card : null, index : 0, visible : false}
 
-    testTop = (index) => {
+  testTop = (index) => {
 
-        //var start = scene.scrollOffset();
-        //var end = scene.scrollOffset() + scene.duration();
+      //var start = scene.scrollOffset();
+      //var end = scene.scrollOffset() + scene.duration();
 
-        window.scrollTo({
-            top: window.scrollY - ( 1* window.innerHeight),
-            behavior: 'smooth',
-        })
+      window.scrollTo({
+          top: window.scrollY - ( 1* window.innerHeight),
+          behavior: 'smooth',
+      })
 
-       // console.log(this.c);
-     /* (this.c.state.controller.scrollTo(d=> {
-          TweenMax.to(window, 2.5, {scrollTo : 5702 })
-      }));*/
+      // console.log(this.c);
+    /* (this.c.state.controller.scrollTo(d=> {
+        TweenMax.to(window, 2.5, {scrollTo : 5702 })
+    }));*/
 
-        //(this.c.state.controller.scrollTo('#theid' + index -1));
+      //(this.c.state.controller.scrollTo('#theid' + index -1));
 
-    }
-
-
+  }
 
   render() {
 
     //return  <img src={Logo} />
     return ( <StickyStyled>
-
 
         <AddButton onClick={() => this.setState({visible : true})}/>
 
@@ -229,11 +220,13 @@ class App extends React.Component {
 
         <div>
 
+            <ApolloProvider client={client}>
+                
+                <Query
+                    query={GET_TRIP} >
 
-            <ApolloProvider client={client}><Query
-                query={GET_TRIP}
-                                            >
                 {({ loading, error, data }) => {
+
                     if (loading) return <p>Loading...</p>;
                     if (error) return <p>Error :(</p>;
 
