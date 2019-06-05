@@ -19,8 +19,6 @@ export default class RouteEntity extends THREE.Group {
     this.currentPersentage = -1;
   }
 
-  onBeforRender(resolution, camera) {}
-
   updateRoute(path, externalRenderers, view, SpatialReference)
   {
     while(this.children.length) {

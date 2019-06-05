@@ -170,27 +170,6 @@ export default class RouteRenderer extends AbstractRenderer {
 
     this.renderContext = context;
 
-    const size = {
-      width: context.gl.drawingBufferWidth,
-      height: context.gl.drawingBufferHeight
-    };
-    
-    /*if (this.extenalCanvas) {
-
-      const size = this.renderer.getSize();
-
-      const rect = context.gl.canvas.getBoundingClientRect();
-      
-      const width = Math.floor(rect.width);
-      const height = Math.floor(rect.height);
-
-      if (size.width !== width || size.height !== height) {
-
-        this.renderer.setPixelRatio(window.devicePixelRatio);
-        this.renderer.setSize(width, height);
-      }
-    }*/
-
     // update camera parameters
     ///////////////////////////////////////////////////////////////////////////////////
     const cam = context.camera;
@@ -207,8 +186,6 @@ export default class RouteRenderer extends AbstractRenderer {
     this.renderer.state.reset();
 
     this.renderer.state.setBlending(THREE.NoBlending); // 0.97 fix !
-
-    this.meshline.onBeforRender(size, cam);
 
     this.renderer.render(this.scene, this.camera);
 

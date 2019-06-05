@@ -20,19 +20,6 @@ export default class RouteEntityMesh extends THREE.Group {
     this.trail_progress = 0;
   }
 
-  onBeforRender(resolution, camera) {
-
-    if (this.trail_material) {
-
-      const trail_material = this.trail_material;
-
-      trail_material.uniforms.resolution.value.copy( new THREE.Vector2(resolution.width, resolution.height) );
-
-      trail_material.uniforms.near.value = camera.near;
-      trail_material.uniforms.far.value = camera.far;
-    }
-  }
-
   setProgress(value) {
 
     this.trail_progress = value;
@@ -128,7 +115,29 @@ export default class RouteEntityMesh extends THREE.Group {
 
     this.trail_mesh = new THREE.Mesh( this.trail_line.geometry, this.trail_material ); 
 
-		this.trail_mesh.frustumCulled = false;
+    this.trail_mesh.frustumCulled = false;
+
+    const self = this;
+
+    this.trail_mesh.onBeforeRender = (renderer, scene, camera, geometry, material, group) => {
+
+      if (self.trail_material) {
+
+        const context = renderer.context;
+
+        const resolution = {
+          width: context.drawingBufferWidth,
+          height: context.drawingBufferHeight
+        };
+
+        const trail_material = self.trail_material;
+  
+        trail_material.uniforms.resolution.value.copy( new THREE.Vector2(resolution.width, resolution.height) );
+  
+        trail_material.uniforms.near.value = camera.near;
+        trail_material.uniforms.far.value = camera.far;
+      }
+    };
 
     this.add(this.trail_mesh);
   }
