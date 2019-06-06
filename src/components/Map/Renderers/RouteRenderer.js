@@ -365,7 +365,7 @@ THREE.UnrealBloomPass.prototype.getSeperableBlurMaterial = function getSeperable
           alphaSum += (sample1.a + sample2.a) * w;\
           weightSum += 2.0 * w;\
         }\
-        gl_FragColor = vec4(diffuseSum/weightSum, alphaSum/weightSum * 0.799);\n\
+        gl_FragColor = vec4(diffuseSum/weightSum, alphaSum/weightSum * 1.0);\n\
       }`
   });
 };
