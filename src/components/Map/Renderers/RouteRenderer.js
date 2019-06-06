@@ -15,8 +15,9 @@ require ('three/examples/js/postprocessing/ShaderPass');
 
 require ('three/examples/js/shaders/CopyShader');
 
-require ('three/examples/js/shaders/LuminosityHighPassShader'); //  THREE.UnrealBloomPass relies on THREE.LuminosityHighPassShader
-require ('three/examples/js/postprocessing/UnrealBloomPass');
+//  THREE.UnrealBloomPass relies on THREE.LuminosityHighPassShader
+require ('three/examples/js/shaders/LuminosityHighPassShader'); 
+require ('three/examples/js/postprocessing/UnrealBloomPass'); // getSeperableBlurMaterial overrided in the bottom
 
 export default class RouteRenderer extends AbstractRenderer {
 
@@ -143,8 +144,8 @@ export default class RouteRenderer extends AbstractRenderer {
     bloomComposer.addPass( renderScene );
     bloomComposer.addPass( bloomPass );
     bloomComposer.renderToScreen = true;
-    bloomComposer.renderTarget1.format = THREE.RGBAFormat;
-    bloomComposer.renderTarget2.format = THREE.RGBAFormat;
+    bloomComposer.renderTarget1.texture.format = THREE.RGBAFormat;
+    bloomComposer.renderTarget2.texture.format = THREE.RGBAFormat;
 
     const finalPass = new THREE.ShaderPass(
       new THREE.ShaderMaterial( {
@@ -158,14 +159,15 @@ export default class RouteRenderer extends AbstractRenderer {
       } ), "baseTexture"
     );
     finalPass.needsSwap = true;
-    const finalComposer = new THREE.EffectComposer( renderer );
+
+		const renderTarget = new THREE.WebGLRenderTarget( 
+      width, 
+      height, 
+      { format: THREE.RGBAFormat } );
+
+    const finalComposer = new THREE.EffectComposer( renderer, renderTarget );
     finalComposer.addPass( renderScene );
     finalComposer.addPass( finalPass );
-
-    finalComposer.renderTarget1.format = THREE.RGBAFormat;
-    finalComposer.renderTarget2.format = THREE.RGBAFormat;
-    //effectBloom.renderTargetX.format = THREE.RGBAFormat;
-    //effectBloom.renderTargetY.format = THREE.RGBAFormat;
 
     this.composers = {
       camera : camera,
@@ -278,15 +280,15 @@ export default class RouteRenderer extends AbstractRenderer {
     // draw the scene
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    this.renderer.state.reset();
+    this.composers.renderer.state.reset();
 
-    this.renderer.state.setBlending(THREE.NoBlending); // 0.97 fix !
+    this.composers.renderer.state.setBlending(THREE.NoBlending); // 0.97 fix !
 
-    // this.composers.renderer.render(this.scene, this.camera);
+    // this.composers.renderer.render(this.scene, this.camera); // original renderer
 
     this.composers.bloomComposer.render();
 
-    // this.composers.finalComposer.render();
+    // this.composers.finalComposer.render(); // no blur
 
     // cleanup
     context.resetWebGLState();
@@ -314,3 +316,56 @@ vec4 getTexture( sampler2D texture ) {
 void main() {
   gl_FragColor = ( getTexture( baseTexture ) + vec4( 1.0 ) * getTexture( bloomTexture ) );
 }`;
+
+THREE.UnrealBloomPass.prototype.getSeperableBlurMaterial = function getSeperableBlurMaterial(kernelRadius) {
+
+  return new THREE.ShaderMaterial({
+    defines: {
+      "KERNEL_RADIUS": kernelRadius,
+      "SIGMA": kernelRadius
+    },
+    uniforms: {
+      "colorTexture": {
+        value: null
+      },
+      "texSize": {
+        value: new THREE.Vector2(0.5, 0.5)
+      },
+      "direction": {
+        value: new THREE.Vector2(0.5, 0.5)
+      }
+    },
+    vertexShader: `varying vec2 vUv;\n
+      void main() {\n
+        vUv = uv;\n
+        gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );\n
+      }`,
+    fragmentShader: `#include <common>
+      varying vec2 vUv;\n
+      uniform sampler2D colorTexture;\n
+      uniform vec2 texSize;
+      uniform vec2 direction;
+      
+      float gaussianPdf(in float x, in float sigma) {\
+        return 0.39894 * exp( -0.5 * x * x/( sigma * sigma))/sigma;
+      }
+      void main() {\n\
+        vec2 invSize = 1.0 / texSize;\
+        float fSigma = float(SIGMA);\
+        float weightSum = gaussianPdf(0.0, fSigma);\
+        float alphaSum = 0.0;\
+        vec3 diffuseSum = texture2D( colorTexture, vUv).rgb * weightSum;\
+        for( int i = 1; i < KERNEL_RADIUS; i ++ ) {\
+          float x = float(i);\
+          float w = gaussianPdf(x, fSigma);\
+          vec2 uvOffset = direction * invSize * x;\
+          vec4 sample1 = texture2D( colorTexture, vUv + uvOffset);\
+          vec4 sample2 = texture2D( colorTexture, vUv - uvOffset);\
+          diffuseSum += (sample1.rgb + sample2.rgb) * w;\
+          alphaSum += (sample1.a + sample2.a) * w;\
+          weightSum += 2.0 * w;\
+        }\
+        gl_FragColor = vec4(diffuseSum/weightSum, alphaSum/weightSum * 0.799);\n\
+      }`
+  });
+};
