@@ -25,6 +25,7 @@ import { ApolloProvider } from "react-apollo";
 
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
+import HtmlCard from "./components/Cards/Html";
 
 const client = new ApolloClient({
     uri: "https://graphqlmogmogplatts.herokuapp.com/v1alpha1/graphql"
