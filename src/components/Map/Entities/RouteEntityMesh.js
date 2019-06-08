@@ -15,7 +15,7 @@ export default class RouteEntityMesh extends THREE.Group {
       new THREE.Vector3()
     ]);
 
-    this.trail_length = 100;
+    this.trail_length = 1900;
 
     this.trail_progress = 0;
   }
@@ -54,7 +54,7 @@ export default class RouteEntityMesh extends THREE.Group {
   {
     const curve_path = [];
 
-    const zAddition = 100;
+    const zAddition = 10;
 
     path.forEach(x => {
 
@@ -158,7 +158,7 @@ export default class RouteEntityMesh extends THREE.Group {
       depthWrite: false,
       depthTest: true,
       depthFunc: THREE.AlwaysDepth,
-      lineWidth: 100,
+      lineWidth: 15,
       near : 1, //camera.near,
       far : 1000, // camera.far,
     });

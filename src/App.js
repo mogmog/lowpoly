@@ -238,12 +238,12 @@ class App extends React.Component {
 
                     //return <MapHolder zoom={this.state.st} locations={data.trip[0].locations}/>
 
-                    return <MapHolder 
+                   /* return <MapHolder
                         locations={data.trip[0].locations} 
                         scrollToTop={this.testTop} 
                         zoom={this.state.st} 
                         card={this.state.card}
-                    />
+                    />*/
                    
                     // return <div> {JSON.stringify(cards)} </div>
                     
@@ -279,8 +279,16 @@ class App extends React.Component {
                                                     <span> { card.content.text}️ </span>
                                                 </div>}
 
+                                                { card.type === 'Html' && <div className="smallsection" >
+
+                                                    <div className={'text'}>
+                                                        <HtmlCard card={card}> ️ </HtmlCard>
+                                                    </div>
+
+                                                </div>}
+
                                                 { card.type === 'Image' && <div className="smallsection" >
-                                                    {card.content.images && card.content.images.map((d, i)=> <img key={i} style={{'width' : '100%', height: 'auto'}} src={d.url} /> ) }
+                                                   <img style={{'width' : '100%', height: 'auto'}} src={card.content.image.secure_url} />
                                                 </div>}
 
 

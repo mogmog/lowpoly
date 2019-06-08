@@ -4,7 +4,10 @@ import { Mutation } from "react-apollo";
 import {Button, Carousel} from "antd";
 import 'antd/dist/antd.css';
 import TextEditor from "./TextEditor";
+import {Image} from 'cloudinary-react';
 import GraphicsGrid from "./GraphicsGrid";  // or 'antd/dist/antd.less'
+import ImageUpload from './../ImageUpload'
+
 const ADD_CARDS = gql`
     mutation insert_cards($objects: [cards_insert_input!]!) {
         insert_cards(objects: $objects) {
@@ -53,8 +56,11 @@ const AddCard = ({cards, graphics, refetch, scrollTo}) => {
 
                                 {/*<Button onClick={create('Graphic',{"objects" : [{"trip_id" : 1, "type" : "Text", "height" : "100vh", "camera":  {"test" :33}, "content":  {"text" :"this is plain text"}}]})} style={{width : '70%', height : '100px', marginBottom : '10px'}}>Add</Button></div>
 */}
-                                <div><h1> ADd spacer gap</h1></div>
                                 </div>
+                                <div>
+                                    <ImageUpload saveImage={(image) => create( {"trip_id" : 1, "type" : "Image", "height" : "100vh", "camera":  {"test" :33}, "content":  {"image" :image}})} style={{width : '70%', height : '100px', marginBottom : '10px'}}/>
+                               </div>
+
 
                             </Carousel>
 

@@ -16,7 +16,7 @@ export default class MapHolder extends Component {
 
     state = {
         zoom : 0,
-        tailRangeInputValue : 100
+        tailRangeInputValue : 1200
     };
 
     constructor(props) {
@@ -428,7 +428,7 @@ export default class MapHolder extends Component {
                 style = {{position:'absolute', top:'10px', left: '20px', zIndex : 100, width:'300px'}}
                 id="tail_range_input" 
                 type="range" 
-                min="50" max="400" 
+                min="50" max="2000"
                 value={self.state.tailRangeInputValue} 
                 onChange={(event) => {self.tailRangeInputChange(event);}}
                 step="5"/>
