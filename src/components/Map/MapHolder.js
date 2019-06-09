@@ -36,6 +36,8 @@ export default class MapHolder extends Component {
                     "esri/WebScene",
                     'esri/views/SceneView',
                     'esri/layers/BaseTileLayer',
+                    'esri/layers/BaseElevationLayer',
+
                     'esri/layers/GraphicsLayer',
                     'esri/layers/ElevationLayer',
                     'esri/layers/MapImageLayer',
@@ -61,6 +63,7 @@ export default class MapHolder extends Component {
                      WebScene,
                      SceneView,
                      BaseTileLayer,
+                     BaseElevationLayer,
                      GraphicsLayer,
                      ElevationLayer,
                      MapImageLayer,
@@ -76,6 +79,37 @@ export default class MapHolder extends Component {
                      geometryEngine,
                      Graphic,
                  ]) => {
+
+
+                    const ExaggeratedElevationLayer = BaseElevationLayer.createSubclass({
+                        properties: {
+                            // exaggerates the actual elevations by 100x
+                            exaggeration: 1.2
+                        },
+
+                        load: function() {
+                            this._elevation = new ElevationLayer({
+                                url: "//elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer"
+                            });
+
+                            // wait for the elevation layer to load before resolving load()
+                            this.addResolvingPromise(this._elevation.load());
+                        },
+
+                        // Fetches the tile(s) visible in the view
+                        fetchTile: function(level, row, col) {
+                            return this._elevation.fetchTile(level, row, col).then(
+                                function(data) {
+                                    var exaggeration = this.exaggeration;
+                                    for (var i = 0; i < data.values.length; i++) {
+                                        data.values[i] = data.values[i] * exaggeration;
+                                    }
+
+                                    return data;
+                                }.bind(this)
+                            );
+                        }
+                    });
 
                     const GreyLayer = BaseTileLayer.createSubclass({
                         properties: {
@@ -144,7 +178,9 @@ export default class MapHolder extends Component {
 
                     const map = new WebMap({
 
-                        ground: 'world-elevation',
+                        ground: {
+                            layers: [new ExaggeratedElevationLayer()]
+                        },
                         layers: [greyTileLayer],
                     });
 
