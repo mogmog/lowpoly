@@ -1,12 +1,14 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import gql from "graphql-tag";
 import { Mutation } from "react-apollo";
-import {Button, Carousel} from "antd";
+import {Button, Carousel, Modal} from "antd";
 import 'antd/dist/antd.css';
+import './index.css'
 import TextEditor from "./TextEditor";
 import {Image} from 'cloudinary-react';
 import GraphicsGrid from "./GraphicsGrid";  // or 'antd/dist/antd.less'
 import ImageUpload from './../ImageUpload'
+import ImageCard from './../Cards/Image'
 
 const ADD_CARDS = gql`
     mutation insert_cards($objects: [cards_insert_input!]!) {
@@ -22,15 +24,22 @@ const ADD_CARDS = gql`
 
 const AddCard = ({cards, graphics, refetch, scrollTo}) => {
 
+    const [newCard, setCard] = useState(null);
+
     return (
         <Mutation mutation={ADD_CARDS} refetchQueries={[{query : refetch}]}>
-            {(addTodo, { data }) => {
+            {(addCard, { data }) => {
 
-                let create = (params) => {
+                let create = (card) => {
                    //e.preventDefault();
 
-                    addTodo({variables : {"objects" : [params]}}).then(d=> {
-                        scrollTo(cards.length);
+                    const spacer = {"trip_id" : 1, "type" : "Spacer", "height" : "30vh", "camera":  {"test" :33}, "content":  {}}
+                    const cards = [card, spacer]
+
+                    addCard({variables : {"objects" : cards}}).then(d=> {
+                       scrollTo(cards.length);
+                        //setCard(d.data.insert_cards.returning[0]);
+                       // alert(JSON.stringify(d))
                     });
 
                 };
@@ -42,9 +51,10 @@ const AddCard = ({cards, graphics, refetch, scrollTo}) => {
                                 <div style={{height : '400px', overflow : 'scroll'}}>
 
                                     {/*<p style={{fontSize : '100%'}} contentEditable={true}>I can be editted</p>*/}
-                                    <TextEditor/>
+                                    <TextEditor create={create}/>
 
-                                    <Button onClick={() => create( {"trip_id" : 1, "type" : "Text", "height" : "100vh", "camera":  {"test" :33}, "content":  {"text" :"this is plain text"}})} style={{width : '70%', height : '100px', marginBottom : '10px'}}>Add</Button> </div>
+                                </div>
+
 
                                 {/*  <div> <TextEditor/>  <Button onClick={create('Text', {"objects" : [{"trip_id" : 1, "type" : "Text", "height" : "100vh", "camera":  {"test" :33}, "content":  {"text" :"this is plain text"}}]})} style={{width : '70%', height : '100px', marginBottom : '10px'}}>Add</Button> </div>
 
@@ -59,7 +69,11 @@ const AddCard = ({cards, graphics, refetch, scrollTo}) => {
                                 </div>
                                 <div>
                                     <ImageUpload saveImage={(image) => create( {"trip_id" : 1, "type" : "Image", "height" : "100vh", "camera":  {"test" :33}, "content":  {"image" :image}})} style={{width : '70%', height : '100px', marginBottom : '10px'}}/>
-                               </div>
+                                   {/* <div style={{position:'fixed', top : 0, left : 0, width : '100vw'}}> <ImageCard card={cards[cards.length-1]} /> </div>*/}
+
+                                    {newCard && JSON.stringify(newCard)}
+
+                                </div>
 
 
                             </Carousel>

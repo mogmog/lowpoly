@@ -10,6 +10,7 @@ import { Controller, Scene } from 'react-scrollmagic';
 import { TweenMax } from 'gsap/all';
 
 import AddButton from './components/AddButton'
+import SaveButton from './components/SaveButton'
 
 //import Logo from '../public/svg/mountain.svg';
 
@@ -26,6 +27,8 @@ import { ApolloProvider } from "react-apollo";
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
 import HtmlCard from "./components/Cards/Html";
+import ImageCard from "./components/Cards/Image";
+import SpacerCard from "./components/Cards/Spacer";
 
 const client = new ApolloClient({
     uri: "https://graphqlmogmogplatts.herokuapp.com/v1alpha1/graphql"
@@ -103,22 +106,18 @@ const StickyStyled = styled.div`
   
   .section {
     height: 100vh;
-    background: rgb(2,0,36);
-background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(21,114,133,1) 100%);
+ 
   }
   
-  
   .smallsection {
-    
-    font-size: 5em;
-    position: relative;
+   
+    font-size: 2.7em;
     color: white;
     opacity: 1;
   
   }
   
   .sticky, .sticky2 {
-    text-align:center;
     
      z-index:99999;
      position: relative;
@@ -217,6 +216,7 @@ class App extends React.Component {
 
         <AddButton onClick={() => this.setState({visible : true})}/>
 
+
        {/* <a onClick={this.testTop}> {this.state.index } </a>*/}
 
         <div>
@@ -235,7 +235,7 @@ class App extends React.Component {
 
                     const cards = data.trip[0].cards;
 
-                    console.log(data.trip[0].locations);
+                    //console.log(data.trip[0].locations);
 
                     //return <MapHolder zoom={this.state.st} locations={data.trip[0].locations}/>
 
@@ -247,7 +247,9 @@ class App extends React.Component {
                     />*/
                    
                     // return <div> {JSON.stringify(cards)} </div>
-                    
+
+                    //return  <MapHolder locations={data.trip[0].locations} scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
+
                     return <div >
 
                         <Drawer
@@ -272,26 +274,17 @@ class App extends React.Component {
 
                                     <Scene ref={card.id} key={card.id} duration={card.duration || '100%'} pin={card.content.pin} offset={card.offset || 0} >
                                         {(progresss, event) => (
-                                            <div id={`theid${index}`} className="sticky" style={{height: '100vh'}}>
+                                            <div id={`theid${index}`} className="sticky" >
 
                                                 <STWatcher update={(st) => this.setState({card, st, index})} progress={progresss}/>
 
-                                                { card.type === 'Text' && <div className="smallsection" >
-                                                    <span> { card.content.text}️ </span>
-                                                </div>}
-
                                                 { card.type === 'Html' && <div className="smallsection" >
-
-                                                    <div className={'text'}>
-                                                        <HtmlCard card={card}> ️ </HtmlCard>
-                                                    </div>
-
+                                                    <HtmlCard card={card}> ️ </HtmlCard>
                                                 </div>}
 
                                                 { card.type === 'Image' && <div className="smallsection" >
-                                                   <img style={{'width' : '100%', height: 'auto'}} src={card.content.image.secure_url} />
+                                                    <ImageCard card={card} />
                                                 </div>}
-
 
                                                 { card.type === 'Graphic' && <div className="smallsection" style={{width : '100%'}}>
 
@@ -302,6 +295,11 @@ class App extends React.Component {
                                                         wrapper="span" src={`./svg/${card.content.filename}`}/>
 
                                                 </div>}
+
+                                                { card.type === 'Spacer' && <div className="smallsection" >
+                                                    <SpacerCard card={card} />
+                                                 </div>}
+
 
                                             </div>
                                         )}
@@ -401,7 +399,7 @@ class App extends React.Component {
 
             </Controller>*/}
         </div>
-        <div className="section" />
+        {/*<div className="section" />*/}
     </StickyStyled>)
 
 

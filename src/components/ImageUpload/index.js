@@ -71,7 +71,7 @@ class App extends Component {
 
     render() {
         const image = (url, index) => (
-            <pre> {JSON.stringify(url)} </pre>
+            <pre> {index} </pre>
         );
 
         const images = this.state.images.map((e, i) => image(e, i));
@@ -97,7 +97,7 @@ class App extends Component {
                     {this.state.loading ? <Spinner name="spinner" /> : ''}
                 </div>
 
-                <div className="gallery">{images}</div>
+              {/*  <div className="gallery">{images}</div>*/}
             </div>
         );
     }

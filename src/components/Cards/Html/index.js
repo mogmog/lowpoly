@@ -3,7 +3,7 @@ import React, {Fragment} from 'react'
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import CardWrapper from "../../CardWrapper";
-
+import './index.css'
 
 class HtmlCard extends React.Component {
 
@@ -12,8 +12,8 @@ class HtmlCard extends React.Component {
         return (
             <Fragment>
 
-                <CardWrapper style={this.props.card.wrapper}>
-                    <div>
+                <CardWrapper card={this.props.card} update={()=>{}}>
+                    <div className={'htmlcard'}>
                         <div dangerouslySetInnerHTML={{ __html: this.props.card.content.html }}/>
                     </div>
                 </CardWrapper>
