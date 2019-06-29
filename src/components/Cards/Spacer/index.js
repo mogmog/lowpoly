@@ -11,6 +11,13 @@ export default class SpacerCard extends React.Component {
 
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+       if (prevProps.event.type !== this.props.event.type && this.props.event.type === 'start') {
+
+           this.props.setCard(this.props.card);
+       }
+    }
+
     render() {
 
         const UPDATE_CARD_CONTENT = gql`
@@ -29,11 +36,8 @@ export default class SpacerCard extends React.Component {
             <Mutation mutation={UPDATE_CARD_CONTENT}>
                 {(update, { data }) => {
 
-                    return <CardWrapper update={update} card={this.props.card}>
+                    return <CardWrapper update={update} card={this.props.card} hideCards={this.props.hideCards}>
 
-                        <div>
-
-                        </div>
 
                     </CardWrapper>
                 }}

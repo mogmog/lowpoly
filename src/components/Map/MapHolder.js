@@ -222,7 +222,7 @@ export default class MapHolder extends Component {
                     });
 
                     view.watch('camera', function(newValue, oldValue, property, object) {
-                        console.log(property , newValue);
+                        self.props.updateCamera(newValue);
                     });
 
                     view.when(x=> {
@@ -323,6 +323,7 @@ export default class MapHolder extends Component {
                             self.esriLoaderContext.view._stage.view._viewport
                         );
 
+                        console.log(self.esriLoaderContext.view);
                         self.esriLoaderContext.view._stage.view._viewport.render = (a) => {
 
                             const view = self.esriLoaderContext.view;
@@ -387,6 +388,28 @@ export default class MapHolder extends Component {
 
         let that = this;
         const camera = this.props.card && this.props.card.camera;
+
+        if (this.props.card && prevProps.card && this.props.card.id !== prevProps.card.id) {
+           if (this.props.card.camera && that.esriLoaderContext) {
+
+               console.log(this.props.card.camera);
+
+               var cam = that.esriLoaderContext.view.camera.clone();
+
+               cam.position = this.props.card.camera;
+
+              // alert(1);
+
+              // if (cam.position.longitude !== this.props.card.camera.longitude) {
+                   that.esriLoaderContext.view.goTo(this.props.card.camera, { duration: 4000});
+               //}
+
+               console.log(this.props.card.id, prevProps.card.id);
+
+              }
+
+
+        }
 
         if (this.props.zoom !== prevProps.zoom) {
 

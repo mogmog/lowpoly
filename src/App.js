@@ -10,7 +10,7 @@ import { Controller, Scene } from 'react-scrollmagic';
 import { TweenMax } from 'gsap/all';
 
 import AddButton from './components/AddButton'
-import SaveButton from './components/SaveButton'
+import SaveGPSButton from './components/SaveGPSButton'
 
 //import Logo from '../public/svg/mountain.svg';
 
@@ -113,7 +113,7 @@ const StickyStyled = styled.div`
    
     font-size: 2.7em;
     color: white;
-    opacity: 1;
+    
   
   }
   
@@ -175,9 +175,24 @@ const StickyStyled = styled.div`
 class STWatcher extends React.Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps.progress != this.props.progress) {
-            this.props.update(this.props.progress);
+
+        console.log(this.props.card.id);
+
+        if (prevProps.card.id !== this.props.card.id) {
+            console.log(this.props.card.id);
         }
+
+
+        if (prevProps.event.state=== undefined && this.props.event.state === 'DURING') {
+
+
+           // if (prevProps.card != this.props.card) {
+                this.props.updateProgress(this.props.progress, this.props.card);
+           // }
+        }
+
+
+
     }
 
     render() {
@@ -188,7 +203,7 @@ class STWatcher extends React.Component {
 
 class App extends React.Component {
 
-  state = {st : 0.1, showButtons : false, card : null, index : 0, visible : false}
+  state = {st : 0.1, showButtons : false, card : null, index : 0, visible : false, showCards : true}
 
   testTop = (index) => {
 
@@ -214,15 +229,16 @@ class App extends React.Component {
     //return  <img src={Logo} />
     return ( <StickyStyled>
 
-        <AddButton onClick={() => this.setState({visible : true})}/>
-
 
        {/* <a onClick={this.testTop}> {this.state.index } </a>*/}
 
         <div>
 
             <ApolloProvider client={client}>
-                
+
+                {this.state.showCards && <AddButton onClick={() => this.setState({visible : true})}/> }
+                {!this.state.showCards && <SaveGPSButton card={this.state.card} camera={this.state.camera} finish={() => { this.setState({showCards: true})}  }/> }
+
                 <Query
                     query={GET_TRIP} >
 
@@ -235,20 +251,6 @@ class App extends React.Component {
 
                     const cards = data.trip[0].cards;
 
-                    //console.log(data.trip[0].locations);
-
-                    //return <MapHolder zoom={this.state.st} locations={data.trip[0].locations}/>
-
-                   /* return <MapHolder
-                        locations={data.trip[0].locations} 
-                        scrollToTop={this.testTop} 
-                        zoom={this.state.st} 
-                        card={this.state.card}
-                    />*/
-                   
-                    // return <div> {JSON.stringify(cards)} </div>
-
-                    //return  <MapHolder locations={data.trip[0].locations} scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
 
                     return <div >
 
@@ -266,24 +268,26 @@ class App extends React.Component {
 
                         </Drawer>
 
-                        <Controller ref={(c) => this.c = c}>
+                        <MapHolder updateCamera={(cam) => this.setState({camera : cam})} locations={data.trip[0].locations} scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
 
-                             <MapHolder locations={data.trip[0].locations} scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
+                        <div >
+                         <Controller ref={(c) => this.c = c}>
 
                              {true && cards && cards.map((card, index) =>
 
                                     <Scene ref={card.id} key={card.id} duration={card.duration || '100%'} pin={card.content.pin} offset={card.offset || 0} >
                                         {(progresss, event) => (
-                                            <div id={`theid${index}`} className="sticky" >
+                                            <div id={`theid${index}`} className="sticky" style={{pointerEvents : (this.state.showCards ? 'all' : 'none'), 'opacity' : this.state.showCards ? 1 : 0.1, 'transition': 'opacity .55s ease-in-out' }} >
 
-                                                <STWatcher update={(st) => this.setState({card, st, index})} progress={progresss}/>
+                                               {/* <pre> {JSON.stringify(event)} </pre>*/}
+                                               {/* <STWatcher event={event} card={card} updateProgress={(st) => this.setState({card, st, index})} progress={progresss}/>*/}
 
                                                 { card.type === 'Html' && <div className="smallsection" >
-                                                    <HtmlCard card={card}> ️ </HtmlCard>
+                                                    <HtmlCard  card={card} event={event} hideCards={() => this.setState({showCards : false})} setCard={(card) => { this.setState({card})}} > ️ </HtmlCard>
                                                 </div>}
 
                                                 { card.type === 'Image' && <div className="smallsection" >
-                                                    <ImageCard card={card} />
+                                                    <ImageCard  card={card} event={event} hideCards={() => this.setState({showCards : false})} setCard={(card) => { this.setState({card})}} />
                                                 </div>}
 
                                                 { card.type === 'Graphic' && <div className="smallsection" style={{width : '100%'}}>
@@ -297,7 +301,7 @@ class App extends React.Component {
                                                 </div>}
 
                                                 { card.type === 'Spacer' && <div className="smallsection" >
-                                                    <SpacerCard card={card} />
+                                                    <SpacerCard hideCards={() => this.setState({showCards : false})} card={card} event={event} setCard={(card) => { this.setState({card})}} />
                                                  </div>}
 
 
@@ -316,6 +320,8 @@ class App extends React.Component {
                             </Scene>*/}
 
                         </Controller>
+                        </div>
+
                     </div>
 
 

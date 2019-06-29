@@ -33,7 +33,7 @@ const AddCard = ({cards, graphics, refetch, scrollTo}) => {
                 let create = (card) => {
                    //e.preventDefault();
 
-                    const spacer = {"trip_id" : 1, "type" : "Spacer", "height" : "30vh", "camera":  {"test" :33}, "content":  {}}
+                    const spacer = {"trip_id" : 1, "type" : "Spacer", "height" : "30vh", "camera":  null, "content":  {}}
                     const cards = [card, spacer]
 
                     addCard({variables : {"objects" : cards}}).then(d=> {
@@ -55,23 +55,15 @@ const AddCard = ({cards, graphics, refetch, scrollTo}) => {
 
                                 </div>
 
-
-                                {/*  <div> <TextEditor/>  <Button onClick={create('Text', {"objects" : [{"trip_id" : 1, "type" : "Text", "height" : "100vh", "camera":  {"test" :33}, "content":  {"text" :"this is plain text"}}]})} style={{width : '70%', height : '100px', marginBottom : '10px'}}>Add</Button> </div>
-
-                                <div><h1> Add an photo </h1> <Button onClick={create('Photo', {"objects" : [{"trip_id" : 1, "type" : "Text", "height" : "100vh", "camera":  {"test" :33}, "content":  {"text" :"this is plain text"}}]})} style={{width : '70%', height : '100px', marginBottom : '10px'}}>Add</Button></div>
-*/}
                                 <div><h1> Add an graphic </h1>
 
-                                    <GraphicsGrid onClick={(filename) => create({"trip_id" : 1, "type" : "Graphic", "height" : "100vh", "camera":  {"test" :33}, "content":  {filename : filename}} )} graphics={graphics}/>
+                                    <GraphicsGrid onClick={(filename) => create({"trip_id" : 1, "type" : "Graphic", "height" : "100vh", "camera":  null, "content":  {filename : filename}} )} graphics={graphics}/>
 
                                 {/*<Button onClick={create('Graphic',{"objects" : [{"trip_id" : 1, "type" : "Text", "height" : "100vh", "camera":  {"test" :33}, "content":  {"text" :"this is plain text"}}]})} style={{width : '70%', height : '100px', marginBottom : '10px'}}>Add</Button></div>
 */}
                                 </div>
                                 <div>
-                                    <ImageUpload saveImage={(image) => create( {"trip_id" : 1, "type" : "Image", "height" : "100vh", "camera":  {"test" :33}, "content":  {"image" :image}})} style={{width : '70%', height : '100px', marginBottom : '10px'}}/>
-                                   {/* <div style={{position:'fixed', top : 0, left : 0, width : '100vw'}}> <ImageCard card={cards[cards.length-1]} /> </div>*/}
-
-                                    {newCard && JSON.stringify(newCard)}
+                                    <ImageUpload saveImage={(image) => create( {"trip_id" : 1, "type" : "Image", "height" : "100vh", "camera":  null, "content":  {"image" :image}})} style={{width : '70%', height : '100px', marginBottom : '10px'}}/>
 
                                 </div>
 

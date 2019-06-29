@@ -26,6 +26,13 @@ export default class ImageCard extends React.Component {
         this.setState({ zoom })
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.event.type !== this.props.event.type && this.props.event.type === 'start') {
+
+            this.props.setCard(this.props.card);
+        }
+    }
+
     render() {
 
         const UPDATE_CARD_CONTENT = gql`
@@ -45,17 +52,7 @@ export default class ImageCard extends React.Component {
             <Mutation mutation={UPDATE_CARD_CONTENT}>
                 {(update, { data }) => {
 
-                    let create = (params) => {
-
-                        /*add a new field for crop*/
-                        let newContent = this.props.card.content;
-                        newContent.crop = this.state.crop;
-                        newContent.zoom = this.state.zoom;
-
-                        update({variables : {"id" : this.props.card.id, "content" : newContent }});
-                    };
-
-                    return <CardWrapper update={update} card={this.props.card}>
+                    return <CardWrapper update={update} card={this.props.card} hideCards={this.props.hideCards}>
 
                             <div>
 
