@@ -222,7 +222,10 @@ export default class MapHolder extends Component {
                     });
 
                     view.watch('camera', function(newValue, oldValue, property, object) {
-                        self.props.updateCamera(newValue);
+                        if (!self.props.showCards) {
+                            self.props.updateCamera(newValue);
+                        }
+
                     });
 
                     view.when(x=> {
@@ -401,7 +404,7 @@ export default class MapHolder extends Component {
               // alert(1);
 
               // if (cam.position.longitude !== this.props.card.camera.longitude) {
-                   that.esriLoaderContext.view.goTo(this.props.card.camera, { duration: 4000});
+                   that.esriLoaderContext.view.goTo(this.props.card.camera, { duration: 8000});
                //}
 
                console.log(this.props.card.id, prevProps.card.id);

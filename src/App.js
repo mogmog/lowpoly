@@ -268,7 +268,7 @@ class App extends React.Component {
 
                         </Drawer>
 
-                        <MapHolder updateCamera={(cam) => this.setState({camera : cam})} locations={data.trip[0].locations} scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
+                        <MapHolder showCards={this.state.showCards} updateCamera={(cam) => this.setState({camera : cam})} locations={data.trip[0].locations} scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
 
                         <div >
                          <Controller ref={(c) => this.c = c}>
