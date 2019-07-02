@@ -113,6 +113,7 @@ const StickyStyled = styled.div`
    
     font-size: 2.7em;
     color: white;
+    border: 5px solid red;
     
   
   }
@@ -207,20 +208,10 @@ class App extends React.Component {
 
   testTop = (index) => {
 
-      //var start = scene.scrollOffset();
-      //var end = scene.scrollOffset() + scene.duration();
-
       window.scrollTo({
           top: window.scrollY - ( 1* window.innerHeight),
           behavior: 'smooth',
       })
-
-      // console.log(this.c);
-    /* (this.c.state.controller.scrollTo(d=> {
-        TweenMax.to(window, 2.5, {scrollTo : 5702 })
-    }));*/
-
-      //(this.c.state.controller.scrollTo('#theid' + index -1));
 
   }
 
@@ -228,9 +219,6 @@ class App extends React.Component {
 
     //return  <img src={Logo} />
     return ( <StickyStyled>
-
-
-       {/* <a onClick={this.testTop}> {this.state.index } </a>*/}
 
         <div>
 
@@ -250,6 +238,8 @@ class App extends React.Component {
                     if (data.trip.length != 1) return <div>wtf</div>
 
                     const cards = data.trip[0].cards;
+
+                    if (!this.state.card) this.setState({card : cards[0]});
 
 
                     return <div >
@@ -275,15 +265,19 @@ class App extends React.Component {
 
                              {true && cards && cards.map((card, index) =>
 
-                                    <Scene ref={card.id} key={card.id} duration={card.duration || '100%'} pin={card.content.pin} offset={card.offset || 0} >
-                                        {(progresss, event) => (
+                                    <Scene ref={card.id} key={card.id} duration={card.duration || '100%'} pin={card.content.pin} offset={card.offset || 0} triggerHook={"onEnter"}>
+                                        {(progresss, event) => {
+
+                                            //console.log(event);
+
+                                            return (
                                             <div id={`theid${index}`} className="sticky" style={{pointerEvents : (this.state.showCards ? 'all' : 'none'), 'opacity' : this.state.showCards ? 1 : 0.1, 'transition': 'opacity .55s ease-in-out' }} >
 
-                                               {/* <pre> {JSON.stringify(event)} </pre>*/}
+
                                                {/* <STWatcher event={event} card={card} updateProgress={(st) => this.setState({card, st, index})} progress={progresss}/>*/}
 
                                                 { card.type === 'Html' && <div className="smallsection" >
-                                                    <HtmlCard  card={card} event={event} hideCards={() => this.setState({showCards : false})} setCard={(card) => { this.setState({card})}} > ️ </HtmlCard>
+                                                    <HtmlCard card={card} event={event} hideCards={() => this.setState({showCards : false})} setCard={(card) => { this.setState({card})}} > ️ </HtmlCard>
                                                 </div>}
 
                                                 { card.type === 'Image' && <div className="smallsection" >
@@ -306,18 +300,11 @@ class App extends React.Component {
 
 
                                             </div>
-                                        )}
+                                        )}}
 
                                     </Scene>
 
                                 )}
-
-
-
-                           {/* <Scene key={'new'}  duration={'100%'} height={'200px'}   >
-
-                                <h1 block type='primary' onClick={()=> this.setState({visible : true})}>Add</h1>
-                            </Scene>*/}
 
                         </Controller>
                         </div>
@@ -329,83 +316,9 @@ class App extends React.Component {
 
             </Query></ApolloProvider>
 
-         {/*   <Controller ref={(c) => this.c = c}>
 
-                <MapHolder zoom={this.state.st}/>
-
-
-                <Scene duration={'400%'} pin={false} offset={'-50%'} >
-                    {(progresss, event) => (
-                        <div className="sticky" style={{height: '100vh'}}>
-                            <STWatcher update={(st) => this.setState({st})} progress={progresss}/>
-                        </div>
-                    )}
-
-                </Scene>
-
-
-
-
-
-
-
-                <Scene duration={'100%'} pin={false} offset={'-150%'} >
-                    {(progresss, event) => (
-                        <div className="sticky">
-
-
-
-                            <div className="smallsection" > Paul and Graham are off to Armenia  🚵‍♂ ️🚵‍♂️ 🚵‍♂ ️🚵‍♂ ️🚵‍♂ ️🚵‍♂️</div>
-
-                        </div>
-                    )}
-
-                </Scene>
-
-
-
-
-
-
-
-                <Scene duration={'100%'} pin={false} offset={0} >
-                    {(progresss, event) => (
-                        <div className="sticky">
-
-
-
-                            <div className={'animation'}>
-                                <img src="https://placeimg.com/1000/1000/any" alt="" />
-                            </div>
-
-                        </div>
-                    )}
-
-                </Scene>
-
-
-                <div className="smallsection" > ther ewould be content here </div>
-
-                <Scene duration={'100%'} pin={false} offset={0} >
-                    {(progresss, event) => (
-                        <div className="sticky">
-
-
-
-                            <div className={'animation'}>
-                                <img src="https://placeimg.com/1000/1000/any" alt="" />
-                            </div>
-
-                        </div>
-                    )}
-
-                </Scene>
-
-
-
-            </Controller>*/}
         </div>
-        {/*<div className="section" />*/}
+
     </StickyStyled>)
 
 

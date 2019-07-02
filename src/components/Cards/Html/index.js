@@ -9,13 +9,15 @@ import gql from "graphql-tag";
 class HtmlCard extends React.Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps.event.type !== this.props.event.type && this.props.event.type === 'start') {
 
+        if (prevProps.event.state === 'BEFORE' && this.props.event.state === 'DURING') {
             this.props.setCard(this.props.card);
         }
     }
 
     render() {
+
+        const {event} = this.props;
 
         const UPDATE_CARD_CONTENT = gql`
             mutation updatecard($id, : Int!, $content : jsonb, $height : String){
@@ -37,7 +39,6 @@ class HtmlCard extends React.Component {
                                 <div dangerouslySetInnerHTML={{ __html: this.props.card.content.html }}/>
                             </div>
                         </CardWrapper>
-
                 }}
             </Mutation>
 
