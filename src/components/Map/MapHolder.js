@@ -391,8 +391,9 @@ export default class MapHolder extends Component {
 
         let that = this;
         const camera = this.props.card && this.props.card.camera;
+        const prevId = prevProps && prevProps.card ? prevProps.card.id : undefined;
 
-        if (this.props.card && prevProps.card && this.props.card.id !== prevProps.card.id) {
+        if (this.props.card && this.props.card.id !== prevId) {
            if (this.props.card.camera && that.esriLoaderContext) {
 
                console.log(this.props.card.camera);
@@ -401,7 +402,7 @@ export default class MapHolder extends Component {
 
                cam.position = this.props.card.camera;
 
-               that.esriLoaderContext.view.goTo(this.props.card.camera, { duration: 3000});
+               that.esriLoaderContext.view.goTo(this.props.card.camera, { duration: 300});
 
               }
 

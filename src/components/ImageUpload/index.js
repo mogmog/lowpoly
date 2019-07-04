@@ -18,24 +18,9 @@ class App extends Component {
             loading: true,
         });
 
-        axios.get('http://localhost:5000').then(({ data }) => {
-            this.setState({
-                images: [...data, ...this.state.images],
-                loading: false,
-            });
-        });
 
-        const pusher = new Pusher('9902789059611ee7b8d0', {
-            cluster: 'eu',
-            encrypted: true,
-        });
 
-        const channel = pusher.subscribe('gallery');
-        channel.bind('upload', data => {
-            this.setState({
-                images: [data.image, ...this.state.images],
-            });
-        });
+
     }
 
     fileChangedHandler = event => {
@@ -53,13 +38,12 @@ class App extends Component {
         });
 
         const formData = new FormData();
-        formData.append(
-            'image',
-            this.state.selectedFile,
-            this.state.selectedFile.name
-        );
+        formData.append('file', this.state.selectedFile, this.state.selectedFile.name);
+        formData.append('upload_preset',  'ml_default' );
 
-        axios.post('http://localhost:5000/upload', formData).then(({ data }) => {
+        const url = `https://api.cloudinary.com/v1_1/db8uwhsbg/upload`;
+
+        axios.post(url, formData).then(({ data }) => {
 
             this.props.saveImage(data);
 
@@ -78,7 +62,6 @@ class App extends Component {
 
         return (
             <div className="App">
-                <h1 className="App-title">Live Photo Feed</h1>
 
                 <form method="post" onSubmit={this.uploadImage}>
                     <label className="label" htmlFor="gallery-image">
@@ -93,11 +76,7 @@ class App extends Component {
                     <button type="submit">Upload!</button>
                 </form>
 
-                <div className="loading-indicator">
-                    {this.state.loading ? <Spinner name="spinner" /> : ''}
-                </div>
 
-              {/*  <div className="gallery">{images}</div>*/}
             </div>
         );
     }
