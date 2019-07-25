@@ -34,7 +34,7 @@ const AddCard = ({cards, graphics, refetch, scrollTo}) => {
                    //e.preventDefault();
 
                     const spacer = {"trip_id" : 1, "type" : "Spacer", "height" : "30vh", "camera":  null, "content":  {}}
-                    const cards = [card, spacer]
+                    const cards = [card]
 
                     addCard({variables : {"objects" : cards}}).then(d=> {
                        scrollTo(cards.length);

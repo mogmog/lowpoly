@@ -158,7 +158,7 @@ export default class RouteEntityMesh extends THREE.Group {
       depthWrite: false,
       depthTest: true,
       depthFunc: THREE.AlwaysDepth,
-      lineWidth: 55,
+      lineWidth: 550,
       near : 1, //camera.near,
       far : 1000, // camera.far,
     });

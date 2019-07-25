@@ -29,6 +29,8 @@ import gql from "graphql-tag";
 import HtmlCard from "./components/Cards/Html";
 import ImageCard from "./components/Cards/Image";
 import SpacerCard from "./components/Cards/Spacer";
+import ProductBreakdownCard from "./components/Cards/ProductBreakdown";
+import ProfitCard from "./components/Cards/ProfitCard";
 
 const client = new ApolloClient({
     uri: "https://graphqlmogmogplatts.herokuapp.com/v1alpha1/graphql"
@@ -113,6 +115,7 @@ const StickyStyled = styled.div`
    
     font-size: 2.7em;
     color: white;
+    margin: 20px;
     
     
   
@@ -268,15 +271,15 @@ class App extends React.Component {
                                     <Scene ref={card.id} key={card.id} duration={card.duration || '100%'} pin={card.content.pin} offset={card.offset || 0} triggerHook={"onEnter"}>
                                         {(progresss, event) => {
 
-                                            //console.log(event);
+                                            //con sole.log(event);
 
                                             return (
                                             <div id={`theid${index}`} className="sticky" style={{pointerEvents : (this.state.showCards ? 'all' : 'none'), 'opacity' : this.state.showCards ? 1 : 0.1, 'transition': 'opacity .55s ease-in-out' }} >
 
 
-                                               {/* <STWatcher event={event} card={card} updateProgress={(st) => this.setState({card, st, index})} progress={progresss}/>*/}
 
-                                                { card.type === 'Html' && <div className="smallsection" >
+
+                                               { card.type === 'Html' && <div className="smallsection" >
                                                     <HtmlCard card={card} event={event} hideCards={() => this.setState({showCards : false})} setCard={(card) => { this.setState({card})}} > ️ </HtmlCard>
                                                 </div>}
 

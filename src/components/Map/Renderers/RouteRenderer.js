@@ -221,10 +221,11 @@ export default class RouteRenderer extends AbstractRenderer {
           {
             persent : 1
           },
-          150000)
+          75000)
       .onUpdate(
         obj =>
-        { 
+        {
+         // console.log(obj.persent);
           meshline.setProgress(obj.persent);
         })
       .onComplete(
@@ -232,11 +233,37 @@ export default class RouteRenderer extends AbstractRenderer {
 
           delete meshline.tween;
         })
-      .delay(2000)
+
       .start();
+
+    console.log("linr started");
+    /*  window.setTimeout(d=> {
+        (meshline.tween.stop());
+      }, 6000);
+
+      window.setTimeout(d=> {
+        (meshline.tween.start());
+      }, 10000);
+
+
+      window.setTimeout(d=> {
+        (meshline.tween.stop());
+      }, 30000);*/
+
+
+
     }
   }
 
+  start(){
+    this.meshline.tween.start();
+   // alert('start');
+  }
+
+  stop(){
+    this.meshline.tween.stop();
+    //alert('stopping');
+  }
 
   setTrailLength(value) {
 

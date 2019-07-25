@@ -6,7 +6,7 @@ import './index.css'
 class CardWrapper extends React.Component {
 
     state = {
-        heights : ['20vw', '50vw', '100vw', '100vh', '130vh'],
+        heights : ['20vw', '50vw', '100vw', '100vh', '100vw', '130vh', '150vh', '200vh'],
         index : 0,
         height : '50vw'
     }

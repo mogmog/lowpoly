@@ -195,8 +195,8 @@ export default class MapHolder extends Component {
 
                         camera : {position: {
 
-                            latitude:  42.20525488257408,
-                            longitude: 43.153492379933596,
+                            latitude:  54.38763,
+                            longitude: -2.823379,
                             z: 1200000,
                             spatialReference: { wkid: 3857 }
                         }},
@@ -394,9 +394,19 @@ export default class MapHolder extends Component {
         const prevId = prevProps && prevProps.card ? prevProps.card.id : undefined;
 
         if (this.props.card && this.props.card.id !== prevId) {
-           if (this.props.card.camera && that.esriLoaderContext) {
 
-               console.log(this.props.card.camera);
+            console.log("new card");
+
+           /* if (this.props.card.camera && this.props.card.camera.stop && that.esriLoaderContext) {
+                this.routeRenderer.stop();
+            }
+
+            if (this.props.card.camera && this.props.card.camera.start && that.esriLoaderContext) {
+                this.routeRenderer.start();
+            }*/
+
+            /*on camera change*/
+            if (this.props.card.camera && that.esriLoaderContext) {
 
                var cam = that.esriLoaderContext.view.camera.clone();
 
@@ -405,6 +415,8 @@ export default class MapHolder extends Component {
                that.esriLoaderContext.view.goTo(this.props.card.camera, { duration: 300});
 
               }
+
+
 
         }
 
@@ -445,6 +457,8 @@ export default class MapHolder extends Component {
 
         if (tweens_count || this.animate.last_tweens_count != tweens_count) {
             TWEEN.update(time);
+
+            //console.log(TWEEN);
 
             if (
                 this.esriLoaderContext &&

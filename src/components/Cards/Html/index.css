@@ -1,6 +1,6 @@
 .htmlcard {
 
-    background-color: #0043ff1a;
+    background-color: rgba(0, 67, 255, 0.06);
     color: #fffefbd4 !important;
     padding : 16px;
     width: 100%;
@@ -8,8 +8,28 @@
 
 }
 
+.htmlcard h3 {
+    color: #fffefbd4;
+    font-size: 180%;
+    line-height: 1.1em;
+}
+
+
 
 .htmlcard h2 {
     color: #fffefbd4;
-    font-size: 200%;
+    font-size: 240%;
+    line-height: 1.1em;
+
+}
+
+
+
+
+.htmlcard h1 {
+    color: #fffefbd4;
+    font-size: 95vw;
+    line-height: 1.1em;
+    text-align: center;
+
 }

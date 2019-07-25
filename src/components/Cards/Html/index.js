@@ -10,8 +10,8 @@ class HtmlCard extends React.Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
 
-        if (prevProps.event.state === 'BEFORE' && this.props.event.state === 'DURING') {
-            this.props.setCard(this.props.card);
+        if (prevProps.event.type !== this.props.event.type && this.props.event.type === 'start') {
+               this.props.setCard(this.props.card);
         }
     }
 
