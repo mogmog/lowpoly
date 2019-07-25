@@ -193,6 +193,40 @@ export default class RouteRenderer extends AbstractRenderer {
     context.resetWebGLState();
   }
 
+  updateRoute(path) {
+    const {view, cam, externalRenderers} = this.esriLoaderContext;
+
+    const SpatialReference = this.esriLoaderContext.SpatialReference;
+
+    this.meshline.updateRoute(path, externalRenderers, view, SpatialReference);
+
+    this.meshline.setProgress(0);
+
+    this.meshline.tween = new TWEEN.Tween(
+        {
+          persent: 0,
+        })
+        .to(
+            {
+              persent : 1
+            },
+            25000)
+        .onUpdate(
+            obj =>
+            {
+               console.log(obj.persent);
+              this.meshline.setProgress(obj.persent);
+            })
+        .onComplete(
+            () => {
+
+              delete this.meshline.tween;
+            })
+
+        .start();
+
+  }
+
   init( 
     path,
     externalRenderers, 
@@ -201,58 +235,12 @@ export default class RouteRenderer extends AbstractRenderer {
     cam
     ) {
 
-    const meshline = this.meshline = new RouteEntity();
+     this.meshline = new RouteEntity();
 
-    this.meshline.updateRoute(path, externalRenderers, view, SpatialReference, cam);
-
-    meshline.setProgress(0);
-
-    this.scene.add(meshline);
+    this.scene.add(this.meshline);
 
     this.scene.add(new THREE.AmbientLight(0xeeeeee));
 
-    if (true) {
-      
-      meshline.tween = new TWEEN.Tween(
-      {
-        persent: 0,
-      })
-      .to(
-          {
-            persent : 1
-          },
-          75000)
-      .onUpdate(
-        obj =>
-        {
-         // console.log(obj.persent);
-          meshline.setProgress(obj.persent);
-        })
-      .onComplete(
-        () => {
-
-          delete meshline.tween;
-        })
-
-      .start();
-
-    console.log("linr started");
-    /*  window.setTimeout(d=> {
-        (meshline.tween.stop());
-      }, 6000);
-
-      window.setTimeout(d=> {
-        (meshline.tween.start());
-      }, 10000);
-
-
-      window.setTimeout(d=> {
-        (meshline.tween.stop());
-      }, 30000);*/
-
-
-
-    }
   }
 
   start(){

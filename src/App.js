@@ -44,13 +44,7 @@ const GET_TRIP = gql`query {
     
     trip(where: {id: {_eq: 1}}) {
         id
-        locations(order_by: {date: desc}) {
-            latitude
-            longitude
-            date
-
-        }
-
+        
         cards(order_by: {id : asc}) {
             camera
             type
@@ -59,6 +53,7 @@ const GET_TRIP = gql`query {
             offset
             duration
             height
+            locations
         }
     }
 
@@ -207,7 +202,7 @@ class STWatcher extends React.Component {
 
 class App extends React.Component {
 
-  state = {st : 0.1, showButtons : false, card : null, index : 0, visible : false, showCards : true}
+  state = {st : 0.1, showButtons : false, card : null, index : 0, visible : false, showCards : true, locations : []}
 
   testTop = (index) => {
 
@@ -218,7 +213,16 @@ class App extends React.Component {
 
   }
 
-  render() {
+  /*componentDidUpdate(prevProps, prevState, snapshot) {
+
+      if (prevState.card != this.state.card && this.state.card.locations.length ) {
+          this.setState({locations : this.state.card.locations})
+          alert(1);
+      }
+
+  }*/
+
+    render() {
 
     //return  <img src={Logo} />
     return ( <StickyStyled>
@@ -261,7 +265,7 @@ class App extends React.Component {
 
                         </Drawer>
 
-                        <MapHolder showCards={this.state.showCards} updateCamera={(cam) => this.setState({camera : cam})} locations={data.trip[0].locations} scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
+                        <MapHolder showCards={this.state.showCards} updateCamera={(cam) => this.setState({camera : cam})} locations={this.state.locations} scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
 
                         <div >
                          <Controller ref={(c) => this.c = c}>

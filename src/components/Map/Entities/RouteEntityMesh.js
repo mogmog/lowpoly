@@ -52,6 +52,9 @@ export default class RouteEntityMesh extends THREE.Group {
 
   updateRoute(path, externalRenderers, view, SpatialReference)
   {
+
+   // debugger;
+
     const curve_path = [];
 
     const zAddition = 10;
