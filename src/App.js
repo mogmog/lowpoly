@@ -175,9 +175,19 @@ class STWatcher extends React.Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
 
-        console.log(this.props.card.id);
+        if (this.props.progress > prevProps.progress) {
+            this.props.updateTotalProgress(this.props.progress - prevProps.progress);
+        }
 
-        if (prevProps.card.id !== this.props.card.id) {
+       /* /!*happens when a new card with progress 0 is hit*!/
+        if (this.props.progress < prevProps.progress) {
+            this.props.updateTotalProgress(this.props.progress);
+        }*/
+
+
+        // console.log(this.state.totalProgress);
+
+       /* if (prevProps.card.id !== this.props.card.id) {
             console.log(this.props.card.id);
         }
 
@@ -188,7 +198,7 @@ class STWatcher extends React.Component {
            // if (prevProps.card != this.props.card) {
                 this.props.updateProgress(this.props.progress, this.props.card);
            // }
-        }
+        }*/
 
 
 
@@ -202,7 +212,7 @@ class STWatcher extends React.Component {
 
 class App extends React.Component {
 
-  state = {st : 0.1, showButtons : false, card : null, index : 0, visible : false, showCards : true, locations : []}
+  state = {st : 0.1, totalProgress : 0.0, showButtons : false, card : null, index : 0, visible : false, showCards : true, locations : []}
 
   testTop = (index) => {
 
@@ -229,6 +239,8 @@ class App extends React.Component {
 
         <div>
 
+
+
             <ApolloProvider client={client}>
 
                 {this.state.showCards && <AddButton onClick={() => this.setState({visible : true})}/> }
@@ -248,8 +260,9 @@ class App extends React.Component {
 
                     if (!this.state.card) this.setState({card : cards[0]});
 
-
                     return <div >
+
+                        <pre style={{position : 'fixed'}}>{this.state.totalProgress / cards.length} </pre>
 
                         <Drawer
                             title="Add"
@@ -265,7 +278,7 @@ class App extends React.Component {
 
                         </Drawer>
 
-                        <MapHolder showCards={this.state.showCards} updateCamera={(cam) => this.setState({camera : cam})} locations={this.state.locations} scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
+                        <MapHolder totalProgress={this.state.totalProgress} showCards={this.state.showCards} updateCamera={(cam) => this.setState({camera : cam})} locations={this.state.locations} scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
 
                         <div >
                          <Controller ref={(c) => this.c = c}>
@@ -273,15 +286,15 @@ class App extends React.Component {
                              {true && cards && cards.map((card, index) =>
 
                                     <Scene ref={card.id} key={card.id} duration={card.duration || '100%'} pin={card.content.pin} offset={card.offset || 0} triggerHook={"onEnter"}>
-                                        {(progresss, event) => {
+                                        {(cardprogress, event) => {
 
-                                            //con sole.log(event);
+                                            //console.log(progresss);
+
 
                                             return (
                                             <div id={`theid${index}`} className="sticky" style={{pointerEvents : (this.state.showCards ? 'all' : 'none'), 'opacity' : this.state.showCards ? 1 : 0.1, 'transition': 'opacity .55s ease-in-out' }} >
 
-
-
+                                                <STWatcher updateTotalProgress={(deltaprogress) => this.setState({totalProgress : this.state.totalProgress + deltaprogress})} progress={cardprogress} card={card} />
 
                                                { card.type === 'Html' && <div className="smallsection" >
                                                     <HtmlCard card={card} event={event} hideCards={() => this.setState({showCards : false})} setCard={(card) => { this.setState({card})}} > ️ </HtmlCard>

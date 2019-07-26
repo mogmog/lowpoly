@@ -23,7 +23,7 @@ export default class RouteEntityMesh extends THREE.Group {
   setProgress(value) {
 
     this.trail_progress = value;
-  
+
     const v = new THREE.Vector3();
 
     this.trail_curve.getPoint(value, v);
@@ -44,7 +44,7 @@ export default class RouteEntityMesh extends THREE.Group {
     }
 
     this.trail_length = value;
-  
+
     this.createMeshLine();
 
     this.setProgress(this.trail_progress);
@@ -52,9 +52,6 @@ export default class RouteEntityMesh extends THREE.Group {
 
   updateRoute(path, externalRenderers, view, SpatialReference)
   {
-
-   // debugger;
-
     const curve_path = [];
 
     const zAddition = 10;
@@ -64,11 +61,11 @@ export default class RouteEntityMesh extends THREE.Group {
       let pos = [0, 0, 0];
 
       externalRenderers.toRenderCoordinates(
-        view, x, 0, SpatialReference.WGS84, pos, 0, 1);
+          view, x, 0, SpatialReference.WGS84, pos, 0, 1);
 
       curve_path.push(
-        new THREE.Vector3(pos[0], pos[1], pos[2] + zAddition));
-        // we make all coords in global world coord sys !
+          new THREE.Vector3(pos[0], pos[1], pos[2] + zAddition));
+      // we make all coords in global world coord sys !
     });
 
     this.trail_curve = new THREE.CatmullRomCurve3(curve_path);
@@ -88,9 +85,9 @@ export default class RouteEntityMesh extends THREE.Group {
 
         obj.geometry.dispose();
       }
-  
+
       if (obj.material) {
-  
+
         obj.material.dispose();
       }
 
@@ -110,13 +107,13 @@ export default class RouteEntityMesh extends THREE.Group {
 
     // Create the line mesh
     this.trail_line = new MeshLine();
-    
+
     this.trail_line.setGeometry( trail_geometry,  function( p ) { return p; }  ); // makes width taper
     // this.trail_line.setGeometry( trail_geometry );
-    
+
     this.trail_material = this.createMaterial();
 
-    this.trail_mesh = new THREE.Mesh( this.trail_line.geometry, this.trail_material ); 
+    this.trail_mesh = new THREE.Mesh( this.trail_line.geometry, this.trail_material );
 
     this.trail_mesh.frustumCulled = false;
 
@@ -134,9 +131,9 @@ export default class RouteEntityMesh extends THREE.Group {
         };
 
         const trail_material = self.trail_material;
-  
+
         trail_material.uniforms.resolution.value.copy( new THREE.Vector2(resolution.width, resolution.height) );
-  
+
         trail_material.uniforms.near.value = camera.near;
         trail_material.uniforms.far.value = camera.far;
       }
@@ -156,7 +153,7 @@ export default class RouteEntityMesh extends THREE.Group {
       color: new THREE.Color( 0xffd300 ),
       opacity: 0.45,
       blending: THREE.AdditiveBlending,
-			transparent: false,
+      transparent: false,
       sizeAttenuation: true,
       depthWrite: false,
       depthTest: true,

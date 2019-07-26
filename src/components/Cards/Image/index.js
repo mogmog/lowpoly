@@ -56,6 +56,7 @@ export default class ImageCard extends React.Component {
 
                             <div>
 
+
                             <img style={{ width : '100%'}} src={this.state.image}/>
                            {/* <Cropper
                                 style={{cropAreaStyle :{color : 'rgba(0,0,0,0.9)'}}}

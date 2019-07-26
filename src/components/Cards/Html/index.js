@@ -29,6 +29,8 @@ class HtmlCard extends React.Component {
             }
         `;
 
+        //console.log(this.props.event)
+
         return (
 
             <Mutation mutation={UPDATE_CARD_CONTENT}>
@@ -36,6 +38,7 @@ class HtmlCard extends React.Component {
 
                     return <CardWrapper card={this.props.card} update={update} hideCards={this.props.hideCards}>
                             <div className={'htmlcard'} >
+                                <pre> {JSON.stringify(this.props.event)} </pre>
                                 <div dangerouslySetInnerHTML={{ __html: this.props.card.content.html }}/>
                             </div>
                         </CardWrapper>
