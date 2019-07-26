@@ -177,6 +177,7 @@ class STWatcher extends React.Component {
 
         if (this.props.progress > prevProps.progress) {
             this.props.updateTotalProgress(this.props.progress - prevProps.progress);
+            //console.log(this.props.progress);
         }
 
        /* /!*happens when a new card with progress 0 is hit*!/
@@ -278,7 +279,7 @@ class App extends React.Component {
 
                         </Drawer>
 
-                        <MapHolder totalProgress={this.state.totalProgress} showCards={this.state.showCards} updateCamera={(cam) => this.setState({camera : cam})} locations={this.state.locations} scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
+                        <MapHolder totalProgress={this.state.totalProgress/10.0} showCards={this.state.showCards} updateCamera={(cam) => this.setState({camera : cam})} locations={this.state.locations} scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
 
                         <div >
                          <Controller ref={(c) => this.c = c}>
@@ -294,7 +295,7 @@ class App extends React.Component {
                                             return (
                                             <div id={`theid${index}`} className="sticky" style={{pointerEvents : (this.state.showCards ? 'all' : 'none'), 'opacity' : this.state.showCards ? 1 : 0.1, 'transition': 'opacity .55s ease-in-out' }} >
 
-                                                <STWatcher updateTotalProgress={(deltaprogress) => this.setState({totalProgress : this.state.totalProgress + deltaprogress})} progress={cardprogress} card={card} />
+                                                <STWatcher updateTotalProgress={(deltaprogress) => this.setState({totalProgress : (this.state.totalProgress + deltaprogress)})} progress={cardprogress} card={card} />
 
                                                { card.type === 'Html' && <div className="smallsection" >
                                                     <HtmlCard card={card} event={event} hideCards={() => this.setState({showCards : false})} setCard={(card) => { this.setState({card})}} > ️ </HtmlCard>

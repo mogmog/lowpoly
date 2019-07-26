@@ -16,14 +16,14 @@ require ('three/examples/js/postprocessing/ShaderPass');
 require ('three/examples/js/shaders/CopyShader');
 
 //  THREE.UnrealBloomPass relies on THREE.LuminosityHighPassShader
-require ('three/examples/js/shaders/LuminosityHighPassShader');
+require ('three/examples/js/shaders/LuminosityHighPassShader'); 
 require ('three/examples/js/postprocessing/UnrealBloomPass'); // getSeperableBlurMaterial overrided in the bottom
 
 export default class RouteRenderer extends AbstractRenderer {
 
   constructor(
-      esriLoaderContext,
-      paths
+    esriLoaderContext, 
+    paths
   ) {
     super();
 
@@ -74,16 +74,16 @@ export default class RouteRenderer extends AbstractRenderer {
     }
 
     const renderer = this.renderer = new THREE.WebGLRenderer(
-        this.extenalCanvas ?
-            {
-              canvas : canvas,
-              alpha : true
-              // premultipliedAlpha: false
-            } :
-            {
-              context: context.gl,
-              // premultipliedAlpha: false
-            }
+      this.extenalCanvas ? 
+      {
+        canvas : canvas,
+        alpha : true
+        // premultipliedAlpha: false
+      } : 
+      {
+        context: context.gl,
+        // premultipliedAlpha: false
+      }
     );
 
     if (this.extenalCanvas) {
@@ -148,22 +148,22 @@ export default class RouteRenderer extends AbstractRenderer {
     bloomComposer.renderTarget2.texture.format = THREE.RGBAFormat;
 
     const finalPass = new THREE.ShaderPass(
-        new THREE.ShaderMaterial( {
-          uniforms: {
-            baseTexture: { value: null },
-            bloomTexture: { value: bloomComposer.renderTarget2.texture }
-          },
-          vertexShader: _finalPass_vertexshader,
-          fragmentShader: _finalPass_fragmentshader,
-          defines: {}
-        } ), "baseTexture"
+      new THREE.ShaderMaterial( {
+        uniforms: {
+          baseTexture: { value: null },
+          bloomTexture: { value: bloomComposer.renderTarget2.texture }
+        },
+        vertexShader: _finalPass_vertexshader,
+        fragmentShader: _finalPass_fragmentshader,
+        defines: {}
+      } ), "baseTexture"
     );
     finalPass.needsSwap = true;
 
-    const renderTarget = new THREE.WebGLRenderTarget(
-        width,
-        height,
-        { format: THREE.RGBAFormat } );
+		const renderTarget = new THREE.WebGLRenderTarget( 
+      width, 
+      height, 
+      { format: THREE.RGBAFormat } );
 
     const finalComposer = new THREE.EffectComposer( renderer, renderTarget );
     finalComposer.addPass( renderScene );
@@ -182,11 +182,11 @@ export default class RouteRenderer extends AbstractRenderer {
     //
 
     this.init(
-        this.geo_curve_path[0],
-        externalRenderers,
-        view,
-        SpatialReference,
-        cam
+      this.geo_curve_path[0],
+      externalRenderers, 
+      view, 
+      SpatialReference, 
+      cam
     );
 
     // cleanup after ourselfs
@@ -200,48 +200,57 @@ export default class RouteRenderer extends AbstractRenderer {
     const SpatialReference = this.esriLoaderContext.SpatialReference;
 
     if (this.meshline.tween) {
+      
+      this.meshline.tween.stop(); 
+    }
 
-      this.meshline.tween.stop();
+    if (this.meshline.setProgress) {
 
-      this.meshline.setProgress(0);
+      this.meshline.setProgress(0); // for previos created lines
     }
 
     this.meshline.updateRoute(path, externalRenderers, view, SpatialReference);
 
-    this.meshline.setProgress(0);
+    if (this.meshline.setProgress) {
 
-    this.meshline.tween = new TWEEN.Tween(
-        {
-          persent: 0,
-        })
-        .to(
-            {
-              persent : 1
-            },
-            25000)
-        .onUpdate(
-            obj =>
-            {
-              console.log(obj.persent);
+      this.meshline.setProgress(0);
+    }
 
-              this.meshline.setProgress(obj.persent);
-            })
-        .onComplete(
-            () => {
+    if (false) {
 
-              delete this.meshline.tween;
-            })
+      this.meshline.tween = new TWEEN.Tween(
+          {
+            persent: 0,
+          })
+          .to(
+              {
+                persent : 1
+              },
+              25000)
+          .onUpdate(
+              obj =>
+              {
+                console.log(obj.persent);
 
-        .start();
+                this.meshline.setProgress(obj.persent);
+              })
+          .onComplete(
+              () => {
+
+                delete this.meshline.tween;
+              })
+
+          .start();
+    }
   }
 
-  init(
-      path,
-      externalRenderers,
-      view,
-      SpatialReference,
-      cam
-  ) {
+  init( 
+    path,
+    externalRenderers, 
+    view, 
+    SpatialReference, 
+    cam
+    ) {
 
     this.meshline = new RouteEntity();
 
@@ -254,7 +263,7 @@ export default class RouteRenderer extends AbstractRenderer {
     if (this.meshline.tween) {
       this.meshline.tween.start();
     }
-    // alert('start');
+   // alert('start');
   }
 
   stop(){
@@ -272,22 +281,37 @@ export default class RouteRenderer extends AbstractRenderer {
     }
   }
 
+  setProgress(value) {
+
+    if (this.meshline.setProgress) {
+
+      this.meshline.setProgress(0);
+
+      this.meshline.createMeshLine();
+
+      for (let i = 0; i < value; i += 0.001 ){
+
+        this.meshline.setProgress(i);
+      }
+    }
+  }
+
   render(context) {
 
     this.renderContext = context;
 
-    if (context.gl.drawingBufferWidth !== this.composers.size.width ||
-        context.gl.drawingBufferHeight !== this.composers.size.height ) {
+    if (context.gl.drawingBufferWidth !== this.composers.size.width || 
+      context.gl.drawingBufferHeight !== this.composers.size.height ) {
 
-      const width = context.gl.drawingBufferWidth;
-      const height = context.gl.drawingBufferHeight;
+        const width = context.gl.drawingBufferWidth;
+        const height = context.gl.drawingBufferHeight;
 
-      this.composers.size.width = width;
-      this.composers.size.height = height;
+        this.composers.size.width = width;
+        this.composers.size.height = height;
 
-      this.composers.renderer.setSize( width, height );
-      this.composers.bloomComposer.setSize( width, height );
-      this.composers.finalComposer.setSize( width, height );
+        this.composers.renderer.setSize( width, height );
+				this.composers.bloomComposer.setSize( width, height );
+				this.composers.finalComposer.setSize( width, height );
     }
 
     // update camera parameters

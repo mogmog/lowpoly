@@ -16,12 +16,14 @@ export default class MapHolder extends Component {
 
     state = {
         zoom : 0,
-        tailRangeInputValue : 1200
+        tailRangeInputValue : 1200,
+        routePercentageRangeInputValue : 0
     };
 
     constructor(props) {
         super(props);
         this.animate = this.animate.bind(this);
+        this.needsRedraw = false;
     }
 
     esriLoad() {
@@ -284,8 +286,6 @@ export default class MapHolder extends Component {
                         new Polyline(polyline)
                     ).then(result => {
 
-
-
                         /*const canvas_parent = context.gl.canvas.parentElement;
                         canvas = document.createElement('canvas');
                         canvas.style.position = 'absolute';
@@ -380,8 +380,6 @@ export default class MapHolder extends Component {
 
     componentDidUpdate(prevProps, prevState) {
 
-
-
         let that = this;
         const camera = this.props.card && this.props.card.camera;
         const prevId = prevProps && prevProps.card ? prevProps.card.id : undefined;
@@ -389,8 +387,6 @@ export default class MapHolder extends Component {
         if (this.esriLoaderContext && this.esriLoaderContext.worldGround && this.props.card && this.props.card.id !== prevId) {
 
             if (this.props.card.locations.length) {
-
-
 
                 const geojson = this.props.card.locations.map(d=> [d.longitude, d.latitude]);
 
@@ -408,6 +404,10 @@ export default class MapHolder extends Component {
                 });
 
             }
+
+
+
+
 
            /* if (this.props.card.camera && this.props.card.camera.stop && that.esriLoaderContext) {
                 this.routeRenderer.stop();
@@ -427,8 +427,16 @@ export default class MapHolder extends Component {
                that.esriLoaderContext.view.goTo(this.props.card.camera, { duration: 300});
 
               }
+        }
 
 
+        if (this.props.totalProgress !== prevProps.totalProgress) {
+
+            if (this.routeRenderer) {
+                console.log("****", this.props.totalProgress);
+                this.routeRenderer.setProgress(this.props.totalProgress);
+                this.needsRedraw = true;
+            }
 
         }
 
@@ -467,10 +475,11 @@ export default class MapHolder extends Component {
 
         let tweens_count = Object.keys(TWEEN._tweens).length;
 
-        if (tweens_count || this.animate.last_tweens_count != tweens_count) {
-            TWEEN.update(time);
+        if (this.needsRedraw ||
+            tweens_count || 
+            this.animate.last_tweens_count != tweens_count) {
 
-            //console.log(TWEEN);
+            TWEEN.update(time);
 
             if (
                 this.esriLoaderContext &&
@@ -479,6 +488,8 @@ export default class MapHolder extends Component {
                 this.esriLoaderContext.view._stage
             ) {
                 this.esriLoaderContext.externalRenderers.requestRender(this.esriLoaderContext.view);
+
+                this.needsRedraw = false;
             }
         }
 
@@ -494,6 +505,22 @@ export default class MapHolder extends Component {
         if (this.routeRenderer) {
 
             this.routeRenderer.setTrailLength(value);
+
+            this.needsRedraw = true;
+        }
+    }
+
+    routePercentageRangeInputChange(event) {
+
+        const value = parseFloat(event.target.value);
+
+        this.setState({routePercentageRangeInputValue: value});
+
+        if (this.routeRenderer) {
+
+            this.routeRenderer.setProgress(value);
+
+            this.needsRedraw = true;
         }
     }
 
@@ -507,13 +534,22 @@ export default class MapHolder extends Component {
                 className={'viewDiv'} />
 
             <input 
-                style = {{position:'absolute', top:'10px', left: '20px', zIndex : 100, width:'300px'}}
+                style = {{position:'fixed', top:'10px', left: '120px', zIndex : 999999, width:'300px'}}
                 id="tail_range_input" 
                 type="range" 
                 min="50" max="2000"
                 value={self.state.tailRangeInputValue} 
                 onChange={(event) => {self.tailRangeInputChange(event);}}
                 step="5"/>
+
+            <input 
+                style = {{position:'fixed', top:'50px', left: '120px', zIndex : 999999, width:'300px'}}
+                id="route_percentage_range_input" 
+                type="range" 
+                min="0" max="1"
+                value={self.state.routePercentageRangeInputValue} 
+                onChange={(event) => {self.routePercentageRangeInputChange(event);}}
+                step="0.001"/>
 
         </Fragment>);
     }
