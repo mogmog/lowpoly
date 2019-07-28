@@ -173,11 +173,19 @@ const StickyStyled = styled.div`
 
 class STWatcher extends React.Component {
 
+    state = {id : null};
+
     componentDidUpdate(prevProps, prevState, snapshot) {
 
-        if (this.props.progress > prevProps.progress) {
-            this.props.updateTotalProgress(this.props.progress - prevProps.progress);
-            //console.log(this.props.progress);
+
+
+       // console.log(this.props.event);
+      //  console.log(this.props.card.id, prevProps.card.id);
+       // console.log(prevProps.progress, this.props.progress)
+        if (  prevProps.event.type !==  'enter' && this.props.event.type ===  'enter' ) {
+            console.log('zero')
+            this.props.updateTotalProgress(this.props.progress, this.props.card );
+           // console.log(this.props.card);
         }
 
        /* /!*happens when a new card with progress 0 is hit*!/
@@ -213,7 +221,7 @@ class STWatcher extends React.Component {
 
 class App extends React.Component {
 
-  state = {st : 0.1, totalProgress : 0.0, showButtons : false, card : null, index : 0, visible : false, showCards : true, locations : []}
+  state = {currentCard : null, st : 0.1, totalProgress : 0.0, showButtons : false, card : null, index : 0, visible : false, showCards : true, locations : []}
 
   testTop = (index) => {
 
@@ -245,7 +253,7 @@ class App extends React.Component {
             <ApolloProvider client={client}>
 
                 {this.state.showCards && <AddButton onClick={() => this.setState({visible : true})}/> }
-                {!this.state.showCards && <SaveGPSButton card={this.state.card} camera={this.state.camera} finish={() => { this.setState({showCards: true})}  }/> }
+                {!this.state.showCards && <SaveGPSButton card={this.state.currentCard} camera={this.state.camera} finish={() => { this.setState({showCards: true})}  }/> }
 
                 <Query
                     query={GET_TRIP} >
@@ -259,7 +267,10 @@ class App extends React.Component {
 
                     const cards = data.trip[0].cards;
 
-                    if (!this.state.card) this.setState({card : cards[0]});
+                   /* if (!this.state.currentCard) {
+                        console.log('setting card');
+                        this.setState({currentCard : cards[0]});
+                    }*/
 
                     return <div >
 
@@ -279,7 +290,7 @@ class App extends React.Component {
 
                         </Drawer>
 
-                        <MapHolder totalProgress={this.state.totalProgress/10.0} showCards={this.state.showCards} updateCamera={(cam) => this.setState({camera : cam})} locations={this.state.locations} scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
+                        <MapHolder totalProgress={this.state.totalProgress} showCards={this.state.showCards} updateCamera={(cam) => this.setState({camera : cam})} locations={this.state.locations} scrollToTop={this.testTop} zoom={this.state.st} currentCard={this.state.currentCard}/>
 
                         <div >
                          <Controller ref={(c) => this.c = c}>
@@ -295,10 +306,10 @@ class App extends React.Component {
                                             return (
                                             <div id={`theid${index}`} className="sticky" style={{pointerEvents : (this.state.showCards ? 'all' : 'none'), 'opacity' : this.state.showCards ? 1 : 0.1, 'transition': 'opacity .55s ease-in-out' }} >
 
-                                                <STWatcher updateTotalProgress={(deltaprogress) => this.setState({totalProgress : (this.state.totalProgress + deltaprogress)})} progress={cardprogress} card={card} />
+                                                <STWatcher updateTotalProgress={(deltaprogress, card) => this.setState({totalProgress : deltaprogress, currentCard : card})} progress={cardprogress} card={card} event={event} />
 
                                                { card.type === 'Html' && <div className="smallsection" >
-                                                    <HtmlCard card={card} event={event} hideCards={() => this.setState({showCards : false})} setCard={(card) => { this.setState({card})}} > ️ </HtmlCard>
+                                                    <HtmlCard currentCard={this.state.currentCard} card={card} event={event} hideCards={() => this.setState({showCards : false})} setCard={(card) => { this.setState({card})}} > ️ </HtmlCard>
                                                 </div>}
 
                                                 { card.type === 'Image' && <div className="smallsection" >

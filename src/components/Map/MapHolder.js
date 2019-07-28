@@ -16,6 +16,7 @@ export default class MapHolder extends Component {
 
     state = {
         zoom : 0,
+        currentCard : {camera : null},
         tailRangeInputValue : 1200,
         routePercentageRangeInputValue : 0
     };
@@ -152,10 +153,10 @@ export default class MapHolder extends Component {
                                     canvas.height = height;
 
                                     context.fillStyle = 'rgba(255, 255, 255, 1)';
-                                    //context.fillStyle = 'white';
-                                    //context.globalAlpha = 0.5;
+                                    context.fillStyle = 'black';
+                                    context.globalAlpha = 1;
                                     context.fillRect(0, 0, width, height);
-                                    context.globalCompositeOperation = 'luminosity';
+                                    //context.globalCompositeOperation = 'luminosity';
                                     context.drawImage(image, 0, 0, width, height);
 
                                     return canvas;
@@ -380,6 +381,8 @@ export default class MapHolder extends Component {
 
     componentDidUpdate(prevProps, prevState) {
 
+        if (this.props.currentCard) console.log(this.props.currentCard.id);
+
         let that = this;
         const camera = this.props.card && this.props.card.camera;
         const prevId = prevProps && prevProps.card ? prevProps.card.id : undefined;
@@ -418,27 +421,36 @@ export default class MapHolder extends Component {
             }*/
 
             /*on camera change*/
-            if (this.props.card.camera && that.esriLoaderContext) {
 
-               var cam = that.esriLoaderContext.view.camera.clone();
+        }
 
-               cam.position = this.props.card.camera;
+        if (this.props.currentCard !== this.state.currentCard && that.esriLoaderContext) {
 
-               that.esriLoaderContext.view.goTo(this.props.card.camera, { duration: 300});
+            var cam = that.esriLoaderContext.view.camera.clone();
 
-              }
+            this.setState({currentCard : this.props.currentCard})
+
+           // s alert(1);
+
+            if (this.props.currentCard.camera) {
+                that.esriLoaderContext.view.goTo(this.props.currentCard.camera, { duration: 1600});
+            }
+            //cam.position = this.props.currentCard.camera;
+
+
+
         }
 
 
-        if (this.props.totalProgress !== prevProps.totalProgress) {
+       /* if (this.props.totalProgress !== prevProps.totalProgress) {
 
             if (this.routeRenderer) {
-                console.log("****", this.props.totalProgress);
+               // console.log("****", this.props.totalProgress);
                 this.routeRenderer.setProgress(this.props.totalProgress);
                 this.needsRedraw = true;
             }
 
-        }
+        }*/
 
         if (this.props.zoom !== prevProps.zoom) {
 

@@ -26,12 +26,14 @@ export default class ImageCard extends React.Component {
         this.setState({ zoom })
     }
 
+/*
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.event.type !== this.props.event.type && this.props.event.type === 'start') {
 
             this.props.setCard(this.props.card);
         }
     }
+*/
 
     render() {
 

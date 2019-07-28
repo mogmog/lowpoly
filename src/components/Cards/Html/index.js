@@ -8,12 +8,12 @@ import gql from "graphql-tag";
 
 class HtmlCard extends React.Component {
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
+   /* componentDidUpdate(prevProps, prevState, snapshot) {
 
         if (prevProps.event.type !== this.props.event.type && this.props.event.type === 'start') {
                this.props.setCard(this.props.card);
         }
-    }
+    }*/
 
     render() {
 
