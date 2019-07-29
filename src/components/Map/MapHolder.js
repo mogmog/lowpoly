@@ -367,6 +367,8 @@ export default class MapHolder extends Component {
         if (tweens_count || this.animate.last_tweens_count != tweens_count) {
             TWEEN.update(time);
 
+            console.log(time)
+
             if (
                 this.esriLoaderContext &&
                 this.esriLoaderContext.externalRenderers &&

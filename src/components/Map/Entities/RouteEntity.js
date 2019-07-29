@@ -46,7 +46,7 @@ export default class RouteEntity extends THREE.Group {
     let options = { tolerance: simplificationTolerance, highQuality: true };
     let simplified = turf.simplify(geojson, options);
 
-    const zAddition = 100;
+    const zAddition = 70;
 
     simplified.geometry.coordinates.forEach(x => {
       let pos = [0, 0, 0];
@@ -79,17 +79,17 @@ export default class RouteEntity extends THREE.Group {
       color: 0xffdb58,
       depthWrite: false,
       depthTest: true,
-      depthFunc: THREE.AlwaysDepth,
+      depthFunc: THREE.NeverDepth,
     });
 
     const materialAnim = new MeshPhongCustomMaterial({
       color: 0xffdb58,
       side: THREE.FrontSide,
       transparent: true,
-      opacity: 0.8,
+      opacity: 0.85,
       depthWrite: false,
       depthTest: true,
-      depthFunc: THREE.AlwaysDepth,
+      depthFunc: THREE.NeverDepth,
     });
 
     this.route1 = new THREE.Mesh(geometry, material);

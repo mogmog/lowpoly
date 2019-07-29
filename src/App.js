@@ -319,7 +319,7 @@ class App extends React.Component {
                                                 <STWatcher updateP={() => this.setState({prog : cardprogress})} updateTotalProgress={(deltaprogress, card) => this.setState({totalProgress : cardprogress, currentCard : card})} progress={cardprogress} card={card} event={event} />
 
                                                { card.type === 'Html' && <div className="smallsection" >
-                                                    <HtmlCard clear={<ClearGPSButton finish={()=> {console.log(refetch); refetch() } } card={card}/>} cardprogress={this.state.prog} currentCard={this.state.currentCard} card={card} event={event} hideCards={() => this.setState({showCards : false})} setCard={(card) => { this.setState({card})}} > ️ </HtmlCard>
+                                                    <HtmlCard clear={<ClearGPSButton finish={()=> { refetch() } } card={card}/>} cardprogress={this.state.prog} currentCard={this.state.currentCard} card={card} event={event} hideCards={() => this.setState({showCards : false})} setCard={(card) => { this.setState({card})}} > ️ </HtmlCard>
                                                 </div>}
 
                                                 { card.type === 'Image' && <div className="smallsection" >

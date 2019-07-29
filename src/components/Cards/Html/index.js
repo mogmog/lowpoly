@@ -38,8 +38,9 @@ class HtmlCard extends React.Component {
 
                     return <CardWrapper clear={clear} card={this.props.card} update={update} clearMap={this.props.clearMap} hideCards={this.props.hideCards}>
                             <div className={'htmlcard'} >
-
+                                <pre>{this.props.cardprogress} </pre>
                                 <div dangerouslySetInnerHTML={{ __html: this.props.card.content.html }}/>
+                                <pre style={{position : 'absolute', textAlign : 'bottom'}}>{this.props.cardprogress} </pre>
                             </div>
                         </CardWrapper>
                 }}

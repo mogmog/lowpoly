@@ -8,7 +8,7 @@ import * as turf from '@turf/turf';
 
 import AbstractRenderer from './AbstractRenderer';
 
-import RouteEntity from '../Entities/RouteEntityMesh';
+import RouteEntity from '../Entities/RouteEntity';
 //import RouteEntity from '../Entities/RouteEntity';
 
 
