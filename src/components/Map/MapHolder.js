@@ -197,13 +197,7 @@ export default class MapHolder extends Component {
                         alphaCompositingEnabled: true,
 
 
-                        camera : {position: {
-
-                            latitude:  54.38763,
-                            longitude: -2.823379,
-                            z: 1200000,
-                            spatialReference: { wkid: 3857 }
-                        }},
+                        camera : {"position":{"spatialReference":{"latestWkid":3857,"wkid":102100},"x":-307391.4364895002,"y":7216826.400379283,"z":11583.47221267689},"heading":326.65066251089536,"tilt":60.95428259540638},
 
 
                         Xcamera: {"position": {"spatialReference":{"latestWkid":3857,"wkid":102100},"x":2277974.911703386,"y":5215285.135338508,"z":2399.7157164365053}},
@@ -229,6 +223,7 @@ export default class MapHolder extends Component {
                     view.watch('camera', function(newValue, oldValue, property, object) {
                         if (!self.props.showCards) {
                             self.props.updateCamera(newValue);
+                            console.log(newValue);
                         }
 
                     });
