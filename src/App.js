@@ -117,10 +117,6 @@ const StickyStyled = styled.div`
    
     font-size: 2.7em;
     color: white;
-    margin: 20px;
-    
-    
-  
   }
   
   .sticky, .sticky2 {
