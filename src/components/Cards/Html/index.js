@@ -17,7 +17,7 @@ class HtmlCard extends React.Component {
 
     render() {
 
-        const {event} = this.props;
+        const {event, clear} = this.props;
 
         const UPDATE_CARD_CONTENT = gql`
             mutation updatecard($id, : Int!, $content : jsonb, $height : String){
@@ -36,9 +36,9 @@ class HtmlCard extends React.Component {
             <Mutation mutation={UPDATE_CARD_CONTENT}>
                 {(update, { data }) => {
 
-                    return <CardWrapper card={this.props.card} update={update} hideCards={this.props.hideCards}>
+                    return <CardWrapper clear={clear} card={this.props.card} update={update} clearMap={this.props.clearMap} hideCards={this.props.hideCards}>
                             <div className={'htmlcard'} >
-                                <pre> {JSON.stringify(this.props.event)} </pre>
+
                                 <div dangerouslySetInnerHTML={{ __html: this.props.card.content.html }}/>
                             </div>
                         </CardWrapper>

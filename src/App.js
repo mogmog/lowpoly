@@ -11,6 +11,7 @@ import { TweenMax } from 'gsap/all';
 
 import AddButton from './components/AddButton'
 import SaveGPSButton from './components/SaveGPSButton'
+import ClearGPSButton from './components/ClearGPSButton'
 
 //import Logo from '../public/svg/mountain.svg';
 
@@ -44,7 +45,13 @@ const GET_TRIP = gql`query {
     
     trip(where: {id: {_eq: 1}}) {
         id
-        
+        locations(order_by: {date: desc}) {
+            latitude
+            longitude
+            date
+
+        }
+
         cards(order_by: {id : asc}) {
             camera
             type
@@ -177,13 +184,16 @@ class STWatcher extends React.Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
 
+if (this.props.progress !== prevProps.progress) {
+    this.props.updateP(this.props.progress);
+}
 
 
        // console.log(this.props.event);
       //  console.log(this.props.card.id, prevProps.card.id);
        // console.log(prevProps.progress, this.props.progress)
         if (  prevProps.event.type !==  'enter' && this.props.event.type ===  'enter' ) {
-            console.log('zero')
+           // console.log('zero')
             this.props.updateTotalProgress(this.props.progress, this.props.card );
            // console.log(this.props.card);
         }
@@ -221,7 +231,7 @@ class STWatcher extends React.Component {
 
 class App extends React.Component {
 
-  state = {currentCard : null, st : 0.1, totalProgress : 0.0, showButtons : false, card : null, index : 0, visible : false, showCards : true, locations : []}
+  state = {prog : 0, currentCard : null, st : 0.1, totalProgress : 0.0, showButtons : false, card : null, index : 0, visible : false, showCards : true, locations : []}
 
   testTop = (index) => {
 
@@ -258,7 +268,7 @@ class App extends React.Component {
                 <Query
                     query={GET_TRIP} >
 
-                {({ loading, error, data }) => {
+                {({ loading, error, data, refetch }) => {
 
                     if (loading) return <p>Loading...</p>;
                     if (error) return <p>Error :(</p>;
@@ -274,7 +284,7 @@ class App extends React.Component {
 
                     return <div >
 
-                        <pre style={{position : 'fixed'}}>{this.state.totalProgress / cards.length} </pre>
+                       {/* <pre style={{position : 'fixed'}}>{this.state.totalProgress / cards.length} </pre>*/}
 
                         <Drawer
                             title="Add"
@@ -290,7 +300,7 @@ class App extends React.Component {
 
                         </Drawer>
 
-                        <MapHolder totalProgress={this.state.totalProgress} showCards={this.state.showCards} updateCamera={(cam) => this.setState({camera : cam})} locations={this.state.locations} scrollToTop={this.testTop} zoom={this.state.st} currentCard={this.state.currentCard}/>
+                        <MapHolder totalProgress={this.state.prog} showCards={this.state.showCards} updateCamera={(cam) => this.setState({camera : cam})} locations={data.trip[0].locations} scrollToTop={this.testTop} zoom={this.state.st} currentCard={this.state.currentCard}/>
 
                         <div >
                          <Controller ref={(c) => this.c = c}>
@@ -306,14 +316,14 @@ class App extends React.Component {
                                             return (
                                             <div id={`theid${index}`} className="sticky" style={{pointerEvents : (this.state.showCards ? 'all' : 'none'), 'opacity' : this.state.showCards ? 1 : 0.1, 'transition': 'opacity .55s ease-in-out' }} >
 
-                                                <STWatcher updateTotalProgress={(deltaprogress, card) => this.setState({totalProgress : deltaprogress, currentCard : card})} progress={cardprogress} card={card} event={event} />
+                                                <STWatcher updateP={() => this.setState({prog : cardprogress})} updateTotalProgress={(deltaprogress, card) => this.setState({totalProgress : cardprogress, currentCard : card})} progress={cardprogress} card={card} event={event} />
 
                                                { card.type === 'Html' && <div className="smallsection" >
-                                                    <HtmlCard currentCard={this.state.currentCard} card={card} event={event} hideCards={() => this.setState({showCards : false})} setCard={(card) => { this.setState({card})}} > ️ </HtmlCard>
+                                                    <HtmlCard clear={<ClearGPSButton finish={()=> {console.log(refetch); refetch() } } card={card}/>} cardprogress={this.state.prog} currentCard={this.state.currentCard} card={card} event={event} hideCards={() => this.setState({showCards : false})} setCard={(card) => { this.setState({card})}} > ️ </HtmlCard>
                                                 </div>}
 
                                                 { card.type === 'Image' && <div className="smallsection" >
-                                                    <ImageCard  card={card} event={event} hideCards={() => this.setState({showCards : false})} setCard={(card) => { this.setState({card})}} />
+                                                    <ImageCard  clear={<ClearGPSButton finish={refetch} card={card}/>} card={card} event={event} hideCards={() => this.setState({showCards : false})} setCard={(card) => { this.setState({card})}} />
                                                 </div>}
 
                                                 { card.type === 'Graphic' && <div className="smallsection" style={{width : '100%'}}>
@@ -327,7 +337,7 @@ class App extends React.Component {
                                                 </div>}
 
                                                 { card.type === 'Spacer' && <div className="smallsection" >
-                                                    <SpacerCard hideCards={() => this.setState({showCards : false})} card={card} event={event} setCard={(card) => { this.setState({card})}} />
+                                                    <SpacerCard clear={<ClearGPSButton finish={refetch} card={card}/>} hideCards={() => this.setState({showCards : false})} card={card} event={event} setCard={(card) => { this.setState({card})}} />
                                                  </div>}
 
 

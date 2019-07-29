@@ -54,7 +54,7 @@ export default class ImageCard extends React.Component {
             <Mutation mutation={UPDATE_CARD_CONTENT}>
                 {(update, { data }) => {
 
-                    return <CardWrapper update={update} card={this.props.card} hideCards={this.props.hideCards}>
+                    return <CardWrapper clear={this.props.clear} update={update} card={this.props.card} hideCards={this.props.hideCards}>
 
                             <div>
 

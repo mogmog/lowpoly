@@ -283,7 +283,7 @@ export default class RouteRenderer extends AbstractRenderer {
 
   setProgress(value) {
 
-    if (this.meshline.setProgress) {
+    if (this.meshline && this.meshline.setProgress) {
 
       this.meshline.setProgress(0);
 
