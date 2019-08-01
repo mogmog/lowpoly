@@ -5,16 +5,22 @@
 //
 
 import * as _three from 'three';
-import * as TWEEN from '@tweenjs/tween.js';
 import * as turf from "@turf/turf/index";
 
 const THREE = _three; // extension fix - ad hoc
 
 export default class RouteEntity extends THREE.Group {
 
-  constructor () {
+  constructor ( config ) {
 
     super();
+
+    this.config = Object.assign({
+      color : 0xffdb58,
+      transparent : true,
+      opacityVisible : 0.8, 
+      opacityHidden : 0.2
+    }, config || {});
 
     this.currentPersentage = -1;
   }
@@ -46,7 +52,7 @@ export default class RouteEntity extends THREE.Group {
     let options = { tolerance: simplificationTolerance, highQuality: true };
     let simplified = turf.simplify(geojson, options);
 
-    const zAddition = 70;
+    const zAddition = 150;
 
     simplified.geometry.coordinates.forEach(x => {
       let pos = [0, 0, 0];
@@ -74,22 +80,16 @@ export default class RouteEntity extends THREE.Group {
 
     const material = new THREE.MeshPhongMaterial({
       side: THREE.FrontSide,
-      transparent: true,
-      opacity: 0.1,
-      color: 0xffdb58,
-      depthWrite: false,
-      depthTest: true,
-      depthFunc: THREE.NeverDepth,
+      transparent: this.config.transparent,
+      opacity: this.config.opacityHidden,
+      color: this.config.color,
     });
 
     const materialAnim = new MeshPhongCustomMaterial({
-      color: 0xffdb58,
       side: THREE.FrontSide,
-      transparent: true,
-      opacity: 0.85,
-      depthWrite: false,
-      depthTest: true,
-      depthFunc: THREE.NeverDepth,
+      transparent: this.config.transparent,
+      opacity: this.config.opacityVisible,
+      color: this.config.color,
     });
 
     this.route1 = new THREE.Mesh(geometry, material);

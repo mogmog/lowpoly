@@ -4,16 +4,16 @@
 
 import * as THREE from 'three';
 import * as TWEEN from '@tweenjs/tween.js';
-import * as turf from '@turf/turf';
 
 import AbstractRenderer from './AbstractRenderer';
 
 import RouteEntity from '../Entities/RouteEntity';
-//import RouteEntity from '../Entities/RouteEntity';
+import RouteEntityMesh from '../Entities/RouteEntityMesh';
 
 
 export default class RouteRenderer extends AbstractRenderer {
-  constructor(esriLoaderContext , paths) {
+
+  constructor(esriLoaderContext, paths) {
     super();
 
     this.esriLoaderContext = esriLoaderContext;
@@ -23,7 +23,6 @@ export default class RouteRenderer extends AbstractRenderer {
     this.scene = null; // three.js scene
 
     this.geo_curve_path = paths;
-
   }
 
   /**
@@ -31,19 +30,12 @@ export default class RouteRenderer extends AbstractRenderer {
    */
   setup(context)
   {
-
     var self = this;
 
     var externalRenderers = this.esriLoaderContext.externalRenderers;
     var SpatialReference = this.esriLoaderContext.SpatialReference;
 
     var view = context.view;
-
-
-
-
-
-
 
     // initialize the three.js renderer
     //////////////////////////////////////////////////////////////////////////////////////
@@ -75,8 +67,6 @@ export default class RouteRenderer extends AbstractRenderer {
       }
     };
 
-
-
     ///////////////////////////////////////////////////////////////////////////////////////
 
     self.scene = new THREE.Scene();
@@ -89,24 +79,23 @@ export default class RouteRenderer extends AbstractRenderer {
      this.camera.lookAt(new THREE.Vector3(cam.center[0], cam.center[1], cam.center[2]));
      // Projection matrix can be copied directly
      this.camera.projectionMatrix.fromArray(cam.projectionMatrix);
- */
+    */
 
-    //this.route = new RouteEntityMesh(this.geo_curve_path);
+    // this.route = new RouteEntityMesh();
     // this.route.updateRoute(this.geo_curve_path, externalRenderers, view, SpatialReference, cam);
 
-    //this.meshline = new RouteEntity();
-    this.meshline = new RouteEntity();
+    this.meshline = new RouteEntity({
+      opacityVisible : 0.8, 
+      opacityHidden : 0.0
+    });
     this.meshline.updateRoute(this.geo_curve_path[0], externalRenderers, view, SpatialReference, cam);
+    this.meshline.setProgress(0);
 
     this.start();
 
     // cleanup after ourselfs
     context.resetWebGLState();
   }
-
-
-
-
 
   render(context) {
 
@@ -131,45 +120,67 @@ export default class RouteRenderer extends AbstractRenderer {
 
     this.renderer.render(this.scene, this.camera);
 
-
-
     // cleanup
     context.resetWebGLState();
   }
 
   start() {
-//alert(1)
-    // this.scene.add(this.route);
+
     this.scene.add(this.meshline);
 
     this.scene.add(new THREE.AmbientLight(0xeeeeee));
 
-    //var route     = this.route;
-    var meshline  = this.meshline;
+    //const meshline = this.meshline;
 
-    var cam = this.camera;
+    /*meshline.tween = new TWEEN.Tween(
+      {
+        persent: 0,
+      })
+      .to(
+          {
+            persent : 1
+          },
+          150000)
+      .onUpdate(
+          function(tween_obj)
+          { 
+            meshline.setProgress(tween_obj.persent);
+          })
+      .onComplete(function() {
 
-    meshline.tween = new TWEEN.Tween(
-        {
-          persent: 0,
-        })
-        .to(
-            {
-              persent : 1
-            },
-            150000)
-        .onUpdate(
-            function(tween_obj)
-            { meshline.setProgress(tween_obj.persent);
-            })
-        .onComplete(function() {
+        delete meshline.tween;
+      })
+      .delay(2000).start();*/
+  }
 
-          delete meshline.tween;
-        }).delay(2000).start();
+  setTrailLength(value) {
 
+    value = parseFloat(value) || 0.0;
 
+    if (this.meshline instanceof RouteEntityMesh) {
 
+      this.meshline.setTrailLength(value);
+    }
+  }
 
+  setProgress(value) {
 
+    value = parseFloat(value) || 0.0;
+
+    if (this.meshline instanceof RouteEntityMesh) {  
+
+      this.meshline.setProgress(0);
+
+      this.meshline.createMeshLine();
+
+      for (let i = 0; i < value; i += 0.001 ){
+
+        this.meshline.setProgress(i);
+      }
+    }
+    else if (this.meshline instanceof RouteEntity) {
+
+      this.meshline.setProgress(value);
+    }
   }
 }

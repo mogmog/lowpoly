@@ -14,15 +14,18 @@ const options = {
 
 export default class MapHolder extends Component {
 
-    state = {zoom : 0, currentCard : {camera : null}};
+    state = {
+        zoom : 0, 
+        currentCard : {camera : null},
+        routeTailPercentage : 1,
+        routeLengthPercentage : 0
+    };
 
     constructor() {
         super();
+        this.needsRedraw = true;
         this.animate = this.animate.bind(this);
     }
-
-
-
 
     esriLoad() {
         var self = this;
@@ -79,7 +82,6 @@ export default class MapHolder extends Component {
                      geometryEngine,
                      Graphic,
                  ]) => {
-
 
                     const ExaggeratedElevationLayer = BaseElevationLayer.createSubclass({
                         properties: {
@@ -177,8 +179,6 @@ export default class MapHolder extends Component {
                         visible: false,
                     });
 
-
-
                     const map = new WebMap({
 
                         ground: {
@@ -186,7 +186,6 @@ export default class MapHolder extends Component {
                         },
                         layers: [greyTileLayer],
                     });
-
 
                     const view = new SceneView({
                         map: map,
@@ -196,9 +195,7 @@ export default class MapHolder extends Component {
 
                         alphaCompositingEnabled: true,
 
-
                         camera : {"position":{"spatialReference":{"latestWkid":3857,"wkid":102100},"x":-307391.4364895002,"y":7216826.400379283,"z":11583.47221267689},"heading":326.65066251089536,"tilt":60.95428259540638},
-
 
                         Xcamera: {"position": {"spatialReference":{"latestWkid":3857,"wkid":102100},"x":2277974.911703386,"y":5215285.135338508,"z":2399.7157164365053}},
 
@@ -206,7 +203,6 @@ export default class MapHolder extends Component {
                             components: []
                         },
                         environment: {
-
 
                             background: {
                                 type: "color",
@@ -275,8 +271,6 @@ export default class MapHolder extends Component {
                     var polyline = {
                         type: 'polyline',
                         paths: geojson,
-
-
                     };
 
                     worldGround.queryElevation(new Polyline(polyline)).then(result => {
@@ -327,23 +321,17 @@ export default class MapHolder extends Component {
         let that = this;
         const camera = this.props.card && this.props.card.camera;
 
-
         if (this.props.currentCard !== this.state.currentCard && that.esriLoaderContext) {
 
             var cam = that.esriLoaderContext.view.camera.clone();
 
             this.setState({currentCard : this.props.currentCard})
 
-            // s alert(1);
-
-            if (this.props.currentCard.camera) {
+            if (this.props.currentCard && this.props.currentCard.camera) {
                 that.esriLoaderContext.view.goTo(this.props.currentCard.camera, { duration: 1600});
             }
-
         }
-
     }
-
 
     componentDidMount() {
         this.esriLoad();
@@ -354,15 +342,16 @@ export default class MapHolder extends Component {
 
         window.requestAnimationFrame(this.animate);
 
-        //console.log(12);
         if (!this.animate.last_tweens_count) this.animate.last_tweens_count = 0;
 
         let tweens_count = Object.keys(TWEEN._tweens).length;
 
-        if (tweens_count || this.animate.last_tweens_count != tweens_count) {
-            TWEEN.update(time);
+        if (this.needsRedraw || tweens_count || this.animate.last_tweens_count != tweens_count) {
 
-            console.log(time)
+            if (tweens_count || this.animate.last_tweens_count != tweens_count) {
+
+                TWEEN.update(time);
+            }
 
             if (
                 this.esriLoaderContext &&
@@ -371,13 +360,68 @@ export default class MapHolder extends Component {
                 this.esriLoaderContext.view._stage
             ) {
                 this.esriLoaderContext.externalRenderers.requestRender(this.esriLoaderContext.view);
+
+                this.needsRedraw = false;
             }
         }
 
         this.animate.last_tweens_count = tweens_count;
     }
 
+    onTailLengthInputChange(event) {
+
+        const value = parseFloat(event.target.value) || 0.0;
+
+        this.setState({routeTailPercentage: value});
+
+        if (this.routeRenderer) {
+
+            this.routeRenderer.setTrailLength(value);
+
+            this.needsRedraw = true;
+        }
+    }
+
+    onRouteLengthInputChange(event) {
+
+        const value = parseFloat(event.target.value) || 0.0;
+
+        this.setState({routeLengthPercentage: value});
+
+        if (this.routeRenderer) {
+
+            this.routeRenderer.setProgress(value);
+
+            this.needsRedraw = true;
+        }
+    }
+
     render() {
-        return <Fragment><div id="viewDiv" className={'viewDiv'} /></Fragment>;
+
+        const self = this;
+        return (
+        <Fragment>
+
+            <div 
+                id="viewDiv" 
+                className={'viewDiv'} />
+
+            <input 
+                style = {{position:'fixed', top:'10px', left: '120px', zIndex : 999999, width:'300px'}}
+                type="range" 
+                min="0" max="1"
+                value={self.state.routeLengthPercentage} 
+                onChange={(event) => {self.onRouteLengthInputChange(event);}}
+                step="0.005"/>
+
+        </Fragment>);
+
+        /*<input 
+        style = {{position:'fixed', top:'10px', left: '120px', zIndex : 999999, width:'300px'}}
+        type="range" 
+        min="0" max="1"
+        value={self.state.routeTailPercentage} 
+        onChange={(event) => {self.onTailLengthInputChange(event);}}
+        step="0.005"/>*/
     }
 }
