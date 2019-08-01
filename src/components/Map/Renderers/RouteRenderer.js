@@ -157,10 +157,7 @@ export default class RouteRenderer extends AbstractRenderer {
 
     value = parseFloat(value) || 0.0;
 
-    if (this.meshline instanceof RouteEntityMesh) {
-
-      this.meshline.setTrailLength(value);
-    }
+    this.meshline.setTrailLength(value);
   }
 
   setProgress(value) {

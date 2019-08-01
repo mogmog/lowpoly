@@ -22,7 +22,8 @@ export default class RouteEntity extends THREE.Group {
       opacityHidden : 0.2
     }, config || {});
 
-    this.currentPersentage = -1;
+    this.currentPersentage = -1.0;
+    this.currentTrailLength = 1.0;
   }
 
   updateRoute(path, externalRenderers, view, SpatialReference)
@@ -103,10 +104,16 @@ export default class RouteEntity extends THREE.Group {
         this.material.uniforms.progress.value = persentage;
     };
 
+    this.route2.setTrailLength = function(value) { // 0.0 - 1.0
+      this.material.uniforms.trail.value = value;
+  };
+
     if (this.currentPersentage === -1)
       this.route2.setProgress(1.0);
     else
       this.route2.setProgress(this.currentPersentage);
+
+    this.route2.setTrailLength(this.currentTrailLength);
 
     this.add(this.route1);
     this.add(this.route2);
@@ -118,6 +125,14 @@ export default class RouteEntity extends THREE.Group {
 
     if (this.route2)
       this.route2.setProgress(persentage);
+  }
+
+  setTrailLength(value) { // 0.0 - 1.0
+
+    this.currentTrailLength = value;
+
+    if (this.route2)
+      this.route2.setTrailLength(value);
   }
 }
 
@@ -150,6 +165,7 @@ function MeshPhongCustomMaterial( parameters ) {
   ]);
 
   this.uniforms.progress = { value : 1.0 };
+  this.uniforms.trail = { value : 1.0 };
 
   this.vertexShader = `
     #define PHONG
@@ -218,6 +234,7 @@ function MeshPhongCustomMaterial( parameters ) {
       uniform float opacity;
 
       uniform float progress; // custom progress route
+      uniform float trail; // custom trail route
 
       #include <common>
       #include <packing>
@@ -253,6 +270,15 @@ function MeshPhongCustomMaterial( parameters ) {
         {
           discard;
           return;
+        }
+
+        if (trail < 1.0)
+        {
+          if (v_current_length_normalized < progress - trail)
+          {
+            discard;
+            return;
+          }
         }
 
         vec4 diffuseColor = vec4( diffuse, opacity );
@@ -312,6 +338,7 @@ THREE.ExtrudeBufferGeometryWithLength = function( shapes, options ) {
   var verticesArray = [];
   var uvArray = [];
   var currentLengthNormalizedArray = [];
+  var currentWidthNormalizedArray = [];
 
   for ( var i = 0, l = shapes.length; i < l; i ++ ) {
 
@@ -324,6 +351,7 @@ THREE.ExtrudeBufferGeometryWithLength = function( shapes, options ) {
 
   this.addAttribute( 'position', new THREE.Float32BufferAttribute( verticesArray, 3 ) );
   this.addAttribute( 'current_length_normalized', new THREE.Float32BufferAttribute( currentLengthNormalizedArray, 1 ) );
+  this.addAttribute( 'current_width_normalized', new THREE.Float32BufferAttribute( currentWidthNormalizedArray, 1 ) );
   this.addAttribute( 'uv', new THREE.Float32BufferAttribute( uvArray, 2 ) );
 
   this.computeVertexNormals();
@@ -766,7 +794,7 @@ THREE.ExtrudeBufferGeometryWithLength = function( shapes, options ) {
 
         position2.copy( extrudePts[ 0 ] ).add( normal ).add( binormal );
 
-        let length = currentLength / fullLength;
+        let length = 0.0;// currentLength / fullLength;
 
         v( position2.x, position2.y, position2.z, length);
 
@@ -803,9 +831,11 @@ THREE.ExtrudeBufferGeometryWithLength = function( shapes, options ) {
 
           position2.copy( extrudePts[ s ] ).add( normal ).add( binormal );
 
-          let length = currentLength / fullLength;
+          const length = currentLength / fullLength;
+          
+          const width = 0;
 
-          v( position2.x, position2.y, position2.z, length );
+          v( position2.x, position2.y, position2.z, length, width );
 
         }
 

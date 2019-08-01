@@ -17,8 +17,8 @@ export default class MapHolder extends Component {
     state = {
         zoom : 0, 
         currentCard : {camera : null},
-        routeTailPercentage : 1,
-        routeLengthPercentage : 0
+        routeTailPercentage : 1.0,
+        routeLengthPercentage : 0.0
     };
 
     constructor() {
@@ -407,21 +407,21 @@ export default class MapHolder extends Component {
                 className={'viewDiv'} />
 
             <input 
-                style = {{position:'fixed', top:'10px', left: '120px', zIndex : 999999, width:'300px'}}
+                style = {{position:'fixed', top:'10px', left: '20px', zIndex : 999999, width:'400px'}}
                 type="range" 
                 min="0" max="1"
                 value={self.state.routeLengthPercentage} 
                 onChange={(event) => {self.onRouteLengthInputChange(event);}}
                 step="0.005"/>
 
-        </Fragment>);
+            <input 
+                style = {{position:'fixed', top:'50px', left: '20px', zIndex : 999999, width:'400px'}}
+                type="range" 
+                min="0" max="1"
+                value={self.state.routeTailPercentage} 
+                onChange={(event) => {self.onTailLengthInputChange(event);}}
+                step="0.001"/>
 
-        /*<input 
-        style = {{position:'fixed', top:'10px', left: '120px', zIndex : 999999, width:'300px'}}
-        type="range" 
-        min="0" max="1"
-        value={self.state.routeTailPercentage} 
-        onChange={(event) => {self.onTailLengthInputChange(event);}}
-        step="0.005"/>*/
+        </Fragment>);
     }
 }
