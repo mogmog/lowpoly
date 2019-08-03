@@ -144,7 +144,7 @@ export default class RouteRenderer extends AbstractRenderer {
       .onUpdate(
           function(tween_obj)
           { 
-            meshline.setProgress(tween_obj.persent);
+            meshline.setProgress(tween_obj.persent, false);
           })
       .onComplete(function() {
 
@@ -164,22 +164,6 @@ export default class RouteRenderer extends AbstractRenderer {
 
     value = parseFloat(value) || 0.0;
 
-    if (this.meshline instanceof RouteEntityMesh) { 
-      
-      this.meshline.setProgress(value);
-
-      this.meshline.setProgress(0);
-
-      this.meshline.createMeshLine();
-
-      for (let i = 0; i < value; i += 0.001 ){
-
-        this.meshline.setProgress(i);
-      }
-    }
-    else if (this.meshline instanceof RouteEntity) {
-
-      this.meshline.setProgress(value);
-    }
+    this.meshline.setProgress(value);
   }
 }

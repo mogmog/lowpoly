@@ -281,7 +281,7 @@ export default class RouteRenderer extends AbstractRenderer {
 
   setTrailLength(value) {
 
-    if (this.meshline && this.meshline.setTrailLength) {
+    if (this.meshline) {
 
       this.meshline.setTrailLength(value);
     }
@@ -289,23 +289,9 @@ export default class RouteRenderer extends AbstractRenderer {
 
   setProgress(value) {
 
-    if (this.meshline.setProgress) {
+    if (this.meshline) {
 
-      if (this.meshline instanceof RouteEntityMesh) {  
-
-        this.meshline.setProgress(0);
-
-        this.meshline.createMeshLine();
-
-        for (let i = 0; i < value; i += 0.001 ){
-
-          this.meshline.setProgress(i);
-        }
-      }
-      else if (this.meshline instanceof RouteEntity) {
-
-        this.meshline.setProgress(value);
-      }
+      this.meshline.setProgress(value);
     }
   }
 

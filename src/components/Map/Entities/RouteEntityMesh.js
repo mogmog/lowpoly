@@ -6,6 +6,8 @@ import THREE_MeshLine from './THREE.MeshLine';
 const MeshLine = THREE_MeshLine.MeshLine;
 const MeshLineMaterial = THREE_MeshLine.MeshLineMaterial;
 
+const max_trail_length = 2000;
+
 export default class RouteEntityMesh extends THREE.Group {
 
   constructor(){
@@ -17,34 +19,44 @@ export default class RouteEntityMesh extends THREE.Group {
       new THREE.Vector3()
     ]);
 
-    this.trail_length = 1;
+    this.trail_length = max_trail_length;
     this.trail_progress = 0;
   }
 
-  setProgress(value) {
+  setProgress(value, bForce) {
+
+    if (bForce === undefined) {
+
+      bForce = true;
+    }
+
+    this.trail_progress = 0;
+
+    if (bForce) {
+
+      this.createMeshLine();
+    }
+
+    for (let i = 0; i < value; i += 0.001 ){
+
+      this.trail_progress = i;
+  
+      const v = new THREE.Vector3();
+  
+      this.trail_curve.getPoint(i, v);
+  
+      if (this.trail_line) {
+  
+        this.trail_line.advance( v );
+      }
+    }
 
     this.trail_progress = value;
-  
-    const v = new THREE.Vector3();
-
-    this.trail_curve.getPoint(value, v);
-
-    if (this.trail_line) {
-
-      this.trail_line.advance( v );
-    }
   }
 
   setTrailLength(value) { // 0 - 1
 
-    if (true) {
-
-      return;
-    }
-
-    this.trail_length = value;
-  
-    this.createMeshLine();
+    this.trail_length = value * max_trail_length;
 
     this.setProgress(this.trail_progress);
   }
@@ -69,8 +81,6 @@ export default class RouteEntityMesh extends THREE.Group {
 
     this.trail_curve = new THREE.CatmullRomCurve3(curve_path);
 
-    this.createMeshLine();
-
     this.setProgress(this.trail_progress);
   }
 
@@ -94,17 +104,22 @@ export default class RouteEntityMesh extends THREE.Group {
 
     this.trail_curve.getPoint(this.trail_progress, start_v);
 
-    for (let i = 0; i < 1900; i++) {
+    for (let i = 0; i < this.trail_length; i++) {
 
       this.trail_geometry.vertices.push(start_v.clone());
     }
 
     // Create the line mesh
     this.trail_line = new MeshLine();
-    
-    // this.trail_line.setGeometry( trail_geometry,  function( p ) { return p; }  ); // makes width taper
 
-    this.trail_line.setGeometry( this.trail_geometry );
+    if (this.trail_length === max_trail_length) {
+
+      this.trail_line.setGeometry( this.trail_geometry );
+    }
+    else {
+
+      this.trail_line.setGeometry( this.trail_geometry,  function( p ) { return p; }  ); // makes width taper
+    }
     
     this.trail_material = this.createMaterial();
 
