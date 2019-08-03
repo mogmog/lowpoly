@@ -145,6 +145,9 @@ export default class RouteEntity extends THREE.Group {
       this.route2.setProgress(persentage);
   }
 
+  setGlow(value) { // 0 - 1
+  }
+
   setTrailLength(value) { // 0.0 - 1.0
 
     this.currentTrailLength = value;

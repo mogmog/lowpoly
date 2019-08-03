@@ -18,7 +18,8 @@ export default class MapHolder extends Component {
         zoom : 0, 
         currentCard : {camera : null},
         routeTailPercentage : 1.0,
-        routeLengthPercentage : 0.0
+        routeLengthPercentage : 0.0,
+        routeGlowPercentage : 0.0,
     };
 
     constructor() {
@@ -396,6 +397,20 @@ export default class MapHolder extends Component {
         }
     }
 
+    onGlowInputChange(event) {
+
+        const value = parseFloat(event.target.value) || 0.0;
+
+        this.setState({routeGlowPercentage: value});
+
+        if (this.routeRenderer) {
+
+            this.routeRenderer.setGlow(value);
+
+            this.needsRedraw = true;
+        }
+    }
+
     render() {
 
         const self = this;
@@ -420,6 +435,14 @@ export default class MapHolder extends Component {
                 min="0" max="1"
                 value={self.state.routeTailPercentage} 
                 onChange={(event) => {self.onTailLengthInputChange(event);}}
+                step="0.001"/>
+
+            <input 
+                style = {{position:'fixed', top:'90px', left: '20px', zIndex : 999999, width:'400px'}}
+                type="range" 
+                min="0" max="1"
+                value={self.state.routeGlowPercentage} 
+                onChange={(event) => {self.onGlowInputChange(event);}}
                 step="0.001"/>
 
         </Fragment>);

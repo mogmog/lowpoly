@@ -21,6 +21,7 @@ export default class RouteEntityMesh extends THREE.Group {
 
     this.trail_length = max_trail_length;
     this.trail_progress = 0;
+    this.trail_glow = 0;
   }
 
   setProgress(value, bForce) {
@@ -59,6 +60,15 @@ export default class RouteEntityMesh extends THREE.Group {
     this.trail_length = value * max_trail_length;
 
     this.setProgress(this.trail_progress);
+  }
+
+  setGlow(value) { // 0 - 1
+
+    this.trail_glow = value;
+
+    if (this.trail_material) {
+      this.trail_material.glow = value;
+    }
   }
 
   updateRoute(path, externalRenderers, view, SpatialReference)
@@ -122,6 +132,8 @@ export default class RouteEntityMesh extends THREE.Group {
     }
     
     this.trail_material = this.createMaterial();
+
+    this.setGlow(this.trail_glow);
 
     this.trail_mesh = new THREE.Mesh( this.trail_line.geometry, this.trail_material ); 
 

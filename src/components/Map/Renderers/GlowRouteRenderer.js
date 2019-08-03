@@ -287,6 +287,15 @@ export default class RouteRenderer extends AbstractRenderer {
     }
   }
 
+  setGlow(value) {
+
+    if (!this.meshline) return;
+
+    value = parseFloat(value) || 0.0;
+
+    this.meshline.setGlow(value);
+  }
+
   setProgress(value) {
 
     if (this.meshline) {

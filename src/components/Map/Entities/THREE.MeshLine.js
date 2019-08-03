@@ -503,6 +503,7 @@ THREE.ShaderChunk[ 'meshline_frag' ] = [
 	'',
 	'uniform sampler2D map;',
 	'uniform sampler2D alphaMap;',
+	'uniform float glow;',
 	'uniform float useMap;',
 	'uniform float useAlphaMap;',
 	'uniform float useDash;',
@@ -521,9 +522,19 @@ THREE.ShaderChunk[ 'meshline_frag' ] = [
 	'void main() {',
 	'',
 	THREE.ShaderChunk.logdepthbuf_fragment,
-	'    float side = pow(1.0 - abs(vSide), 3.0);',
 	'',
-	'    vec4 c = vec4( vColor.r, vColor.g, vColor.b, vColor.a * side);',
+	'    float alpha_glow = 1.0;',
+	'',
+	'	 float glowSideOffset = 0.5;',
+	'',
+	'    if (abs(vSide) > (1.0 - glowSideOffset))',
+	'    {',
+	'    	alpha_glow = (glowSideOffset - abs(vSide) * glowSideOffset) / glowSideOffset;',
+	'    }',
+	'',
+	'    float vColor_alpha = vColor.a * alpha_glow * glow + vColor.a * ( 1.0 - glow );',
+	'',
+	'    vec4 c = vec4( vColor.r, vColor.g, vColor.b, vColor_alpha);',
 	'',
 	'    if( useMap == 1. ) c *= texture2D( map, vUV * repeat );',
 	'    if( useAlphaMap == 1. ) c.a *= texture2D( alphaMap, vUV * repeat ).a;',
@@ -545,6 +556,7 @@ function MeshLineMaterial( parameters ) {
 			THREE.UniformsLib.fog,
 			{
 				lineWidth: { value: 1 },
+				glow: { value: 0 },
 				map: { value: null },
 				useMap: { value: 0 },
 				alphaMap: { value: null },
@@ -581,6 +593,15 @@ function MeshLineMaterial( parameters ) {
 			},
 			set: function ( value ) {
 				this.uniforms.lineWidth.value = value;
+			}
+		},
+		glow: {
+			enumerable: true,
+			get: function () {
+				return this.uniforms.glow.value;
+			},
+			set: function ( value ) {
+				this.uniforms.glow.value = value;
 			}
 		},
 		map: {

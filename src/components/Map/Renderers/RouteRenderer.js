@@ -155,12 +155,25 @@ export default class RouteRenderer extends AbstractRenderer {
 
   setTrailLength(value) {
 
+    if (!this.meshline) return;
+
     value = parseFloat(value) || 0.0;
 
     this.meshline.setTrailLength(value);
   }
 
+  setGlow(value) {
+
+    if (!this.meshline) return;
+
+    value = parseFloat(value) || 0.0;
+
+    this.meshline.setGlow(value);
+  }
+
   setProgress(value) {
+
+    if (!this.meshline) return;
 
     value = parseFloat(value) || 0.0;
 
