@@ -84,7 +84,7 @@ export default class RouteRenderer extends AbstractRenderer {
     // this.route = new RouteEntityMesh();
     // this.route.updateRoute(this.geo_curve_path, externalRenderers, view, SpatialReference, cam);
 
-    this.meshline = new RouteEntity({
+    this.meshline = new RouteEntityMesh({
       opacityVisible : 0.8, 
       opacityHidden : 0.0
     });
@@ -164,7 +164,9 @@ export default class RouteRenderer extends AbstractRenderer {
 
     value = parseFloat(value) || 0.0;
 
-    if (this.meshline instanceof RouteEntityMesh) {  
+    if (this.meshline instanceof RouteEntityMesh) { 
+      
+      this.meshline.setProgress(value);
 
       this.meshline.setProgress(0);
 

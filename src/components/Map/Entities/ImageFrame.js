@@ -4,7 +4,6 @@
 
 import * as THREE from 'three';
 import * as TWEEN from '@tweenjs/tween.js';
-import * as  MeshLine from 'three.meshline' ;
 
 import Image3D from './Image3D';
 

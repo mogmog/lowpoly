@@ -1,6 +1,12 @@
 import * as THREE from 'three';
-import MeshLine from 'three.meshline';
+
 import * as turf from '@turf/turf';
+
+// import THREE_MeshLine from 'three.meshline';
+import THREE_MeshLine from './THREE.MeshLine';
+
+const MeshLine = THREE_MeshLine.MeshLine;
+const MeshLineMaterial = THREE_MeshLine.MeshLineMaterial;
 
 export default class MeshLineEntity extends THREE.Group {
 

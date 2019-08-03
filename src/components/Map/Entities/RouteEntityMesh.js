@@ -1,5 +1,7 @@
 import * as THREE from 'three';
-import THREE_MeshLine from 'three.meshline';
+
+// import THREE_MeshLine from 'three.meshline';
+import THREE_MeshLine from './THREE.MeshLine';
 
 const MeshLine = THREE_MeshLine.MeshLine;
 const MeshLineMaterial = THREE_MeshLine.MeshLineMaterial;
@@ -15,8 +17,7 @@ export default class RouteEntityMesh extends THREE.Group {
       new THREE.Vector3()
     ]);
 
-    this.trail_length = 1900;
-
+    this.trail_length = 1;
     this.trail_progress = 0;
   }
 
@@ -34,16 +35,11 @@ export default class RouteEntityMesh extends THREE.Group {
     }
   }
 
-  setTrailLength(value) { // 100 - 500
+  setTrailLength(value) { // 0 - 1
 
-    if (isNaN(value)) {
-      value = 100;
-    }
+    if (true) {
 
-    if (value < 10) {
-      value = 10;
-    } else if (value > 500) {
-      value = 500;
+      return;
     }
 
     this.trail_length = value;
@@ -57,7 +53,7 @@ export default class RouteEntityMesh extends THREE.Group {
   {
     const curve_path = [];
 
-    const zAddition = 10;
+    const zAddition = 350;
 
     path.forEach(x => {
 
@@ -81,38 +77,34 @@ export default class RouteEntityMesh extends THREE.Group {
   createMeshLine() {
 
     while(this.children.length) {
-
       const obj = this.children[0];
-
       if (obj.geometry) {
-
         obj.geometry.dispose();
       }
   
       if (obj.material) {
-  
         obj.material.dispose();
       }
-
       this.remove(obj);
     }
 
-    const trail_geometry = new THREE.Geometry();
+    this.trail_geometry = new THREE.Geometry();
 
     const start_v = new THREE.Vector3();
 
     this.trail_curve.getPoint(this.trail_progress, start_v);
 
-    for (let i = 0; i < this.trail_length; i++) {
+    for (let i = 0; i < 1900; i++) {
 
-      trail_geometry.vertices.push(start_v.clone());
+      this.trail_geometry.vertices.push(start_v.clone());
     }
 
     // Create the line mesh
     this.trail_line = new MeshLine();
     
-    this.trail_line.setGeometry( trail_geometry,  function( p ) { return p; }  ); // makes width taper
-    // this.trail_line.setGeometry( trail_geometry );
+    // this.trail_line.setGeometry( trail_geometry,  function( p ) { return p; }  ); // makes width taper
+
+    this.trail_line.setGeometry( this.trail_geometry );
     
     this.trail_material = this.createMaterial();
 
@@ -157,11 +149,11 @@ export default class RouteEntityMesh extends THREE.Group {
       opacity: 0.45,
       blending: THREE.AdditiveBlending,
       transparent: false,
-      sizeAttenuation: true,
-      depthWrite: false,
-      depthTest: true,
-      depthFunc: THREE.AlwaysDepth,
-      lineWidth: 550,
+      //depthWrite: false,
+      //depthTest: true,
+      //depthFunc: THREE.AlwaysDepth,
+      sizeAttenuation : 1, // makes the line width constant regardless distance (1 unit is 1px on screen) (0 - attenuate, 1 - don't attenuate)
+      lineWidth: 1500, // float defining width (if sizeAttenuation is true, it's world units; else is screen pixels)
       near : 1, //camera.near,
       far : 1000, // camera.far,
     });

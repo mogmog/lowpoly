@@ -70,12 +70,14 @@ export default class RouteEntity extends THREE.Group {
       extrudePath: curve,
     };
 
+    const w = 40;
+
     const squareShape = new THREE.Shape();
     squareShape.moveTo(0, 0);
-    squareShape.lineTo(0, 40);
-    squareShape.lineTo(24, 40);
-    squareShape.lineTo(24, 0);
-    squareShape.lineTo(0, 0);
+    squareShape.lineTo(0, w);
+    //squareShape.lineTo(w, w);
+    //squareShape.lineTo(w, 0);
+    //squareShape.lineTo(0, 0);
 
     const geometry = new THREE.ExtrudeBufferGeometry(squareShape, extrudeSettings);
 
@@ -95,7 +97,19 @@ export default class RouteEntity extends THREE.Group {
 
     this.route1 = new THREE.Mesh(geometry, material);
 
-    var geometryAnim = new THREE.ExtrudeBufferGeometryWithLength(squareShape, extrudeSettings);
+    this.route1.visible = this.config.opacityHidden > 0.0;
+
+    const linePoints = [];
+
+    var geometryAnim = new THREE.ExtrudeBufferGeometryWithLength(squareShape, extrudeSettings, linePoints);
+
+    const extrudePts = curve.getSpacedPoints( extrudeSettings.steps );
+    const line_material = new THREE.LineBasicMaterial( { color: 0x0000ff } );
+    const line_geometry = new THREE.Geometry();
+    for (let i = 0; i < extrudePts.length; i++) {
+      line_geometry.vertices.push(extrudePts[i]);
+    }
+    this.route_line = new THREE.Line( line_geometry, line_material );
 
     // mesh
     this.route2 = new THREE.Mesh(geometryAnim, materialAnim);
@@ -117,6 +131,10 @@ export default class RouteEntity extends THREE.Group {
 
     this.add(this.route1);
     this.add(this.route2);
+
+    if (this.route_line) {
+      this.add(this.route_line);
+    }
   }
 
   setProgress(persentage)
@@ -320,7 +338,7 @@ MeshPhongCustomMaterial.prototype.constructor = THREE.MeshPhongMaterial;
 
 MeshPhongCustomMaterial.prototype.isMeshPhongMaterial = true;
 
-THREE.ExtrudeBufferGeometryWithLength = function( shapes, options ) {
+THREE.ExtrudeBufferGeometryWithLength = function( shapes, options, linePoints ) {
 
   THREE.BufferGeometry.call( this );
 
@@ -779,7 +797,9 @@ THREE.ExtrudeBufferGeometryWithLength = function( shapes, options ) {
 
     for ( i = 0; i < vlen; i ++ ) {
 
-      vert = bevelEnabled ? scalePt2( vertices[ i ], verticesMovements[ i ], bs ) : vertices[ i ];
+      // vert = bevelEnabled ? scalePt2( vertices[ i ], verticesMovements[ i ], bs ) : vertices[ i ];
+
+      vert = vertices[ i ];
 
       if ( ! extrudeByPath ) {
 
@@ -816,7 +836,9 @@ THREE.ExtrudeBufferGeometryWithLength = function( shapes, options ) {
 
       for ( i = 0; i < vlen; i ++ ) {
 
-        vert = bevelEnabled ? scalePt2( vertices[ i ], verticesMovements[ i ], bs ) : vertices[ i ];
+        // vert = bevelEnabled ? scalePt2( vertices[ i ], verticesMovements[ i ], bs ) : vertices[ i ];
+
+        vert = vertices[ i ];
 
         if ( ! extrudeByPath ) {
 
