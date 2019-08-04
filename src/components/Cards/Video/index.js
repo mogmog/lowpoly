@@ -1,12 +1,13 @@
 import React, {Fragment} from 'react'
 import Cropper from 'react-easy-crop'
 import SaveButton from "./../../SaveButton";
+import ReactPlayer from 'react-player'
 import CardWrapper from './../../CardWrapper'
 import {Mutation} from "react-apollo";
 
 import gql from "graphql-tag";
 
-export default class ImageCard extends React.Component {
+export default class VideoCard extends React.Component {
     state = {
         image: this.props.card.content.image.secure_url, //
         crop:  { x: 0, y: 0 },
@@ -14,28 +15,21 @@ export default class ImageCard extends React.Component {
         aspect: 4 / 3,
     }
 
-    onCropChange = crop => {
-        this.setState({ crop })
-    }
 
-    onCropComplete = (croppedArea, croppedAreaPixels) => {
-        console.log(croppedArea, croppedAreaPixels)
-    }
 
-    onZoomChange = zoom => {
-        this.setState({ zoom })
-    }
-
-/*
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps.event.type !== this.props.event.type && this.props.event.type === 'start') {
-
-            this.props.setCard(this.props.card);
+        if (this.player && prevProps.cardprogress != this.props.cardprogress) {
+            this.player.seekTo(prevProps.cardprogress);
+           // this.props.setCard(this.props.card);
         }
     }
-*/
+
+    ref = player => {
+        this.player = player
+    }
 
     render() {
+
 
         const UPDATE_CARD_CONTENT = gql`
             mutation updatecard($id, : Int!, $content : jsonb, $height : String){
@@ -54,12 +48,34 @@ export default class ImageCard extends React.Component {
             <Mutation mutation={UPDATE_CARD_CONTENT}>
                 {(update, { data }) => {
 
+                    const setStyles = (wrapperEl, videoEl, playbackRate) => {
+                        wrapperEl.style.marginTop = `calc(180% - ${Math.floor(videoEl.duration) *
+                        playbackRate +
+                        'px'})`
+                        wrapperEl.style.marginBottom = `calc(180% - ${Math.floor(videoEl.duration) *
+                        playbackRate +
+                        'px'})`
+                    }
+
                     return <CardWrapper debug={this.props.debug} clear={this.props.clear} update={update} card={this.props.card} hideCards={this.props.hideCards}>
 
                             <div>
+video
 
+                                {this.props.cardprogress}
 
-                            <img style={{ width : '100%'}} src={this.state.image}/>
+                                <ReactPlayer
+                                    ref={this.ref}
+                                    className='react-player'
+                                    width='100%'
+                                    height='100%'
+                                    muted={true}
+                                    playing={false}
+                                    controls={true}
+                                    url={'http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4'}
+
+                                />
+
                            {/* <Cropper
                                 style={{cropAreaStyle :{color : 'rgba(0,0,0,0.9)'}}}
                                 showGrid={false}

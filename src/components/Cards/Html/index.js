@@ -36,11 +36,11 @@ class HtmlCard extends React.Component {
             <Mutation mutation={UPDATE_CARD_CONTENT}>
                 {(update, { data }) => {
 
-                    return <CardWrapper clear={clear} card={this.props.card} update={update} clearMap={this.props.clearMap} hideCards={this.props.hideCards}>
+                    return <CardWrapper debug={this.props.debug} clear={clear} card={this.props.card} update={update} clearMap={this.props.clearMap} hideCards={this.props.hideCards}>
                             <div className={'htmlcard'} >
-                                <pre>{this.props.cardprogress} </pre>
+
                                 <div dangerouslySetInnerHTML={{ __html: this.props.card.content.html }}/>
-                                <pre style={{position : 'absolute', textAlign : 'bottom'}}>{this.props.cardprogress} </pre>
+                               {/* <pre style={{position : 'absolute', textAlign : 'bottom'}}>{this.props.cardprogress} </pre>*/}
                             </div>
                         </CardWrapper>
                 }}

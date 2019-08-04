@@ -39,22 +39,26 @@ class CardWrapper extends React.Component {
             <div className={'CardWrapper'} style={{  transition:'all 0.3s ease', width: '100%', background: 'transparent', height : this.state.height}} >
                 <div id="container">
 
-                    <pre> CC{/*{JSON.stringify(this.props.cardprogress)}*/} {this.state.height} </pre>
+                   {/* <pre> CC{JSON.stringify(this.props.cardprogress)} {this.state.height} </pre>*/}
 
                     <div id="navb" >
 
                         {this.props.children}
 
                     </div>
+                    {this.props.debug && <Fragment>
 
-                    <div id="nava" style={{zoom : 1.2}}>
-                        <Button onClick={ this.changeHeightIndex } type="primary" shape="circle" icon="vertical-align-middle" />
-                    </div>
+                        <div id="nava" style={{zoom : 1.2}}>
+                            <Button onClick={ this.changeHeightIndex } type="primary" shape="circle" icon="vertical-align-middle" />
+                        </div>
 
-                    <div id="navc" style={{zoom : 1.2}}>
-                        {this.props.clear}
-                        <Button onClick={ this.props.hideCards } shape="circle" icon="flag" />
-                    </div>
+                        <div id="navc" style={{zoom : 1.2}}>
+                            {this.props.clear}
+                            <Button onClick={ this.props.hideCards } shape="circle" icon="flag" />
+                        </div>
+
+                    </Fragment>}
+
 
                 </div>
             </div>

@@ -36,7 +36,7 @@ export default class SpacerCard extends React.Component {
             <Mutation mutation={UPDATE_CARD_CONTENT}>
                 {(update, { data }) => {
 
-                    return <CardWrapper update={update} card={this.props.card} hideCards={this.props.hideCards}>
+                    return <CardWrapper debug={this.props.debug} update={update} card={this.props.card} hideCards={this.props.hideCards}>
 
 
                     </CardWrapper>
