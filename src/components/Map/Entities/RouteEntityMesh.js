@@ -75,7 +75,7 @@ export default class RouteEntityMesh extends THREE.Group {
   {
     const curve_path = [];
 
-    const zAddition = 350;
+    const zAddition = 200;
 
     path.forEach(x => {
 
@@ -173,14 +173,14 @@ export default class RouteEntityMesh extends THREE.Group {
       map: null,
       useMap: false,
       color: new THREE.Color( 0xffd300 ),
-      opacity: 0.45,
+      opacity: 1,
       blending: THREE.AdditiveBlending,
       transparent: false,
       //depthWrite: false,
       //depthTest: true,
-      //depthFunc: THREE.AlwaysDepth,
+      depthFunc: THREE.NeverDepth,
       sizeAttenuation : 1, // makes the line width constant regardless distance (1 unit is 1px on screen) (0 - attenuate, 1 - don't attenuate)
-      lineWidth: 1500, // float defining width (if sizeAttenuation is true, it's world units; else is screen pixels)
+      lineWidth: 70, // float defining width (if sizeAttenuation is true, it's world units; else is screen pixels)
       near : 1, //camera.near,
       far : 1000, // camera.far,
     });

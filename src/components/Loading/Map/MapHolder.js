@@ -152,7 +152,7 @@ export default class MapHolder extends Component {
                                     canvas.width = width;
                                     canvas.height = height;
 
-                                    context.fillStyle = 'rgba(240, 240, 240, 0.7)';
+                                    context.fillStyle = 'rgba(240, 240, 240, 0.8)';
 
                                     context.globalAlpha = 1;
                                     context.fillRect(0, 0, width, height);

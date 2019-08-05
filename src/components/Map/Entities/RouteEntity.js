@@ -53,7 +53,7 @@ export default class RouteEntity extends THREE.Group {
     let options = { tolerance: simplificationTolerance, highQuality: true };
     let simplified = turf.simplify(geojson, options);
 
-    const zAddition = 150;
+    const zAddition = 15;
 
     simplified.geometry.coordinates.forEach(x => {
       let pos = [0, 0, 0];

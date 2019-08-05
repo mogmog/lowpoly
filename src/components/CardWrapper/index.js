@@ -36,7 +36,7 @@ class CardWrapper extends React.Component {
     render() {
 
         return (
-            <div className={'CardWrapper'} style={{  transition:'all 0.3s ease', width: '100%', background: 'transparent', height : this.state.height}} >
+            <div className={'CardWrapper'} style={{  transition:'all 0.3s ease', width: '100%', background: 'transparent'}} >
                 <div id="container">
 
                    {/* <pre> CC{JSON.stringify(this.props.cardprogress)} {this.state.height} </pre>*/}

@@ -56,7 +56,7 @@ export default class ImageCard extends React.Component {
 
                     return <CardWrapper debug={this.props.debug} clear={this.props.clear} update={update} card={this.props.card} hideCards={this.props.hideCards}>
 
-                            <div>
+                            <div style={{height : '100%'}}>
 
 
                             <img style={{ width : '100%'}} src={this.state.image}/>

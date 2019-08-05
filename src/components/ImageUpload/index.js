@@ -71,7 +71,7 @@ class App extends Component {
                         type="file"
                         onChange={this.fileChangedHandler}
                         id="gallery-image"
-                        accept=".jpg, .jpeg, .png"
+                        accept=".jpg, .jpeg, .png, .mp4"
                     />
                     <button type="submit">Upload!</button>
                 </form>

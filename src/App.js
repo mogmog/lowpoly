@@ -58,10 +58,10 @@ const GET_TRIP = gql`query {
             camera
             type
             content
+            pin
             id
             offset
             duration
-            height
             locations
         }
     }
@@ -111,7 +111,7 @@ const  params = {
 const StickyStyled = styled.div`
   
   .section {
-    height: 100vh;
+    background : white;
  
   }
   
@@ -121,11 +121,13 @@ const StickyStyled = styled.div`
     color: white;
   }
   
-  .sticky, .sticky2 {
+  .sticky{
     
      z-index:99999;
      position: relative;
-    width: 100%;
+     width: 100%;
+     height: 100%;
+    
     
    
     .heading {
@@ -305,22 +307,38 @@ class App extends React.Component {
                         <MapHolder debug={this.debug} totalProgress={this.state.prog} showCards={this.state.showCards} updateCamera={(cam) => this.setState({camera : cam})} locations={data.trip[0].locations} scrollToTop={this.testTop} zoom={this.state.st} currentCard={this.state.currentCard}/>
 
                         <div >
+
+
                          <Controller ref={(c) => this.c = c}>
+
+                            {/* <Scene  duration={'150%'} pin={false} >
+                                 <div  className="sticky"><div>Pin Test</div></div>
+                             </Scene>
+
+                             <Scene offset='250' duration={'400%'} pin={true} >
+                                 <div  className="sticky"><div>
+
+                                     <video ref={this.ref} style={{height : '100vw', width : 'auto'}}  controls id="VideoId">
+                                         <source src="http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4" type="video/mp4"/>
+                                     </video>
+
+                                 </div></div>
+                             </Scene>*/}
 
                              {true && cards && cards.map((card, index) =>
 
-                                    <Scene ref={card.id} key={card.id} duration={(card.duration && card.duration.replace('vh', '%')) || '100%'} pin={card.content.pin} offset={card.offset || 0} triggerHook={"onEnter"}>
+                                    <Scene ref={card.id} key={card.id} offset={card.offset} duration={card.duration} pin={card.pin} enabled={true}  >
                                         {(cardprogress, event) => {
 
                                             //console.log(progresss);
 
 
                                             return (
-                                            <div id={`theid${index}`} className="sticky" style={{pointerEvents : (this.state.showCards ? 'all' : 'none'), 'opacity' : this.state.showCards ? 1 : 0.1, 'transition': 'opacity .55s ease-in-out' }} >
+                                            <div id={`theid${index}`} className="sticky" style={{height: card.duration.replace('%', 'vh'),  pointerEvents : (this.state.showCards ? 'all' : 'none'), 'opacity' : this.state.showCards ? 1 : 0.1, 'transition': 'opacity .55s ease-in-out' }}  >
 
                                                 <STWatcher updateP={() => this.setState({prog : cardprogress})} updateTotalProgress={(deltaprogress, card) => this.setState({currentCard : card})} progress={cardprogress} card={card} event={event} />
 
-                                               { card.type === 'Html' && <div className="smallsection" >
+                                               { card.type === 'Html' && <div className="smallsection" style={{height : card.duration.replace('%', 'vh')}}>
                                                     <HtmlCard debug={this.debug} clear={<ClearGPSButton finish={()=> { refetch() } } card={card}/>} cardprogress={this.state.prog} currentCard={this.state.currentCard} card={card} event={event} hideCards={() => this.setState({showCards : false})} setCard={(card) => { this.setState({card})}} > ️ </HtmlCard>
                                                 </div>}
 
@@ -329,6 +347,7 @@ class App extends React.Component {
                                                 </div>}
 
                                                 { card.type === 'Image' && <div className="smallsection" >
+                                                   photo
                                                     <ImageCard debug={this.debug} clear={<ClearGPSButton finish={refetch} card={card}/>} card={card} event={event} hideCards={() => this.setState({showCards : false})} setCard={(card) => { this.setState({card})}} />
                                                 </div>}
 

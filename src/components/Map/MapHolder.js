@@ -8,7 +8,7 @@ import ImageRenderer from './Renderers/ImageRenderer';
 import RouteRenderer from './Renderers/RouteRenderer';
 
 const options = {
-    url: 'https://js.arcgis.com/4.9',
+    url: 'https://js.arcgis.com/4.12',
 };
 
 
@@ -332,6 +332,20 @@ export default class MapHolder extends Component {
                 that.esriLoaderContext.view.goTo(this.props.currentCard.camera, { duration: 1600});
             }
         }
+
+        if (this.props.totalProgress != prevProps.totalProgress && this.props.currentCard && this.props.currentCard.id === 2404) {
+
+            //console.log(this.props.totalProgress);
+
+            this.setState({routeLengthPercentage: this.props.totalProgress});
+
+            if (this.routeRenderer) {
+
+                this.routeRenderer.setProgress(this.props.totalProgress);
+
+                this.needsRedraw = true;
+            }
+        }
     }
 
     componentDidMount() {
@@ -427,7 +441,7 @@ export default class MapHolder extends Component {
                 min="0" max="1"
                 value={self.state.routeLengthPercentage} 
                 onChange={(event) => {self.onRouteLengthInputChange(event);}}
-                step="0.005"/>
+                step="0.0005"/>
 
             <input 
                 style = {{position:'fixed', top:'50px', left: '20px', zIndex : 999999, width:'400px'}}

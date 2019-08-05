@@ -57,7 +57,7 @@ export default class RouteEntityMesh extends THREE.Group {
   {
     const curve_path = [];
 
-    const zAddition = 10;
+    const zAddition = 1;
 
     path.forEach(x => {
 
