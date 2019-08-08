@@ -1,5 +1,5 @@
 import React, {Fragment} from 'react'
-import {Button} from 'antd';
+import {Button, Slider} from 'antd';
 
 import './index.css'
 
@@ -36,10 +36,14 @@ class CardWrapper extends React.Component {
     render() {
 
         return (
-            <div className={'CardWrapper'} style={{  transition:'all 0.3s ease', width: '100%', background: 'transparent'}} >
+            <div className={'XCardWrapper'} style={{  transition:'all 0.3s ease', width: '100%', background: 'transparent'}} >
                 <div id="container">
 
                    {/* <pre> CC{JSON.stringify(this.props.cardprogress)} {this.state.height} </pre>*/}
+
+                   <div   style = {{position:'absolute', top:'40px', left: '00px', zIndex : 999999, width:'100%'}}>
+                    <Slider onChange={(r) => this.props.setGPSRange(r)} range defaultValue={[0, 100]} disabled={false} />
+                   </div>
 
                     <div id="navb" >
 

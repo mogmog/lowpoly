@@ -75,7 +75,7 @@ export default class RouteEntityMesh extends THREE.Group {
   {
     const curve_path = [];
 
-    const zAddition = 200;
+    const zAddition = 380;
 
     path.forEach(x => {
 
@@ -86,8 +86,8 @@ export default class RouteEntityMesh extends THREE.Group {
 
       curve_path.push(
         new THREE.Vector3(pos[0], pos[1], pos[2] + zAddition));
-        // we make all coords in global world coord sys !
-    });
+        //console.log('added');
+      });
 
     this.trail_curve = new THREE.CatmullRomCurve3(curve_path);
 
@@ -173,14 +173,14 @@ export default class RouteEntityMesh extends THREE.Group {
       map: null,
       useMap: false,
       color: new THREE.Color( 0xffd300 ),
-      opacity: 1,
+      opacity: 0.7,
       blending: THREE.AdditiveBlending,
       transparent: false,
       //depthWrite: false,
       //depthTest: true,
       depthFunc: THREE.NeverDepth,
-      sizeAttenuation : 1, // makes the line width constant regardless distance (1 unit is 1px on screen) (0 - attenuate, 1 - don't attenuate)
-      lineWidth: 70, // float defining width (if sizeAttenuation is true, it's world units; else is screen pixels)
+      sizeAttenuation : 0, // makes the line width constant regardless distance (1 unit is 1px on screen) (0 - attenuate, 1 - don't attenuate)
+      lineWidth: 20, // float defining width (if sizeAttenuation is true, it's world units; else is screen pixels)
       near : 1, //camera.near,
       far : 1000, // camera.far,
     });

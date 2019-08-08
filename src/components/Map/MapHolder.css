@@ -1,8 +1,7 @@
-@import "https://js.arcgis.com/4.9/esri/css/main.css";
+@import "https://js.arcgis.com/4.12/esri/css/main.css";
 
 .viewDiv {
 
-    filter : blur(0px);
     position: fixed;
     padding: 0;
     margin: 0;

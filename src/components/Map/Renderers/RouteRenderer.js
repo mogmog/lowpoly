@@ -88,7 +88,9 @@ export default class RouteRenderer extends AbstractRenderer {
       opacityVisible : 0.8, 
       opacityHidden : 0.0
     });
-    this.meshline.updateRoute(this.geo_curve_path[0], externalRenderers, view, SpatialReference, cam);
+    this.meshline.updateRoute(this.geo_curve_path[0],
+        this.esriLoaderContext.externalRenderers,
+        view, SpatialReference, cam);
     this.meshline.setProgress(0);
 
     this.start();
@@ -130,27 +132,16 @@ export default class RouteRenderer extends AbstractRenderer {
 
     this.scene.add(new THREE.AmbientLight(0xeeeeee));
 
-    //const meshline = this.meshline;
+  }
 
-    /*meshline.tween = new TWEEN.Tween(
-      {
-        persent: 0,
-      })
-      .to(
-          {
-            persent : 1
-          },
-          150000)
-      .onUpdate(
-          function(tween_obj)
-          { 
-            meshline.setProgress(tween_obj.persent, false);
-          })
-      .onComplete(function() {
+  setGPSRange(path, externalRenderers, view, SpatialReference, cam) {
+    console.log(path);
+    console.log(externalRenderers);
+    console.log(view);
+    console.log(SpatialReference);
+    console.log(cam);
 
-        delete meshline.tween;
-      })
-      .delay(2000).start();*/
+    this.meshline.updateRoute(path, externalRenderers, view, SpatialReference, cam);
   }
 
   setTrailLength(value) {

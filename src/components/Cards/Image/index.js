@@ -26,14 +26,18 @@ export default class ImageCard extends React.Component {
         this.setState({ zoom })
     }
 
-/*
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps.event.type !== this.props.event.type && this.props.event.type === 'start') {
+       // if (prevProps.event.type !== this.props.event.type && this.props.event.type === 'start') {
+     /*   if (prevProps.progress != this.props.progress && this.props.progress > 0.5) {
+                //alert(JSON.stringify(this.props.card.camera));
+                this.props.updateCamera(this.props.card.camera);
+        }*/
 
-            this.props.setCard(this.props.card);
+        if (this.props.event.type != prevProps.event.type && this.props.event.type === 'start') {
+            this.props.card.camera && this.props.updateCamera(this.props.card.camera);
         }
+
     }
-*/
 
     render() {
 
@@ -56,10 +60,11 @@ export default class ImageCard extends React.Component {
 
                     return <CardWrapper debug={this.props.debug} clear={this.props.clear} update={update} card={this.props.card} hideCards={this.props.hideCards}>
 
-                            <div style={{height : '100%'}}>
+                            <div >
 
 
-                            <img style={{ width : '100%'}} src={this.state.image}/>
+
+                            <img style={{ height : this.props.card.duration.replace('%', 'vh')}} src={this.state.image}/>
                            {/* <Cropper
                                 style={{cropAreaStyle :{color : 'rgba(0,0,0,0.9)'}}}
                                 showGrid={false}

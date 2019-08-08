@@ -33,13 +33,13 @@ const AddCard = ({cards, graphics, refetch, scrollTo}) => {
                 let create = (card) => {
                    //e.preventDefault();
 
-                    const spacer = {"trip_id" : 1, "type" : "Spacer", "duration" : "100%", "camera":  null, "content":  {}}
+                    const spacer = {"trip_id" : 1, "type" : "Spacer", "offset" : "0px", "duration" : "100%", "camera":  null, "content":  {}}
                     const cards = [card]
 
                     addCard({variables : {"objects" : cards}}).then(d=> {
                        scrollTo(cards.length);
                         //setCard(d.data.insert_cards.returning[0]);
-                       // alert(JSON.stringify(d))
+                        alert('done')
                     });
 
                 };
@@ -49,21 +49,18 @@ const AddCard = ({cards, graphics, refetch, scrollTo}) => {
                             <Carousel accessibility={false} swipe={true}>
 
                                 <div style={{height : '400px', overflow : 'scroll'}}>
-
-                                    {/*<p style={{fontSize : '100%'}} contentEditable={true}>I can be editted</p>*/}
                                     <TextEditor create={create}/>
-
                                 </div>
 
                                 <div><h1> Add an graphic </h1>
 
-                                    <GraphicsGrid onClick={(filename) => create({"trip_id" : 1, "type" : "Graphic", "height" : "100vh", "camera":  null, "content":  {filename : filename}} )} graphics={graphics}/>
+                                    <GraphicsGrid onClick={(filename) => create({"trip_id" : 1, "type" : "Graphic", "offset" : "0%", "duration" : "100%", "camera":  null, "content":  {filename : filename}} )} graphics={graphics}/>
 
                                 {/*<Button onClick={create('Graphic',{"objects" : [{"trip_id" : 1, "type" : "Text", "height" : "100vh", "camera":  {"test" :33}, "content":  {"text" :"this is plain text"}}]})} style={{width : '70%', height : '100px', marginBottom : '10px'}}>Add</Button></div>
 */}
                                 </div>
                                 <div>
-                                    <ImageUpload saveImage={(image) => create( {"trip_id" : 1, "type" : "Image", "height" : "100vh", "camera":  null, "content":  {"image" :image}})} style={{width : '70%', height : '100px', marginBottom : '10px'}}/>
+                                    <ImageUpload saveImage={(image) => create( {"trip_id" : 1, "type" : "Image", "offset" : "0%", "duration" : "100%", "camera":  null, "content":  {"image" :image}})} style={{width : '70%', height : '100px', marginBottom : '10px'}}/>
 
                                 </div>
 

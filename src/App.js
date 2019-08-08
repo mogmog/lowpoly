@@ -185,6 +185,7 @@ class STWatcher extends React.Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
 
         if (this.props.progress !== prevProps.progress) {
+            console.log(this.props.progress);
             this.props.updateP(this.props.progress);
         }
 
@@ -192,11 +193,13 @@ class STWatcher extends React.Component {
        // console.log(this.props.event);
       //  console.log(this.props.card.id, prevProps.card.id);
        // console.log(prevProps.progress, this.props.progress)
-        if (  prevProps.event.type !==  'enter' && this.props.event.type ===  'enter' ) {
-            console.log('zero')
+
+        //waht does this do
+        /*if (  prevProps.event.type !==  'enter' && this.props.event.type ===  'enter' ) {
+            //console.log('zero')
             this.props.updateTotalProgress(this.props.progress, this.props.card );
            // console.log(this.props.card);
-        }
+        }*/
 
        /* /!*happens when a new card with progress 0 is hit*!/
         if (this.props.progress < prevProps.progress) {
@@ -231,14 +234,16 @@ class STWatcher extends React.Component {
 
 class App extends React.Component {
 
-  state = {prog : 0, currentCard : null, st : 0.1, totalProgress : 0.0, showButtons : false, card : null, index : 0, visible : false, showCards : true, locations : []}
+  state = {gpsRange: [], camera : null, prog : 0, currentCard : null, st : 0.1, totalProgress : 0.0, showButtons : false, card : null, index : 0, visible : false, showCards : true, locations : []}
 
   testTop = (index) => {
 
       window.scrollTo({
-          top: window.scrollY - ( 1* window.innerHeight),
+          top: document.body.scrollHeight,
           behavior: 'smooth',
       })
+
+      this.setState({visible : false});
 
   }
 
@@ -267,7 +272,7 @@ class App extends React.Component {
             <ApolloProvider client={client}>
 
                 {this.state.showCards && <AddButton onClick={() => this.setState({visible : true})}/> }
-                {!this.state.showCards && <SaveGPSButton card={this.state.currentCard} camera={this.state.camera} finish={() => { this.setState({showCards: true})}  }/> }
+                {!this.state.showCards && <SaveGPSButton card={this.state.currentCard} context={this.esriContext} camera={this.state.camera} finish={() => { this.setState({showCards: true})}  }/> }
 
                 <Query
                     query={GET_TRIP} >
@@ -304,7 +309,7 @@ class App extends React.Component {
 
                         </Drawer>
 
-                        <MapHolder debug={this.debug} totalProgress={this.state.prog} showCards={this.state.showCards} updateCamera={(cam) => this.setState({camera : cam})} locations={data.trip[0].locations} scrollToTop={this.testTop} zoom={this.state.st} currentCard={this.state.currentCard}/>
+                        <MapHolder registerContext={c=> this.esriContext = c} camera={this.state.camera} gpsRange={this.state.gpsRange} debug={this.debug} totalProgress={this.state.prog} showCards={this.state.showCards} updateCamera={(cam) => this.setState({camera : cam})} locations={data.trip[0].locations} scrollToTop={this.testTop} zoom={this.state.st} currentCard={this.state.currentCard}/>
 
                         <div >
 
@@ -339,16 +344,19 @@ class App extends React.Component {
                                                 <STWatcher updateP={() => this.setState({prog : cardprogress})} updateTotalProgress={(deltaprogress, card) => this.setState({currentCard : card})} progress={cardprogress} card={card} event={event} />
 
                                                { card.type === 'Html' && <div className="smallsection" style={{height : card.duration.replace('%', 'vh')}}>
-                                                    <HtmlCard debug={this.debug} clear={<ClearGPSButton finish={()=> { refetch() } } card={card}/>} cardprogress={this.state.prog} currentCard={this.state.currentCard} card={card} event={event} hideCards={() => this.setState({showCards : false})} setCard={(card) => { this.setState({card})}} > ️ </HtmlCard>
+                                                  {/* {JSON.stringify(this.state.gpsRange)}*/}
+                                                    {cardprogress}
+                                                    <HtmlCard context={this.esriContext} updateCamera={(camera) => { this.setState({camera : camera})} } setGPSRange={(r) => this.setState({gpsRange : r})} debug={this.debug} clear={<ClearGPSButton finish={()=> { refetch() } } card={card}/>} cardprogress={cardprogress} currentCard={this.state.currentCard} card={card} event={event} hideCards={() => this.setState({showCards : false})} setCard={(card) => { this.setState({card})}} > ️ </HtmlCard>
                                                 </div>}
 
                                                 { card.type === 'Video' && <div className="smallsection" >
-                                                    <VideoCard debug={this.debug} clear={<ClearGPSButton finish={()=> { refetch() } } card={card}/>} cardprogress={this.state.prog} currentCard={this.state.currentCard} card={card} event={event} hideCards={() => this.setState({showCards : false})} setCard={(card) => { this.setState({card})}} > ️ </VideoCard>
+                                                    {cardprogress}
+                                                    <VideoCard context={this.esriContext} debug={this.debug} clear={<ClearGPSButton finish={()=> { refetch() } } card={card}/>} cardprogress={this.state.prog} currentCard={this.state.currentCard} card={card} event={event} hideCards={() => this.setState({showCards : false})} setCard={(card) => { this.setState({card})}} > ️ </VideoCard>
                                                 </div>}
 
                                                 { card.type === 'Image' && <div className="smallsection" >
-                                                   photo
-                                                    <ImageCard debug={this.debug} clear={<ClearGPSButton finish={refetch} card={card}/>} card={card} event={event} hideCards={() => this.setState({showCards : false})} setCard={(card) => { this.setState({card})}} />
+                                                   {cardprogress}
+                                                    <ImageCard context={this.esriContext} updateCamera={(camera) => { this.setState({camera : camera})} } progress={cardprogress} debug={this.debug} clear={<ClearGPSButton finish={refetch} card={card}/>} card={card} event={event} hideCards={() => this.setState({showCards : false})} setCard={(card) => { this.setState({card})}} />
                                                 </div>}
 
                                                 { card.type === 'Graphic' && <div className="smallsection" style={{width : '100%'}}>
