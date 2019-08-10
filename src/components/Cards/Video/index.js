@@ -4,7 +4,6 @@ import SaveButton from "./../../SaveButton";
 import ReactPlayer from 'react-player'
 import CardWrapper from './../../CardWrapper'
 import {Mutation} from "react-apollo";
-import { VideoScroll } from 'react-video-scroll'
 
 import gql from "graphql-tag";
 

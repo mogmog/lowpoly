@@ -24,7 +24,7 @@ export default class RouteEntityMesh extends THREE.Group {
     this.trail_glow = 0;
   }
 
-  setProgress(value, bForce) {
+  setProgress(value, bForce, speedFactor) {
 
     if (bForce === undefined) {
 
@@ -44,11 +44,13 @@ export default class RouteEntityMesh extends THREE.Group {
   
       const v = new THREE.Vector3();
   
-      this.trail_curve.getPoint(i, v);
-  
+      this.trail_curve.getPoint(i * speedFactor, v);
+
+      //console.log(speedFactor);
+
       if (this.trail_line) {
   
-        this.trail_line.advance( v );
+        this.trail_line.advance( v  );
       }
     }
 
@@ -75,7 +77,7 @@ export default class RouteEntityMesh extends THREE.Group {
   {
     const curve_path = [];
 
-    const zAddition = 380;
+    const zAddition = 1280;
 
     path.forEach(x => {
 
@@ -180,7 +182,7 @@ export default class RouteEntityMesh extends THREE.Group {
       //depthTest: true,
       depthFunc: THREE.NeverDepth,
       sizeAttenuation : 0, // makes the line width constant regardless distance (1 unit is 1px on screen) (0 - attenuate, 1 - don't attenuate)
-      lineWidth: 20, // float defining width (if sizeAttenuation is true, it's world units; else is screen pixels)
+      lineWidth: 5, // float defining width (if sizeAttenuation is true, it's world units; else is screen pixels)
       near : 1, //camera.near,
       far : 1000, // camera.far,
     });

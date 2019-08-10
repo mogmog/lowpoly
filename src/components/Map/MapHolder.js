@@ -8,7 +8,7 @@ import ImageRenderer from './Renderers/ImageRenderer';
 import RouteRenderer from './Renderers/RouteRenderer';
 
 const options = {
-    url: 'https://js.arcgis.com/4.12',
+    url: 'https://js.arcgis.com/4.10',
 };
 
 
@@ -301,6 +301,8 @@ export default class MapHolder extends Component {
                         self.routeRenderer = new RouteRenderer(self.esriLoaderContext, result.geometry.paths);
 
                         externalRenderers.add(view, self.routeRenderer);
+                        self.routeRenderer.setTrailLength(this.state.routeTailPercentage);
+                        self.needsRedraw = true;
 
                     }).catch(d=> {
                         console.log(d);
@@ -382,11 +384,11 @@ export default class MapHolder extends Component {
 
             //console.log(this.props.totalProgress);
 
-            this.setState({routeLengthPercentage: this.props.totalProgress});
+            //this.setState({routeLengthPercentage: this.props.totalProgress});
 
             if (this.routeRenderer) {
 
-                this.routeRenderer.setProgress(this.props.totalProgress);
+                this.routeRenderer.setProgress(this.props.totalProgress, this.props.card.speedFactor);
 
                 this.needsRedraw = true;
             }
@@ -484,7 +486,9 @@ export default class MapHolder extends Component {
                 id="viewDiv" 
                 className={'viewDiv'} />
 
-            <input 
+           {/* {this.props.debug && <div>*/}
+
+           {/* <input
                 style = {{position:'fixed', top:'10px', left: '20px', zIndex : 999999, width:'400px'}}
                 type="range" 
                 min="0" max="1"
@@ -506,7 +510,8 @@ export default class MapHolder extends Component {
                 min="0" max="1"
                 value={self.state.routeGlowPercentage} 
                 onChange={(event) => {self.onGlowInputChange(event);}}
-                step="0.001"/>
+                step="0.001"/>*/}
+            {/*\</div>*/}
 
         </Fragment>);
     }

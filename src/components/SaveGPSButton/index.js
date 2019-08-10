@@ -23,7 +23,9 @@ export default class SaveGPSButton extends React.Component {
         `;
 
         const updateCamera = (card, camera, update) => {
-           // alert(this.props.context.view.camera.clone().toJSON());
+
+            console.log(this.props);
+            //alert(this.props.card.id);
            // debugger;
             update({variables : {"id" : this.props.card.id, "camera" : this.props.context.view.camera.clone().toJSON()  }});
             this.props.finish();

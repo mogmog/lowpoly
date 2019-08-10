@@ -14,8 +14,21 @@ class HtmlCard extends React.Component {
                this.props.setCard(this.props.card);
         }*/
 
+
         if (this.props.event.type != prevProps.event.type && this.props.event.type === 'start') {
+
+           //console.log(this.props.cardprogresss);
+            //console.log("started");
+
+            this.props.setCard({card : this.props.card});
+            //alert('set' + this.props.card.id)
             this.props.card.camera && this.props.updateCamera(this.props.card.camera);
+
+            if (this.props.card.id === 2419) {
+                this.props.setSpeed(0.1);
+               // alert('started');
+            }
+
         }
 
 
