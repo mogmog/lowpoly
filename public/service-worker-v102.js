@@ -3,7 +3,7 @@ console.log(self);
 
 self.addEventListener('fetch', function(event) {
 
-    //console.log(123);
+    console.log('fetch');
 
     event.respondWith(
         caches.open('mysite-dynamic').then(function(cache) {

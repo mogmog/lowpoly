@@ -37,7 +37,7 @@ class CardWrapper extends React.Component {
 
         return (
             <div className={'CardWrapper'} style={{  transition:'all 0.3s ease', width: '100%', background: 'transparent'}} >
-                <div id="container">
+                <div id="container" style={{height : this.props.card.duration}}>
 
                    {/* <pre> CC{JSON.stringify(this.props.cardprogress)} {this.state.height} </pre>*/}
 
@@ -50,12 +50,14 @@ class CardWrapper extends React.Component {
                     </div>
                     {this.props.debug && <Fragment>
 
-                        <div id="nava" style={{zoom : 1.2}}>
+
+
+                      {/*  <div id="nava" style={{zoom : 1.2}}>
                             <Button onClick={ this.changeHeightIndex } type="primary" shape="circle" icon="vertical-align-middle" />
-                        </div>
+                        </div>*/}
 
-                        <div id="navc" style={{zoom : 1.2}}>
-
+                        <div id="navc" style={{zoom : 1}}>
+                            {this.props.card.id}
                             <Button type={this.props.card.camera ? "primary" : ""} onClick={ this.props.hideCards } shape="circle" icon="flag" />
                         </div>
 

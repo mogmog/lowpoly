@@ -44,9 +44,9 @@ export default class RouteEntityMesh extends THREE.Group {
   
       const v = new THREE.Vector3();
   
-      this.trail_curve.getPoint(i * speedFactor, v);
+      this.trail_curve.getPoint(i , v);
 
-      //console.log(speedFactor);
+     // console.log(speedFactor);
 
       if (this.trail_line) {
   
@@ -77,8 +77,6 @@ export default class RouteEntityMesh extends THREE.Group {
   {
     const curve_path = [];
 
-    const zAddition = 1280;
-
     path.forEach(x => {
 
       let pos = [0, 0, 0];
@@ -87,9 +85,11 @@ export default class RouteEntityMesh extends THREE.Group {
         view, x, 0, SpatialReference.WGS84, pos, 0, 1);
 
       curve_path.push(
-        new THREE.Vector3(pos[0], pos[1], pos[2] + zAddition));
+        new THREE.Vector3(pos[0], pos[1], pos[2] * 3.55));
         //console.log('added');
       });
+
+
 
     this.trail_curve = new THREE.CatmullRomCurve3(curve_path);
 
@@ -135,7 +135,7 @@ export default class RouteEntityMesh extends THREE.Group {
     
     this.trail_material = this.createMaterial();
 
-    this.setGlow(this.trail_glow);
+    //this.setGlow(this.trail_glow);
 
     this.trail_mesh = new THREE.Mesh( this.trail_line.geometry, this.trail_material ); 
 
@@ -175,14 +175,14 @@ export default class RouteEntityMesh extends THREE.Group {
       map: null,
       useMap: false,
       color: new THREE.Color( 0xffd300 ),
-      opacity: 0.7,
+      opacity: 0.5,
       blending: THREE.AdditiveBlending,
-      transparent: false,
+      /*transparent: true,*/
       //depthWrite: false,
       //depthTest: true,
       depthFunc: THREE.NeverDepth,
       sizeAttenuation : 0, // makes the line width constant regardless distance (1 unit is 1px on screen) (0 - attenuate, 1 - don't attenuate)
-      lineWidth: 5, // float defining width (if sizeAttenuation is true, it's world units; else is screen pixels)
+      lineWidth: 10, // float defining width (if sizeAttenuation is true, it's world units; else is screen pixels)
       near : 1, //camera.near,
       far : 1000, // camera.far,
     });

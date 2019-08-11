@@ -12,10 +12,20 @@ export default class SpacerCard extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-       if (prevProps.event.type !== this.props.event.type && this.props.event.type === 'start') {
 
-           this.props.setCard(this.props.card);
-       }
+       // console.log(this.props.currentCard.id, this.props.event.progress);
+        if (this.props.event.type != prevProps.event.type && this.props.event.type === 'start') {
+
+            //console.log(this.props.cardprogresss);
+            //console.log("started");
+
+            this.props.setCard(this.props.card);
+            //alert('set' + this.props.card.id)
+            this.props.card.camera && this.props.updateCamera(this.props.card.camera);
+
+
+
+        }
     }
 
     render() {

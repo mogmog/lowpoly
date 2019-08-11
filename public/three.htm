@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <title>three.js renderer</title>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.5/esri/css/main.css">
+    <script src="https://js.arcgis.com/4.12/"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r79/three.js"></script>
+
+    <style>
+        html, body, #viewDiv {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+
+    <script>
+        require([
+                "esri/Map",
+                "esri/views/SceneView",
+                "esri/views/3d/externalRenderers",
+                "esri/geometry/SpatialReference",
+                "dojo/domReady!"
+            ],
+            function(
+                Map,
+                SceneView,
+                externalRenderers,
+                SpatialReference
+            ) {
+                // ArcGIS: マップの作成
+                var map = new Map({
+                    basemap: "topo",
+                    ground: "world-elevation"
+                });
+                // ArcGIS: マップを表示するマップ ビュー（3D用）の作成
+                var view = new SceneView({
+                    container: "viewDiv",
+                    map: map,
+                    center: [139.745433, 35.658581],
+                    zoom: 17
+                });
+                // ArcGIS: マップ ビューの環境設定
+                view.environment = {
+                    lighting: {
+                        date: new Date("March 15, 2015 09:00:00")
+                    }
+                };
+                // ArcGIS: externalRenderers の登録
+                // https://developers.arcgis.com/javascript/latest/api-reference/esri-views-3d-externalRenderers.html
+                var threeExternalRenderer = {
+                    renderer: null,     // three.js: レンダラ―
+                    camera: null,       // three.js: カメラ
+                    scene: null,        // three.js: シーン
+                    meshBox: null,      // three.js: メッシュ（立方体）
+                    meshSphere: null,   // three.js: メッシュ（球体）
+                    // ArcGIS: external renderer をマップ ビューに追加したときに呼ばれる（マップ ビューの WebGL コンテキストが渡される）
+                    setup: function(context) {
+                        // three.js: WebGL レンダラ―の初期化
+                        this.renderer = new THREE.WebGLRenderer({
+                            context: context.gl,
+                            premultipliedAlpha: false
+                        });
+                        this.renderer.setPixelRatio(window.devicePixelRatio);
+                        this.renderer.setViewport(0, 0, view.width, view.height);
+                        // three.js: ArcGIS のバッファがクリアされるのを防ぐ
+                        this.renderer.autoClearDepth = false;
+                        this.renderer.autoClearStencil = false;
+                        this.renderer.autoClearColor = false;
+                        // ArcGIS は、WebGL のデフォルトのフレーム バッファではなくカスタムのオフスクリーン バッファにレンダリングする
+                        // バッファをバインドするために、下記のコードを three.js 実行時に挿入する
+                        var originalSetRenderTarget = this.renderer.setRenderTarget.bind(this.renderer);
+                        this.renderer.setRenderTarget = function(target) {
+                            originalSetRenderTarget(target);
+                            if (target == null) {
+                                // ArcGIS: external renderer がレンダリングするバッファをバインド
+                                context.bindRenderTarget();
+                            }
+                        }
+                        // three.js: シーンの作成
+                        this.scene = new THREE.Scene();
+                        // three.js: カメラの作成
+                        this.camera = new THREE.PerspectiveCamera();
+
+                        // three.js: ライトの作成
+                        light = new THREE.AmbientLight(0xffffff);
+                        //light = new THREE.DirectionalLight(0xffffff);
+                        this.scene.add(light);
+                        // three.js: メッシュの作成（立方体）
+                        var geometryBox = new THREE.BoxGeometry(100, 100, 100);
+                        var materialBox = new THREE.MeshPhongMaterial({ color: 0x0000ff });
+                        this.meshBox = new THREE.Mesh(geometryBox, materialBox);
+                        this.scene.add(this.meshBox);
+                        // three.js: メッシュの作成（球体）
+                        var geometrySphere = new THREE.SphereGeometry(100, 300, 300);
+                        var materialSphere = new THREE.MeshPhongMaterial({
+                            color: 0xffffff, specular: 0xcccccc, shininess:50,
+                            map: new THREE.TextureLoader().load('https://avatars3.githubusercontent.com/u/934073?s=88&v=4')
+                        });
+                        this.meshSphere = new THREE.Mesh(geometrySphere, materialSphere);
+                        this.scene.add(this.meshSphere);
+
+
+                        // メッシュを表示する位置を設定
+                        // 経度・緯度（東京タワー）と高度を指定
+                        var wgsPositionBox = [139.745433, 35.658581, 100];
+                        var wgsPositionSphere = [139.745433, 35.658581, 200];
+
+                        // 変換先の座標の配列
+                        var renderPositionBox =  [0, 0, 0];
+                        var renderPositionSphere =  [0, 0, 0];
+
+                        // ArcGIS: 指定した空間参照（WGS84）から ArcGIS のマップ ビューの座標系へ変換する（変換先の座標が renderPosition に格納される）
+                        externalRenderers.toRenderCoordinates(view, wgsPositionBox, 0, SpatialReference.WGS84, renderPositionBox , 0, 1);
+                        externalRenderers.toRenderCoordinates(view, wgsPositionSphere , 0, SpatialReference.WGS84, renderPositionSphere , 0, 1);
+
+                        // three.js: メッシュの表示位置を設定
+                        this.meshBox.position.set(renderPositionBox[0], renderPositionBox[1], renderPositionBox[2]);
+                        this.meshSphere.position.set(renderPositionSphere[0], renderPositionSphere[1], renderPositionSphere[2]);
+
+                    },
+                    // ArcGIS: マップ ビューの状態が更新されるときに呼ばれる
+                    render: function(context) {
+                        // ArcGIS のマップ ビューのカメラ オブジェクトを取得
+                        var mapCamera = context.camera;
+                        // three.js: カメラのパラメーターを更新
+                        this.camera.position.set(mapCamera.eye[0], mapCamera.eye[1], mapCamera.eye[2]);
+                        this.camera.up.set(mapCamera.up[0], mapCamera.up[1], mapCamera.up[2]);
+                        this.camera.lookAt(new THREE.Vector3(mapCamera.center[0], mapCamera.center[1], mapCamera.center[2]));
+                        // three.js: マップ ビューのカメラ オブジェクトから射影行列を取得
+                        this.camera.projectionMatrix.fromArray(mapCamera.projectionMatrix);
+                        // three.js: シーンをレンダリング
+                        this.renderer.resetGLState();
+                        this.renderer.render(this.scene, this.camera);
+                    }
+                }
+                // ArcGIS: external　renderer をマップ ビューに追加
+                externalRenderers.add(view, threeExternalRenderer);
+            });
+    </script>
+</head>
+<body>
+<div id="viewDiv"></div>
+</body>
+</html>
