@@ -238,7 +238,7 @@ class STWatcher extends React.Component {
 
 class App extends React.Component {
 
-  state = {theposition : 0, speed : 0, gpsRange: [], camera : null, prog : 0, currentCard : null, st : 0.1, totalProgress : 0.0, showButtons : false, card : null, index : 0, visible : false, showCards : true, locations : []}
+  state = {theposition : 0, speed : 0, gpsRange: null, camera : null, prog : 0, currentCard : null, st : 0.1, totalProgress : 0.0, showButtons : false, card : null, index : 0, visible : false, showCards : true, locations : []}
 
   testTop = (index) => {
 
@@ -300,6 +300,10 @@ class App extends React.Component {
 
     }*/
 
+    moveGPSSlider = (range) => {
+        this.setState({gpsRange : range});
+    }
+
     render() {
 
    // console.log(this.state.card);
@@ -351,10 +355,9 @@ class App extends React.Component {
 
                                         </Drawer>
 
-                                        { this.state.debug &&
+                                        { true &&
                                             <div   style = {{position:'fixed', top:'40px', left: '00px', zIndex : 999999, width:'100%'}}>
-                                                {this.state.card && this.state.card.speedFactor}
-                                                <Slider value={this.state.theposition} step={0.01} min={0} max={1} disabled={false} />
+                                                <Slider value={this.state.gpsRange || [0, data.trip[0].locations.length ]} onChange={(r) => this.moveGPSSlider(r)} range step={1} min={0} max={data.trip[0].locations.length} disabled={false} />
                                             </div>
                                         }
 
