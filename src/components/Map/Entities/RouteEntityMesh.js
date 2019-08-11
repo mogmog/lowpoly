@@ -2,6 +2,7 @@ import * as THREE from 'three';
 
 // import THREE_MeshLine from 'three.meshline';
 import THREE_MeshLine from './THREE.MeshLine';
+import MapHolder from "./../MapHolder";
 
 const MeshLine = THREE_MeshLine.MeshLine;
 const MeshLineMaterial = THREE_MeshLine.MeshLineMaterial;
@@ -38,7 +39,7 @@ export default class RouteEntityMesh extends THREE.Group {
       this.createMeshLine();
     }
 
-    for (let i = 0; i < value; i += 0.01 ){
+    for (let i = 0; i < value; i += 0.0005 ){
 
       this.trail_progress = i;
   
@@ -82,14 +83,13 @@ export default class RouteEntityMesh extends THREE.Group {
       let pos = [0, 0, 0];
 
       externalRenderers.toRenderCoordinates(
-        view, x, 0, SpatialReference.WGS84, pos, 0, 1);
+          view, x, 0, SpatialReference.WGS84, pos, 0, 1);
 
       curve_path.push(
-        new THREE.Vector3(pos[0], pos[1], pos[2] * 3.55));
-        //console.log('added');
-      });
-
-
+          new THREE.Vector3(pos[0], pos[1], pos[2] * (MapHolder.EXAGURATION + 0.05))
+          //console.log('added');
+      );
+    });
 
     this.trail_curve = new THREE.CatmullRomCurve3(curve_path);
 

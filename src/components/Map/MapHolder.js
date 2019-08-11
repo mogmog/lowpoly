@@ -11,14 +11,16 @@ const options = {
     url: 'https://js.arcgis.com/4.10',
 };
 
-const EXAGURATION = 3.5;
+const _EXAGURATION = 3.5;
 
 export default class MapHolder extends Component {
+
+    static EXAGURATION = _EXAGURATION;
 
     state = {
         zoom : 0, 
         currentCard : {camera : null},
-        routeTailPercentage : 0.01,
+        routeTailPercentage : 0.3,
         routeLengthPercentage : 0.0,
         routeGlowPercentage : 0.0,
         locationsWithAltitude : []
@@ -92,7 +94,7 @@ export default class MapHolder extends Component {
 
                     const ExaggeratedElevationLayer = BaseElevationLayer.createSubclass({
                         properties: {
-                            exaggeration: EXAGURATION
+                            exaggeration: _EXAGURATION
                         },
 
                         load: function() {
@@ -205,7 +207,7 @@ export default class MapHolder extends Component {
 
                         Xcamera : {"position":{"spatialReference":{"latestWkid":3857,"wkid":102100},"x":-307391.4364895002,"y":7216826.400379283,"z":100001583.47221267689},"heading":326.65066251089536,"tilt":60.95428259540638},
 
-                        camera: {"tilt":9.564290056641534,"heading":332.9405924852655,"position":{"x":4819863.103260796,"y":5203037.466432226,"z":25111011.181454599835,"spatialReference":{"wkid":102100,"latestWkid":3857}}},
+                        camera: this.props.cards[0].camera || {"tilt":9.564290056641534,"heading":332.9405924852655,"position":{"x":4819863.103260796,"y":5203037.466432226,"z":25111011.181454599835,"spatialReference":{"wkid":102100,"latestWkid":3857}}},
 
                         ui: {
                             components: []
@@ -286,7 +288,7 @@ export default class MapHolder extends Component {
 
                     worldGround.queryElevation(new Polyline(geojson)).then(result => {
 
-                        this.locationsWithAltitude = [result.geometry.paths[0].map(d=> [d[0], d[1], d[2] * EXAGURATION])];
+                        this.locationsWithAltitude = [result.geometry.paths[0].map(d=> [d[0], d[1], d[2] * (_EXAGURATION + 0.05)])];
 
                         //console.log('result.geometry.paths ');
 
@@ -302,7 +304,7 @@ export default class MapHolder extends Component {
 
                         const yellowLine = new Polyline({
                             hasZ: true,
-                            paths: [result.geometry.paths[0].map(d=> [d[0], d[1], d[2] * 3.6])],
+                            paths: [result.geometry.paths[0].map(d=> [d[0], d[1], d[2] * (_EXAGURATION + 0.05)])],
 
 
 
