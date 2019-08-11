@@ -316,8 +316,6 @@ class App extends React.Component {
 
                         <ApolloProvider client={client}>
 
-                            {this.state.showCards && <AddButton card={this.state.card} onClick={() => this.setState({visible : true})}/> }
-                            {!this.state.showCards && <SaveGPSButton card={this.state.card} context={this.esriContext} camera={this.state.camera} finish={() => { this.setState({showCards: true})}  }/> }
 
                             <Query
                                 query={GET_TRIP} >
@@ -333,11 +331,19 @@ class App extends React.Component {
 
                                      if (!this.state.card) {
                                          this.setState({card : cards[0]});
+
                                      }
 
+                                     if (!this.state.gpsRange) {
+                                         this.setState({gpsRange : [0, data.trip[0].locations.length]})
+                                     }
                                     //return  <MapHolder registerContext={c=> this.esriContext = c} camera={this.state.camera} gpsRange={this.state.gpsRange} debug={this.debug} totalProgress={0.3} showCards={this.state.showCards} updateCamera={(cam) => this.setState({camera : cam})} locations={data.trip[0].locations} scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
 
                                     return <div >
+
+                                        {this.state.showCards && <AddButton  card={this.state.card} onClick={() => this.setState({visible : true})}/> }
+                                        {!this.state.showCards && <SaveGPSButton gpsRange={this.state.gpsRange} card={this.state.card} context={this.esriContext} locations={data.trip[0].locations} camera={this.state.camera} finish={() => { this.setState({showCards: true})}  }/> }
+
 
                                         {/* <pre style={{position : 'fixed'}}>{this.state.totalProgress / cards.length} </pre>*/}
 
@@ -357,11 +363,11 @@ class App extends React.Component {
 
                                         { true &&
                                             <div   style = {{position:'fixed', top:'40px', left: '00px', zIndex : 999999, width:'100%'}}>
-                                                <Slider value={this.state.gpsRange || [0, data.trip[0].locations.length ]} onChange={(r) => this.moveGPSSlider(r)} range step={1} min={0} max={data.trip[0].locations.length} disabled={false} />
+                                                {this.state.gpsRange  &&  <Slider value={this.state.gpsRange } onChange={(r) => this.moveGPSSlider(r)} range step={1} min={0} max={data.trip[0].locations.length} disabled={false} /> }
                                             </div>
                                         }
 
-                                        <MapHolder cards={cards} registerContext={c=> this.esriContext = c} camera={this.state.camera} gpsRange={this.state.gpsRange} debug={this.debug} totalProgress={this.state.prog} showCards={this.state.showCards} updateCamera={(cam) => this.setState({camera : cam})} locations={data.trip[0].locations} scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
+                                        <MapHolder alllocations={data.trip[0].locations} cards={cards} registerContext={c=> this.esriContext = c} camera={this.state.camera} gpsRange={this.state.gpsRange} debug={this.debug} totalProgress={this.state.prog} showCards={this.state.showCards} updateCamera={(cam) => this.setState({camera : cam})} locations={(this.state.card ? this.state.card.locations : [])} scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
 
                                         <div >
 
@@ -408,7 +414,7 @@ class App extends React.Component {
                                                                             <HtmlCard setSpeed={(speed) => this.setState({speed})}
                                                                                       context={this.esriContext}
                                                                                       updateCamera={(camera) => { this.setState({camera : camera})} }
-                                                                                      setGPSRange={(r) => this.setState({gpsRange : r})}
+
                                                                                       debug={this.debug}
                                                                                       clear={<ClearGPSButton finish={()=> { refetch() } } card={card}/>}
                                                                                       cardprogresss={cardprogresss}

@@ -38,7 +38,7 @@ export default class RouteEntityMesh extends THREE.Group {
       this.createMeshLine();
     }
 
-    for (let i = 0; i < value; i += 0.001 ){
+    for (let i = 0; i < value; i += 0.01 ){
 
       this.trail_progress = i;
   

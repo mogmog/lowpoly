@@ -18,7 +18,7 @@ export default class MapHolder extends Component {
     state = {
         zoom : 0, 
         currentCard : {camera : null},
-        routeTailPercentage : 0.20,
+        routeTailPercentage : 0.01,
         routeLengthPercentage : 0.0,
         routeGlowPercentage : 0.0,
         locationsWithAltitude : []
@@ -274,6 +274,7 @@ export default class MapHolder extends Component {
                         SimpleLineSymbol,
                         view,
                         webMercatorUtils,
+                        worldGround
                     };
 
                     self.props.registerContext(self.esriLoaderContext);
@@ -281,19 +282,21 @@ export default class MapHolder extends Component {
 
 
 
-                    const geojson = this.props.locations.map(d=> [d.longitude, d.latitude])
+                    const geojson = this.props.alllocations.map(d=> [d.longitude, d.latitude])
 
                     worldGround.queryElevation(new Polyline(geojson)).then(result => {
 
-                        this.locationsWithAltitude = [result.geometry.paths[0].map(d=> [d[0], d[1], d[2] * EXAGURATION + 0.1])];
+                        this.locationsWithAltitude = [result.geometry.paths[0].map(d=> [d[0], d[1], d[2] * EXAGURATION])];
 
-                        console.log('cached locationWithAltitude');
+                        //console.log('result.geometry.paths ');
+
+                        //console.log(result.geometry.paths)
 
                         //self.setState({locationsWithAltitude : [result.geometry.paths[0].map(d=> [d[0], d[1], d[2] * 3.6])]});
 
                         const yellowLineSymbol = {
                             type: 'simple-line',
-                            color: [255,211,0, 0.15],
+                            color: [255,211,0, 0.25],
                             width: 2
                         };
 
@@ -320,7 +323,7 @@ export default class MapHolder extends Component {
 
                         //map.add(yellowLineLayer);
 
-                        self.routeRenderer = new RouteRenderer(self.esriLoaderContext, result.geometry.paths);
+                        self.routeRenderer = new RouteRenderer(self.esriLoaderContext, []);
 
                         externalRenderers.add(view, self.routeRenderer);
                         self.routeRenderer.setTrailLength(this.state.routeTailPercentage);
@@ -367,7 +370,10 @@ export default class MapHolder extends Component {
         const camera = this.props.card && this.props.card.camera;
 
 
-        if (that.esriLoaderContext && that.locationsWithAltitude && prevProps.gpsRange !== this.props.gpsRange) {
+        /*if gps range slider is changed*/
+        if (that.esriLoaderContext && that.locationsWithAltitude && prevProps.gpsRange !== this.props.gpsRange)         {
+
+
 
             const oldLayer = that.esriLoaderContext.view.map.findLayerById('lineLayer');
             oldLayer.removeAll();
@@ -375,9 +381,11 @@ export default class MapHolder extends Component {
             const orig = this.locationsWithAltitude[0].slice();
             const result = orig.splice(this.props.gpsRange[0], this.props.gpsRange[1] - this.props.gpsRange[0]);
 
+            //console.log(result);
+
             const yellowLineSymbol = {
                 type: 'simple-line',
-                color: [255,211,0, 0.15],
+                color: [255,211,0, 0.25],
                 width: 2
             };
 
@@ -395,6 +403,40 @@ export default class MapHolder extends Component {
 
         }
 
+        if (prevProps.locations != this.props.locations &&  this.props.locations.length && this.esriLoaderContext && this.esriLoaderContext.externalRenderers && this.routeRenderer) {
+
+            const geojson = this.props.locations.map(d=> [d.longitude, d.latitude])
+
+            this.esriLoaderContext.worldGround.queryElevation(new this.esriLoaderContext.Polyline(geojson)).then(result => {
+
+                if (result) {
+
+                    console.log("result going into route renderer");
+                    console.log(result.geometry.paths);
+
+                    this.routeRenderer.setGPSRange(result.geometry.paths,
+                        that.esriLoaderContext.externalRenderers,
+                        that.esriLoaderContext.view,
+                        that.esriLoaderContext.SpatialReference,
+                        that.esriLoaderContext.view.camera);
+                }
+
+            }).catch(d=> {
+                console.log(d);
+            });
+
+
+
+
+            //this.routeRenderer = new RouteRenderer(this.esriLoaderContext, this.props.locations);
+
+            //console.log(this.esriLoaderContext.externalRenderers);
+
+            //this.esriLoaderContext.externalRenderers.add(this.esriLoaderContext, this.routeRenderer);
+            //this.routeRenderer.setTrailLength(this.state.routeTailPercentage);
+            //this.needsRedraw = true;
+
+        }
         /*if (that.esriLoaderContext ) {
 
             this.routeRenderer.setGPSRange(this.props.locations.slice(0, 1000),

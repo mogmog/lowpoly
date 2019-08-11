@@ -88,9 +88,13 @@ export default class RouteRenderer extends AbstractRenderer {
       opacityVisible : 0.8, 
       opacityHidden : 0.0
     });
-    this.meshline.updateRoute(this.geo_curve_path[0],
-        this.esriLoaderContext.externalRenderers,
-        view, SpatialReference, cam);
+
+    if (this.geo_curve_path.length) {
+      this.meshline.updateRoute(this.geo_curve_path[0],
+          this.esriLoaderContext.externalRenderers,
+          view, SpatialReference, cam);
+    }
+
     this.meshline.setProgress(0);
 
     this.start();
@@ -141,7 +145,15 @@ export default class RouteRenderer extends AbstractRenderer {
     console.log(SpatialReference);
     console.log(cam);
 
-    this.meshline.updateRoute(path, externalRenderers, view, SpatialReference, cam);
+    this.meshline.updateRoute(path[0], externalRenderers, view, SpatialReference, cam);
+
+    this.meshline.setProgress(0);
+
+    this.start();
+
+    // cleanup after ourselfs
+    //context.resetWebGLState();
+
   }
 
   setTrailLength(value) {

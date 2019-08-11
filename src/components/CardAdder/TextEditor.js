@@ -58,7 +58,7 @@ class TextEditor extends React.Component {
                     } }
                 />
 
-                <Button onClick={() => create( {"trip_id" : 1, "type" : "Html", "duration" : "100%", "camera":  null, "content":  {"html" :this.state.data}})} >Add</Button>
+                <Button onClick={() => create( {"trip_id" : 1, "type" : "Html", "duration" : "2000px", "camera":  null, "content":  {"html" :this.state.data}})} >Add</Button>
 
             </div>
             </Fragment>

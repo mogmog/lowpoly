@@ -9,12 +9,11 @@ import gql from "graphql-tag";
 
 export default class SaveGPSButton extends React.Component {
 
-
     render() {
 
         const UPDATE_CARD_CONTENT = gql`
-            mutation updatecard($id, : Int!, $camera : jsonb){
-                update_cards(where: {id: {_eq: $id}}, _set: {camera: $camera}) {
+            mutation updatecard($id, : Int!, $camera : jsonb, $locations : jsonb){
+                update_cards(where: {id: {_eq: $id}}, _set: {camera: $camera, locations: $locations}) {
                     returning {
                         id
                     }
@@ -22,12 +21,23 @@ export default class SaveGPSButton extends React.Component {
             }
         `;
 
-        const updateCamera = (card, camera, update) => {
+        const updateCamera = (card, locations, gpsRange, camera, update) => {
 
-            console.log(this.props);
-            //alert(this.props.card.id);
+            const orig = locations.slice();
+
+            let selectedLocations = [];
+
+            if (gpsRange) {
+                selectedLocations = orig.splice(gpsRange[0], gpsRange[1] - gpsRange[0]);
+            } else {
+                selectedLocations = card.locations;
+            }
+
+
+            alert(selectedLocations.length);
+
            // debugger;
-            update({variables : {"id" : this.props.card.id, "camera" : this.props.context.view.camera.clone().toJSON()  }});
+            update({variables : {"id" : this.props.card.id, "locations" : selectedLocations, "camera" : this.props.context.view.camera.clone().toJSON()  }});
             this.props.finish();
         }
 
@@ -39,7 +49,7 @@ export default class SaveGPSButton extends React.Component {
             <Mutation mutation={UPDATE_CARD_CONTENT}>
                 {(update, { data }) => {
 
-                    return <div onClick={() => updateCamera(this.props.card, this.props.camera,  update)} >
+                    return <div onClick={() => updateCamera(this.props.card, this.props.locations, this.props.gpsRange, this.props.camera,  update)} >
 
                         <Button type="primary" shape="circle" icon="save" /></div>
                 }}
