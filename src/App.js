@@ -238,7 +238,7 @@ class STWatcher extends React.Component {
 
 class App extends React.Component {
 
-  state = {theposition : 0, speed : 0, gpsRange: null, camera : null, prog : 0, currentCard : null, st : 0.1, totalProgress : 0.0, showButtons : false, card : null, index : 0, visible : false, showCards : true, locations : []}
+  state = {newProgress : 0, theposition : 0, speed : 0, gpsRange: null, camera : null, prog : 0, currentCard : null, st : 0.1, totalProgress : 0.0, showButtons : false, card : null, index : 0, visible : false, showCards : true, locations : []}
 
   testTop = (index) => {
 
@@ -367,7 +367,7 @@ class App extends React.Component {
                                             </div>
                                         }
 
-                                        <MapHolder alllocations={data.trip[0].locations} cards={cards} registerContext={c=> this.esriContext = c} camera={this.state.camera} gpsRange={this.state.gpsRange} debug={this.debug} totalProgress={this.state.prog} showCards={this.state.showCards} updateCamera={(cam) => this.setState({camera : cam})} locations={(this.state.card ? this.state.card.locations : [])} scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
+                                        <MapHolder alllocations={data.trip[0].locations} cards={cards} registerContext={c=> this.esriContext = c} camera={this.state.camera} gpsRange={this.state.gpsRange} debug={this.debug} totalProgress={this.state.newProgress} showCards={this.state.showCards} updateCamera={(cam) => this.setState({camera : cam})} locations={(this.state.card ? this.state.card.locations : [])} scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
 
                                         <div >
 
@@ -396,28 +396,31 @@ class App extends React.Component {
 
                                                 {true && cards && cards.map((card, index) =>
 
-                                                        <Scene ref={card.id} key={card.id} offset={'400px'} duration={card.duration} pin={card.pin} >
+                                                        <Scene ref={card.id} key={card.id}  duration={card.duration} offset={400} pin={card.pin} >
                                                             {(cardprogresss, event) => {
 
                                                                 //this.setState({cardppp : cardprogress})
 //this.p = cardprogress;
 
                                                                 return (
-                                                                    <div id={`theid${index}`} className="sticky" style={{height: card.duration.replace('%', 'vh'),  pointerEvents : (this.state.showCards ? 'all' : 'none'), 'opacity' : this.state.showCards ? 1 : 0.1, 'transition': 'opacity .55s ease-in-out' }}  >
+                                                                    <div id={`theid${index}`} className="sticky" style={{height: card.duration,  pointerEvents : (this.state.showCards ? 'all' : 'none'), 'opacity' : this.state.showCards ? 1 : 0.1, 'transition': 'opacity .55s ease-in-out' }}  >
 
 
-                                                                         <STWatcher updateP={(p) => this.setState({prog : p})} updateTotalProgress={(deltaprogress, card) => this.setState({currentCard : card, deltaprogress})} progress={cardprogresss} card={card} event={event} />
+                                                                        {/* <STWatcher updateP={(p) => this.setState({prog : p})} updateTotalProgress={(deltaprogress, card) => this.setState({currentCard : card, deltaprogress})} progress={cardprogresss} card={card} event={event} />*/}
 
                                                                         { card.type === 'Html' && <div className="smallsection" style={{height : card.duration.replace('%', 'vh')}}>
                                                                             {/* {JSON.stringify(this.state.gpsRange)}*/}
 
+
+
                                                                             <HtmlCard setSpeed={(speed) => this.setState({speed})}
                                                                                       context={this.esriContext}
                                                                                       updateCamera={(camera) => { this.setState({camera : camera})} }
-
+                                                                                      index={index}
                                                                                       debug={this.debug}
                                                                                       clear={<ClearGPSButton finish={()=> { refetch() } } card={card}/>}
                                                                                       cardprogresss={cardprogresss}
+                                                                                      updateProgress={(p) => this.setState({newProgress : p})}
                                                                                       currentCard={this.state.card}
                                                                                       card={card}
                                                                                       event={event}
@@ -447,6 +450,7 @@ class App extends React.Component {
 
                                                                         { card.type === 'Spacer' && <div className="smallsection" >
                                                                             <SpacerCard
+                                                                                index={index}
                                                                                 updateCamera={(camera) => { this.setState({camera : camera})} }
                                                                                 debug={this.debug}
                                                                                 clear={<ClearGPSButton finish={refetch} card={card}/>}

@@ -36,7 +36,8 @@ class CardWrapper extends React.Component {
     render() {
 
         return (
-            <div className={'CardWrapper'} style={{  transition:'all 0.3s ease', width: '100%', background: 'transparent'}} >
+            <div className={'CardWrapper'} style={{  transition:'all 0.3s ease', width: '100%', backgroundColor: this.props.index % 2 ===0 ? 'transparent' : 'rgba(0,0,0,0.1)'}} >
+
                 <div id="container" style={{height : this.props.card.duration}}>
 
                    {/* <pre> CC{JSON.stringify(this.props.cardprogress)} {this.state.height} </pre>*/}
@@ -44,6 +45,7 @@ class CardWrapper extends React.Component {
 
 
                     <div id="navb" >
+
 
                         {this.props.children}
 
@@ -62,6 +64,7 @@ class CardWrapper extends React.Component {
                         </div>
 
                     </Fragment>}
+
 
 
                 </div>

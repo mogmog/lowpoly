@@ -14,6 +14,13 @@ class HtmlCard extends React.Component {
                this.props.setCard(this.props.card);
         }*/
 
+        if (prevProps.cardprogresss != this.props.cardprogresss) {
+          //  console.log(this.props.card.id, this.props.cardprogresss);
+
+            if (this.props.card.id === this.props.currentCard.id) {
+                this.props.updateProgress(this.props.cardprogresss);
+            }
+        }
 
         if (this.props.event.type != prevProps.event.type && this.props.event.type === 'start') {
 
@@ -21,7 +28,7 @@ class HtmlCard extends React.Component {
             //console.log("started");
 
             this.props.setCard(this.props.card);
-           // alert('set' + this.props.card.id)
+            //alert('moved to camera' + this.props.card.id)
             this.props.card.camera && this.props.updateCamera(this.props.card.camera);
 
 
@@ -59,11 +66,12 @@ class HtmlCard extends React.Component {
             <Mutation mutation={UPDATE_CARD_CONTENT}>
                 {(update, { data }) => {
 
-                    return <CardWrapper setGPSRange={this.props.setGPSRange} debug={this.props.debug} clear={clear} card={this.props.card} update={update} clearMap={this.props.clearMap} hideCards={this.props.hideCards}>
-                            <div className={'htmlcard'} style={{height : this.props.card.duration}}>
+                    return <CardWrapper index={this.props.index} setGPSRange={this.props.setGPSRange} debug={this.props.debug} clear={clear} card={this.props.card} update={update} clearMap={this.props.clearMap} hideCards={this.props.hideCards}>
+                            <div className={'htmlcard'} style={{height : this.props.card.duration }}>
 
                                 <div dangerouslySetInnerHTML={{ __html: this.props.card.content.html }}/>
                                {/* <pre style={{position : 'absolute', textAlign : 'bottom'}}>{this.props.cardprogress} </pre>*/}
+
                             </div>
                         </CardWrapper>
                 }}
