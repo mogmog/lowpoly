@@ -33,7 +33,7 @@ const AddCard = ({cards, graphics, refetch, scrollTo}) => {
                 let create = (card) => {
                    //e.preventDefault();
 
-                    const spacer = {"trip_id" : 1, "type" : "Spacer", "offset" : "0px", "height" : "1000px", "camera":  null, "content":  {}}
+                    const spacer = {"trip_id" : 1, "type" : "Spacer", "offset" : "0px", "height" : 1000, "camera":  null, "content":  {}}
                     const cards = [card]
 
                     addCard({variables : {"objects" : cards}}).then(d=> {

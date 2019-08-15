@@ -40,7 +40,7 @@ class TextEditor extends React.Component {
 
                 <CKEditor
                     editor={ ClassicEditor }
-                    data="<p>Hello from CKEditor 5!</p>"
+                    data="<p></p>"
                     onInit={ editor => {
                         // You can store the "editor" and use when it is needed.
                         console.log( 'Editor is ready to use!', editor );
@@ -58,7 +58,7 @@ class TextEditor extends React.Component {
                     } }
                 />
 
-                <Button onClick={() => create( {"trip_id" : 1, "type" : "Html", "duration" : "2000px", "camera":  null, "content":  {"html" :this.state.data}})} >Add</Button>
+                <Button onClick={() => create( {"trip_id" : 1, "type" : "Html", "duration" : 1000, "camera":  null, "content":  {"html" :this.state.data}})} >Add</Button>
 
             </div>
             </Fragment>

@@ -175,14 +175,14 @@ export default class RouteEntityMesh extends THREE.Group {
       map: null,
       useMap: false,
       color: new THREE.Color( 0xffd300 ),
-      opacity: 0.5,
+      opacity: 0.7,
       blending: THREE.AdditiveBlending,
       /*transparent: true,*/
       //depthWrite: false,
       //depthTest: true,
       depthFunc: THREE.NeverDepth,
       sizeAttenuation : 0, // makes the line width constant regardless distance (1 unit is 1px on screen) (0 - attenuate, 1 - don't attenuate)
-      lineWidth: 25, // float defining width (if sizeAttenuation is true, it's world units; else is screen pixels)
+      lineWidth: 10, // float defining width (if sizeAttenuation is true, it's world units; else is screen pixels)
       near : 1, //camera.near,
       far : 1000, // camera.far,
     });

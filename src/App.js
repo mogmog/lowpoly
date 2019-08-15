@@ -336,10 +336,10 @@ class App extends React.Component {
 
                                     //
 
-                                     if (!this.state.card) {
-                                         this.setState({card : cards[0]});
+                                     if (cards.length && !this.state.card) {
+                                        // this.setState({card : cards[0]});
 
-                                         cards.push({id : 'spacerCardInsert', type : 'Spacer', duration : '2000px', location_offset : [], locations : []});
+                                         //cards.push({id : 'spacerCardInsert', type : 'Spacer', duration : '2000px', location_offset : [], locations : []});
 
                                      }
 
@@ -370,7 +370,7 @@ class App extends React.Component {
 
                                         </Drawer>
 
-                                        { this.debug &&
+                                        { false && this.debug &&
                                             <div   style = {{position:'fixed', top:'40px', left: '00px', zIndex : 999999, width:'100%'}}>
                                                 {this.state.gpsRange  &&  this.state.card && <Slider value={this.state.card.location_offset } onChange={(r) => this.moveGPSSlider(r)} range step={1} min={0} max={data.trip[0].locations.length} disabled={false} /> }
                                             </div>
@@ -392,7 +392,7 @@ class App extends React.Component {
 
                                                 {true && cards && cards.map((card, index) =>
 
-                                                        <Scene ref={card.id} key={card.id}  duration={card.duration} offset={500} pin={card.pin} >
+                                                        <Scene ref={card.id} key={card.id}  duration={card.duration} offset={card.duration/2} pin={card.pin} >
                                                             {(cardprogresss, event) => {
 
                                                                 //this.setState({cardppp : cardprogress})
@@ -404,7 +404,7 @@ class App extends React.Component {
 
                                                                         {/* <STWatcher updateP={(p) => this.setState({prog : p})} updateTotalProgress={(deltaprogress, card) => this.setState({currentCard : card, deltaprogress})} progress={cardprogresss} card={card} event={event} />*/}
 
-                                                                        { card.type === 'Html' && <div className="smallsection" style={{height : card.duration}}>
+                                                                        { card.type === 'Html' && <div className="smallsection" >
 
                                                                              {JSON.stringify(cardprogresss)}
 
@@ -419,7 +419,7 @@ class App extends React.Component {
                                                                                       currentCard={this.state.card}
                                                                                       card={card}
                                                                                       event={event}
-                                                                                      hideCards={() => this.setState({showCards : false})}
+                                                                                      hideCards={(card) => this.setState({card : card, showCards : false})}
                                                                                       setCard={(card) => {  this.setState({card : card})}} > ️ </HtmlCard>
                                                                         </div>}
 

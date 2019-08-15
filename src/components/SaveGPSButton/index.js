@@ -21,27 +21,31 @@ export default class SaveGPSButton extends React.Component {
             }
         `;
 
-        const updateCamera = (card, locations, gpsRange, camera, extent, update) => {
+        const updateCamera = (card, locations, gpsRange, camera, extent, update, withLocations) => {
 
             const pointsInsideExtent = [];
-            const indexesInsideExtent = {};
 
-            locations.forEach((location, i) => {
+            if (withLocations) {
 
-                if (extent.clone().expand(1.5).contains({
-                    type: "point", // autocasts as new Point()
-                    x: location.longitude,
-                    y: location.latitude,
-                    spatialReference:{"wkid":4326}
-                })) {
+                locations.forEach((location, i) => {
 
+                    if (extent.clone().expand(1.2).contains({
+                        type: "point", // autocasts as new Point()
+                        x: location.longitude,
+                        y: location.latitude,
+                        spatialReference:{"wkid":4326}
+                    })) {
+
+                        pointsInsideExtent.push(location);
+                        //indexesInsideExtent[i] = true;
+                    }
+                })
+            } else {
+
+                locations.forEach((location, i) => {
                     pointsInsideExtent.push(location);
-                    //indexesInsideExtent[i] = true;
-                }
-            })
-
-
-
+                });
+            }
 
             update({variables : {"id" : this.props.card.id, "locations" : pointsInsideExtent, location_offset : [], "camera" : camera  }});
             this.props.finish();
@@ -55,9 +59,12 @@ export default class SaveGPSButton extends React.Component {
             <Mutation mutation={UPDATE_CARD_CONTENT}>
                 {(update, { data }) => {
 
-                    return <div onClick={() => updateCamera(this.props.card, this.props.locations, this.props.gpsRange, this.props.camera, this.props.extent, update)} >
+                    return <div  >
 
-                        <Button type="primary" shape="circle" icon="save" /></div>
+                        <Button onClick={() => updateCamera(this.props.card, this.props.locations, this.props.gpsRange, this.props.camera, this.props.extent, update, true)} type="primary" shape="circle" icon="save" />
+                        <Button onClick={() => updateCamera(this.props.card, this.props.locations, this.props.gpsRange, this.props.camera, this.props.extent, update, false)} type="primary" shape="circle" icon="save" />
+
+                    </div>
                 }}
             </Mutation>
 

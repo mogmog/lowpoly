@@ -16,7 +16,13 @@ const _EXAGURATION_ADJUST = 1.02;
 
 const yellowLineSymbol = {
     type: 'simple-line',
-    color: [255,211,0, 0.25],
+    color: [255,211,0, 0.2],
+    width: 2
+};
+
+const redLineSymbol = {
+    type: 'simple-line',
+    color: [255,0,0, 0.55],
     width: 2
 };
 
@@ -28,8 +34,8 @@ export default class MapHolder extends Component {
     state = {
         zoom : 0, 
         currentCard : {camera : null},
-        routeTailPercentage : 0.2,
-        routeLengthPercentage : 0.0,
+        routeTailPercentage : 0.25,
+        routeLengthPercentage : 50.0,
         routeGlowPercentage : 0.0,
         locationsWithAltitude : []
     };
@@ -223,7 +229,7 @@ export default class MapHolder extends Component {
 
                         alphaCompositingEnabled: false,
 
-                        camera: this.props.cards[0].camera || {"tilt":9.564290056641534,"heading":332.9405924852655,"position":{"x":4819863.103260796,"y":5203037.466432226,"z":25111011.181454599835,"spatialReference":{"wkid":102100,"latestWkid":3857}}},
+                        camera: this.props.cards.length && this.props.cards[0].camera || {"tilt":9.564290056641534,"heading":332.9405924852655,"position":{"x":4819863.103260796,"y":5203037.466432226,"z":25111011.181454599835,"spatialReference":{"wkid":102100,"latestWkid":3857}}},
 
                         ui: {
                             components: []
@@ -318,10 +324,12 @@ export default class MapHolder extends Component {
                         });
 
                         var graphicsLayer = new GraphicsLayer({id : 'lineLayer'});
+                        var graphics2Layer = new GraphicsLayer({id : 'lineCardLayer'});
 
                         graphicsLayer.add(yellowLineGraphic);
 
                         map.add(graphicsLayer);
+                        map.add(graphics2Layer);
 
                         /*3d stuff*/
                         self.routeRenderer = new RouteRenderer(self.esriLoaderContext, []);
@@ -418,6 +426,24 @@ export default class MapHolder extends Component {
                         that.esriLoaderContext.view,
                         that.esriLoaderContext.SpatialReference,
                         that.esriLoaderContext.view.camera);
+
+                    const oldLayer = that.esriLoaderContext.view.map.findLayerById('lineCardLayer');
+                    oldLayer.removeAll();
+
+                    const redLine = new that.esriLoaderContext.Polyline({
+                        hasZ: true,
+                        paths: [result.geometry.paths[0].map(d=> [d[0], d[1], d[2] * (_EXAGURATION * _EXAGURATION_ADJUST)])],
+                    });
+
+                    const redLineGraphic = new that.esriLoaderContext.Graphic({
+                        geometry: redLine,
+                        symbol: redLineSymbol
+                    });
+
+                    //oldLayer.add(redLineGraphic);
+
+                    console.log("added");
+
                 }
 
             }).catch(d=> {

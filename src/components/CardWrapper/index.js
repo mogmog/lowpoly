@@ -60,7 +60,7 @@ class CardWrapper extends React.Component {
 
                         <div id="navc" style={{zoom : 1}}>
                             {this.props.card.id}
-                            <Button type={this.props.card.camera ? "primary" : ""} onClick={ this.props.hideCards } shape="circle" icon="flag" />
+                            <Button type={this.props.card.camera ? "primary" : ""} onClick={ () => this.props.hideCards(this.props.card) } shape="circle" icon="flag" />
                         </div>
 
                     </Fragment>}
