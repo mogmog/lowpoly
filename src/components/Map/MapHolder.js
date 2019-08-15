@@ -4,23 +4,31 @@ import TWEEN from '@tweenjs/tween.js';
 import './MapHolder.css';
 
 import * as THREE from 'three'; //leave this in?
-import ImageRenderer from './Renderers/ImageRenderer';
+
 import RouteRenderer from './Renderers/RouteRenderer';
 
 const options = {
-    url: 'https://js.arcgis.com/4.10',
+    url: 'https://js.arcgis.com/4.12',
 };
 
-const _EXAGURATION = 3.5;
+const _EXAGURATION = 2.5;
+const _EXAGURATION_ADJUST = 1.02;
+
+const yellowLineSymbol = {
+    type: 'simple-line',
+    color: [255,211,0, 0.25],
+    width: 2
+};
 
 export default class MapHolder extends Component {
 
     static EXAGURATION = _EXAGURATION;
+    static EXAGURATION_ADJUST = _EXAGURATION_ADJUST;
 
     state = {
         zoom : 0, 
         currentCard : {camera : null},
-        routeTailPercentage : 0.3,
+        routeTailPercentage : 0.2,
         routeLengthPercentage : 0.0,
         routeGlowPercentage : 0.0,
         locationsWithAltitude : []
@@ -40,8 +48,10 @@ export default class MapHolder extends Component {
                 [
                     'esri/core/declare',
                     'esri/request',
+                    "esri/core/watchUtils",
                     'esri/WebMap',
                     "esri/WebScene",
+                    "esri/Camera",
                     'esri/views/SceneView',
                     'esri/layers/BaseTileLayer',
                     'esri/layers/BaseElevationLayer',
@@ -69,8 +79,10 @@ export default class MapHolder extends Component {
                 ([
                      declare,
                      esriRequest,
+                     watchUtils,
                      WebMap,
                      WebScene,
+                     Camera,
                      SceneView,
                      BaseTileLayer,
                      BaseElevationLayer,
@@ -92,6 +104,7 @@ export default class MapHolder extends Component {
                      LineSymbol3DLayer
                  ]) => {
 
+                    console.log(esriRequest);
                     const ExaggeratedElevationLayer = BaseElevationLayer.createSubclass({
                         properties: {
                             exaggeration: _EXAGURATION
@@ -128,7 +141,10 @@ export default class MapHolder extends Component {
 
                         // generate the tile url for a given level, row and column
                         getTileUrl: function(level, row, col) {
-                            return this.urlTemplate
+
+                            //console.log(this.urlTemplate);
+
+                            return self.props.tile_server
                                 .replace('{z}', level)
                                 .replace('{x}', col)
                                 .replace('{y}', row);
@@ -151,8 +167,8 @@ export default class MapHolder extends Component {
                                     // when esri request resolves successfully
                                     // get the image from the response
                                     var image = response.data;
-                                    var width = this.tileInfo.size[0];
-                                    var height = this.tileInfo.size[0];
+                                    var width = this.tileInfo.size[0] * 1;
+                                    var height = this.tileInfo.size[0] * 1;
 
                                     // create a canvas with 2D rendering context
                                     var canvas = document.createElement('canvas');
@@ -200,12 +216,12 @@ export default class MapHolder extends Component {
 
                         // center : [20.438086772337208, 42.389699080958245],
                         container: 'viewDiv',
-                        qualityProfile: "high",
+
                         viewingMode : "local",
 
-                        alphaCompositingEnabled: false,
+                        qualityProfile: "high",
 
-                        Xcamera : {"position":{"spatialReference":{"latestWkid":3857,"wkid":102100},"x":-307391.4364895002,"y":7216826.400379283,"z":100001583.47221267689},"heading":326.65066251089536,"tilt":60.95428259540638},
+                        alphaCompositingEnabled: false,
 
                         camera: this.props.cards[0].camera || {"tilt":9.564290056641534,"heading":332.9405924852655,"position":{"x":4819863.103260796,"y":5203037.466432226,"z":25111011.181454599835,"spatialReference":{"wkid":102100,"latestWkid":3857}}},
 
@@ -229,13 +245,13 @@ export default class MapHolder extends Component {
 
 
 
-                   /* view.watch('camera', function(newValue, oldValue, property, object) {
+                    view.watch('camera', function(newValue, oldValue, property, object) {
                         if (!self.props.showCards) {
-                           // self.props.updateCamera(newValue);
+                            self.props.updateCamera(newValue, view.extent);
                            // console.log(newValue);
                         }
 
-                    });*/
+                    });
 
                     view.when(x=> {
 
@@ -288,26 +304,12 @@ export default class MapHolder extends Component {
 
                     worldGround.queryElevation(new Polyline(geojson)).then(result => {
 
-                        this.locationsWithAltitude = [result.geometry.paths[0].map(d=> [d[0], d[1], d[2] * (_EXAGURATION + 0.05)])];
+                        this.locationsWithAltitude = [result.geometry.paths[0].map(d=> [d[0], d[1], d[2] * (_EXAGURATION * _EXAGURATION_ADJUST)])];
 
-                        //console.log('result.geometry.paths ');
-
-                        //console.log(result.geometry.paths)
-
-                        //self.setState({locationsWithAltitude : [result.geometry.paths[0].map(d=> [d[0], d[1], d[2] * 3.6])]});
-
-                        const yellowLineSymbol = {
-                            type: 'simple-line',
-                            color: [255,211,0, 0.25],
-                            width: 2
-                        };
-
+                        /*esri yellow line*/
                         const yellowLine = new Polyline({
                             hasZ: true,
-                            paths: [result.geometry.paths[0].map(d=> [d[0], d[1], d[2] * (_EXAGURATION + 0.05)])],
-
-
-
+                            paths: [result.geometry.paths[0].map(d=> [d[0], d[1], d[2] * (_EXAGURATION * _EXAGURATION_ADJUST)])],
                         });
 
                         const yellowLineGraphic = new Graphic({
@@ -315,18 +317,14 @@ export default class MapHolder extends Component {
                             symbol: yellowLineSymbol
                         });
 
-
-
                         var graphicsLayer = new GraphicsLayer({id : 'lineLayer'});
 
                         graphicsLayer.add(yellowLineGraphic);
 
                         map.add(graphicsLayer);
 
-                        //map.add(yellowLineLayer);
-
+                        /*3d stuff*/
                         self.routeRenderer = new RouteRenderer(self.esriLoaderContext, []);
-
                         externalRenderers.add(view, self.routeRenderer);
                         self.routeRenderer.setTrailLength(this.state.routeTailPercentage);
                         self.needsRedraw = true;
@@ -335,7 +333,12 @@ export default class MapHolder extends Component {
                         console.log(d);
                     });
 
-                    const images = [{"description":{"title":"Lagoon"},"id":1,"location":{"geometry":{"coordinates":[42,42,400.79999923706055],"type":"Point"},"properties":{},"type":"Feature"}},{"description":{"title":"church"},"id":2,"location":{"geometry":{"coordinates":[42,42.1,400.79999923706055],"type":"Point"},"properties":{},"type":"Feature"}}];
+
+
+
+
+
+                  //const images = [{"description":{"title":"Lagoon"},"id":1,"location":{"geometry":{"coordinates":[42,42,400.79999923706055],"type":"Point"},"properties":{},"type":"Feature"}},{"description":{"title":"church"},"id":2,"location":{"geometry":{"coordinates":[42,42.1,400.79999923706055],"type":"Point"},"properties":{},"type":"Feature"}}];
                     //const { images } = self.props;
 
                     //self.routeRenderer = new RouteRenderer(self.esriLoaderContext);
@@ -385,12 +388,6 @@ export default class MapHolder extends Component {
 
             //console.log(result);
 
-            const yellowLineSymbol = {
-                type: 'simple-line',
-                color: [255,211,0, 0.25],
-                width: 2
-            };
-
             const yellowLine = new that.esriLoaderContext.Polyline({
                 hasZ: true,
                 paths: [result]
@@ -413,8 +410,8 @@ export default class MapHolder extends Component {
 
                 if (result) {
 
-                    console.log("result going into route renderer");
-                    console.log(result.geometry.paths);
+                    //console.log("result going into route renderer");
+                    //console.log(result.geometry.paths);
 
                     this.routeRenderer.setGPSRange(result.geometry.paths,
                         that.esriLoaderContext.externalRenderers,
@@ -466,9 +463,12 @@ export default class MapHolder extends Component {
 
         }*/
 
-        if (this.props.camera != prevProps.camera && that.esriLoaderContext && that.esriLoaderContext.view) {
+        if (this.props.card && this.props.card.camera && prevProps.card && this.props.card.camera != prevProps.card.camera && that.esriLoaderContext && that.esriLoaderContext.view) {
           //  alert(JSON.stringify(this.props.camera));
-             that.esriLoaderContext.view.goTo(this.props.camera, {animate: false, duration: 0});
+
+             //const cam = this.props.card.camera;
+             //cam.position.z = cam.position.z * 0.90;
+             that.esriLoaderContext.view.goTo(this.props.card.camera, {animate: false, duration: 0});
         }
 
         if (this.props.totalProgress != prevProps.totalProgress  ) {
@@ -481,7 +481,7 @@ export default class MapHolder extends Component {
 
             //this.setState({routeLengthPercentage: this.props.totalProgress});
 
-            if (this.routeRenderer) {
+            if (this.routeRenderer && this.props.card.camera) {
 
                 this.routeRenderer.setProgress(this.props.totalProgress, this.props.card.speedFactor);
 

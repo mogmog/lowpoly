@@ -14,12 +14,13 @@ class HtmlCard extends React.Component {
                this.props.setCard(this.props.card);
         }*/
 
-        if (prevProps.cardprogresss != this.props.cardprogresss) {
+        if (prevProps.cardprogresss != this.props.cardprogresss && this.props.card.camera) {
           //  console.log(this.props.card.id, this.props.cardprogresss);
 
-            if (this.props.card.id === this.props.currentCard.id) {
-                this.props.updateProgress(this.props.cardprogresss);
-            }
+            //if (this.props.card.id === this.props.currentCard.id) {
+                console.log(this.props.cardprogresss);
+                this.props.updateProgress(this.props.cardprogresss );
+            //}
         }
 
         if (this.props.event.type != prevProps.event.type && this.props.event.type === 'start') {

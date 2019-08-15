@@ -1,0 +1,93 @@
+
+/*
+  ##Device = Desktops
+  ##Screen = 1281px to higher resolution desktops
+*/
+
+@media (min-width: 1281px) {
+
+    .ImageCard  {
+        width: 100vw;
+        height: auto;
+    }
+
+
+}
+
+/*
+  ##Device = Laptops, Desktops
+  ##Screen = B/w 1025px to 1280px
+*/
+
+@media (min-width: 1025px) and (max-width: 1280px) {
+
+    .ImageCard  {
+        width: 100vw;
+        height: auto;
+    }
+
+}
+
+/*
+  ##Device = Tablets, Ipads (portrait)
+  ##Screen = B/w 768px to 1024px
+*/
+
+@media (min-width: 768px) and (max-width: 1024px) {
+
+    .ImageCard  {
+        height: 120vh;
+        transform: translateX(-20%);
+    }
+
+}
+
+/*
+  ##Device = Tablets, Ipads (landscape)
+  ##Screen = B/w 768px to 1024px
+*/
+
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+
+    .ImageCard  {
+        width: 100vw;
+        height: auto;
+    }
+
+}
+
+/*
+  ##Device = Low Resolution Tablets, Mobiles (Landscape)
+  ##Screen = B/w 481px to 767px
+*/
+
+@media (min-width: 481px) and (max-width: 767px) {
+
+    .ImageCard  {
+        width: 100vw;
+        height: auto;
+    }
+}
+
+/*
+  ##Device = Most of the Smartphones Mobiles (Portrait)
+  ##Screen = B/w 320px to 479px
+*/
+
+@media (min-width: 320px) and (max-width: 480px) {
+
+    .ImageCard.portrait  {
+        height: 120vh;
+        transform: translateX(-20%);
+    }
+
+    .ImageCard.landscape  {
+        width: 100vw;
+    }
+
+}
+
+
+
+
+

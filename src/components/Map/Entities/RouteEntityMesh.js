@@ -7,7 +7,7 @@ import MapHolder from "./../MapHolder";
 const MeshLine = THREE_MeshLine.MeshLine;
 const MeshLineMaterial = THREE_MeshLine.MeshLineMaterial;
 
-const max_trail_length = 2000;
+const max_trail_length = 2500;
 
 export default class RouteEntityMesh extends THREE.Group {
 
@@ -39,7 +39,7 @@ export default class RouteEntityMesh extends THREE.Group {
       this.createMeshLine();
     }
 
-    for (let i = 0; i < value; i += 0.0005 ){
+    for (let i = 0; i < value; i += 0.001 ){
 
       this.trail_progress = i;
   
@@ -86,7 +86,7 @@ export default class RouteEntityMesh extends THREE.Group {
           view, x, 0, SpatialReference.WGS84, pos, 0, 1);
 
       curve_path.push(
-          new THREE.Vector3(pos[0], pos[1], pos[2] * (MapHolder.EXAGURATION + 0.05))
+          new THREE.Vector3(pos[0], pos[1], pos[2] * (MapHolder.EXAGURATION * MapHolder.EXAGURATION_ADJUST))
           //console.log('added');
       );
     });
@@ -182,7 +182,7 @@ export default class RouteEntityMesh extends THREE.Group {
       //depthTest: true,
       depthFunc: THREE.NeverDepth,
       sizeAttenuation : 0, // makes the line width constant regardless distance (1 unit is 1px on screen) (0 - attenuate, 1 - don't attenuate)
-      lineWidth: 10, // float defining width (if sizeAttenuation is true, it's world units; else is screen pixels)
+      lineWidth: 25, // float defining width (if sizeAttenuation is true, it's world units; else is screen pixels)
       near : 1, //camera.near,
       far : 1000, // camera.far,
     });

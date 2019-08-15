@@ -12,8 +12,8 @@ export default class SaveGPSButton extends React.Component {
     render() {
 
         const UPDATE_CARD_CONTENT = gql`
-            mutation updatecard($id, : Int!, $camera : jsonb, $locations : jsonb){
-                update_cards(where: {id: {_eq: $id}}, _set: {camera: $camera, locations: $locations}) {
+            mutation updatecard($id, : Int!, $camera : jsonb, $locations : jsonb, $location_offset : jsonb){
+                update_cards(where: {id: {_eq: $id}}, _set: {camera: $camera, locations: $locations, location_offset : $location_offset}) {
                     returning {
                         id
                     }
@@ -21,23 +21,29 @@ export default class SaveGPSButton extends React.Component {
             }
         `;
 
-        const updateCamera = (card, locations, gpsRange, camera, update) => {
+        const updateCamera = (card, locations, gpsRange, camera, extent, update) => {
 
-            const orig = locations.slice();
+            const pointsInsideExtent = [];
+            const indexesInsideExtent = {};
 
-            let selectedLocations = [];
+            locations.forEach((location, i) => {
 
-            if (gpsRange) {
-                selectedLocations = orig.splice(gpsRange[0], gpsRange[1] - gpsRange[0]);
-            } else {
-                selectedLocations = card.locations;
-            }
+                if (extent.clone().expand(1.5).contains({
+                    type: "point", // autocasts as new Point()
+                    x: location.longitude,
+                    y: location.latitude,
+                    spatialReference:{"wkid":4326}
+                })) {
+
+                    pointsInsideExtent.push(location);
+                    //indexesInsideExtent[i] = true;
+                }
+            })
 
 
-            alert(selectedLocations.length);
 
-           // debugger;
-            update({variables : {"id" : this.props.card.id, "locations" : selectedLocations, "camera" : this.props.context.view.camera.clone().toJSON()  }});
+
+            update({variables : {"id" : this.props.card.id, "locations" : pointsInsideExtent, location_offset : [], "camera" : camera  }});
             this.props.finish();
         }
 
@@ -49,7 +55,7 @@ export default class SaveGPSButton extends React.Component {
             <Mutation mutation={UPDATE_CARD_CONTENT}>
                 {(update, { data }) => {
 
-                    return <div onClick={() => updateCamera(this.props.card, this.props.locations, this.props.gpsRange, this.props.camera,  update)} >
+                    return <div onClick={() => updateCamera(this.props.card, this.props.locations, this.props.gpsRange, this.props.camera, this.props.extent, update)} >
 
                         <Button type="primary" shape="circle" icon="save" /></div>
                 }}

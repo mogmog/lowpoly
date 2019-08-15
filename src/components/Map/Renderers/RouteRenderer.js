@@ -139,11 +139,7 @@ export default class RouteRenderer extends AbstractRenderer {
   }
 
   setGPSRange(path, externalRenderers, view, SpatialReference, cam) {
-    console.log(path);
-    console.log(externalRenderers);
-    console.log(view);
-    console.log(SpatialReference);
-    console.log(cam);
+
 
     this.meshline.updateRoute(path[0], externalRenderers, view, SpatialReference, cam);
 
