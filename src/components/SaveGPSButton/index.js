@@ -38,7 +38,7 @@ export default class SaveGPSButton extends React.Component {
 
             let first = 0, last = 0;
             //if (withLocations) {
-                console.log();
+                //console.log();
 
                 locations.forEach((location, i) => {
 
@@ -57,7 +57,7 @@ export default class SaveGPSButton extends React.Component {
                     }
                 })
             //}
-            alert(JSON.stringify(indexesInsideExtent));
+            //alert(JSON.stringify(indexesInsideExtent));
             update({variables : {"id" : this.props.card.id, location_offset : [indexesInsideExtent[0], indexesInsideExtent[indexesInsideExtent.length - 1]]   }});
             this.props.finish();
         }

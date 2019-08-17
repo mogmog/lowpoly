@@ -86,7 +86,7 @@ export default class RouteEntityMesh extends THREE.Group {
           view, x, 0, SpatialReference.WGS84, pos, 0, 1);
 
       curve_path.push(
-          new THREE.Vector3(pos[0], pos[1], pos[2] * (MapHolder.EXAGURATION * MapHolder.EXAGURATION_ADJUST))
+          new THREE.Vector3(pos[0], pos[1], pos[2] )
           //console.log('added');
       );
     });

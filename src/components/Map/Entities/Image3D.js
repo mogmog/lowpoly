@@ -23,7 +23,7 @@ export default class Image3D extends THREE.Mesh {
     let color = this.config.hasOwnProperty('color') ? this.config.color : 0xffffff;
     let opacity = this.config.hasOwnProperty('opacity') ? this.config.opacity : 1.0;
 
-    let geometry = new THREE.BoxGeometry(200, 320, 20, 1, 1, 1);
+    let geometry = new THREE.BoxGeometry(20000, 32000, 2000, 1, 1, 1);
 
     let material = new THREE.MeshBasicMaterial({
       map: texture,

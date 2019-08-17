@@ -44,7 +44,7 @@ export default class ImageRenderer extends AbstractRenderer
 
   showImage(image) {
 
-    const imageOnMap = this.images3dContainer.children.find((_image) => _image.config.id === image.id);
+    const imageOnMap = this.images3dContainer.children;//.find((_image) => _image.config.id === image.id);
 
     if (imageOnMap) {
       Image3D.zoomToCamera(imageOnMap, this.camera);
@@ -79,7 +79,7 @@ export default class ImageRenderer extends AbstractRenderer
       );
       object3d.position.set(pos[0], pos[1], pos[2]);
 
-      let transform = new THREE.Matrix4();
+     /* let transform = new THREE.Matrix4();
       let arr = externalRenderers.renderCoordinateTransformAt(
           view,
           worldPosition,
@@ -92,7 +92,7 @@ export default class ImageRenderer extends AbstractRenderer
       const m2 = new THREE.Matrix4();
       m2.makeRotationX(THREE.Math.degToRad(90));
       transform.multiply(m2);
-      object3d.setRotationFromMatrix(transform);
+      object3d.setRotationFromMatrix(transform);*/
     }
 
     // initialize the three.js renderer
@@ -239,13 +239,9 @@ export default class ImageRenderer extends AbstractRenderer
   start() {
 
     // this.scene.add(this.route);
+const thing = new ImageFrame(this.images[0]);
+    this.scene.add(thing);
 
-    this.scene.add(this.images3dContainer);
-
-    if ( this.images3DContainerCarousel )
-    {
-      this.scene.add(this.images3DContainerCarousel);
-    }
 
     this.scene.add(new THREE.AmbientLight(0xeeeeee));
   }

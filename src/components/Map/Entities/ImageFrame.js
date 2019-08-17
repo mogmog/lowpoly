@@ -28,8 +28,8 @@ export default class ImageFrame extends THREE.Group {
       })
     }
 
-    this.width = 375;
-    this.height = 375;
+    this.width = 370050;
+    this.height = 370050;
 
     let framegeometry = new THREE.BoxGeometry(this.width, this.height, 12, 1, 1, 1);
     let photogeometry = new THREE.BoxGeometry(this.width - 50, this.height - 50, 13, 1, 1, 1);

@@ -62,6 +62,7 @@ const GET_TRIP = gql`query {
             offset
             duration
             location_offset
+            altitude_adjust
         }
     }
 
