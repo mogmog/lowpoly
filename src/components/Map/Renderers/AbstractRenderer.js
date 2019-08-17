@@ -7,7 +7,7 @@ import * as THREE from 'three';
 function AbstractRenderer() {
   this.camera = new THREE.PerspectiveCamera();
   this.scene = new THREE.Scene();
-  this.setPixelRatio( window.devicePixelRatio );
+  //this.setPixelRatio( window.devicePixelRatio );
 }
 
 // static - used for redraw

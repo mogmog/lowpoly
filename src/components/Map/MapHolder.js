@@ -12,7 +12,7 @@ const options = {
 };
 
 const _EXAGURATION = 2.5;
-const _EXAGURATION_ADJUST = 1.02;
+const _EXAGURATION_ADJUST = 1.005;
 
 const yellowLineSymbol = {
     type: 'simple-line',
@@ -23,7 +23,7 @@ const yellowLineSymbol = {
 const redLineSymbol = {
     type: 'simple-line',
     color: [255,0,0, 0.55],
-    width: 2
+    width: 5
 };
 
 export default class MapHolder extends Component {
@@ -32,10 +32,11 @@ export default class MapHolder extends Component {
     static EXAGURATION_ADJUST = _EXAGURATION_ADJUST;
 
     state = {
-        zoom : 0, 
+        zoom : 0,
+
         currentCard : {camera : null},
-        routeTailPercentage : 0.25,
-        routeLengthPercentage : 50.0,
+        routeTailPercentage : 0.05,
+        routeLengthPercentage : 0.0,
         routeGlowPercentage : 0.0,
         locationsWithAltitude : []
     };
@@ -43,6 +44,7 @@ export default class MapHolder extends Component {
     constructor() {
         super();
         this.needsRedraw = true;
+        this.coords = { x: 0, y: 0 }; // Start at (0, 0)
         this.animate = this.animate.bind(this);
     }
 
@@ -308,9 +310,13 @@ export default class MapHolder extends Component {
 
                     const geojson = this.props.alllocations.map(d=> [d.longitude, d.latitude])
 
+                    console.log("geojson")
+                    console.log(geojson)
                     worldGround.queryElevation(new Polyline(geojson)).then(result => {
 
                         this.locationsWithAltitude = [result.geometry.paths[0].map(d=> [d[0], d[1], d[2] * (_EXAGURATION * _EXAGURATION_ADJUST)])];
+
+                        this.props.setLocationsWithAltitude(this.locationsWithAltitude);
 
                         /*esri yellow line*/
                         const yellowLine = new Polyline({
@@ -384,12 +390,12 @@ export default class MapHolder extends Component {
 
 
         /*if gps range slider is changed*/
-        if (that.esriLoaderContext && that.locationsWithAltitude && prevProps.gpsRange !== this.props.gpsRange)         {
+        if (false && that.esriLoaderContext && that.locationsWithAltitude && prevProps.gpsRange !== this.props.gpsRange)         {
 
 
 
             const oldLayer = that.esriLoaderContext.view.map.findLayerById('lineLayer');
-            oldLayer.removeAll();
+            if (oldLayer) oldLayer.removeAll();
 
             const orig = this.locationsWithAltitude[0].slice();
             const result = orig.splice(this.props.gpsRange[0], this.props.gpsRange[1] - this.props.gpsRange[0]);
@@ -406,11 +412,15 @@ export default class MapHolder extends Component {
                 symbol: yellowLineSymbol
             });
 
-            oldLayer.add(yellowLineGraphic);
+            if (oldLayer) oldLayer.add(yellowLineGraphic);
 
         }
 
-        if (prevProps.locations != this.props.locations &&  this.props.locations.length && this.esriLoaderContext && this.esriLoaderContext.externalRenderers && this.routeRenderer) {
+        if (prevProps.locations != this.props.locations && this.props.locations && this.props.locations.length && this.esriLoaderContext && this.esriLoaderContext.externalRenderers && this.routeRenderer) {
+
+            console.log("this.props.locations");
+            console.log("this.props.locations");
+            console.log(this.props.locations);
 
             const geojson = this.props.locations.map(d=> [d.longitude, d.latitude])
 
@@ -418,6 +428,7 @@ export default class MapHolder extends Component {
 
                 if (result) {
 
+                    this.locationsWithAltitude = [result.geometry.paths[0].map(d=> [d[0], d[1], d[2] * (_EXAGURATION * _EXAGURATION_ADJUST)])];
                     //console.log("result going into route renderer");
                     //console.log(result.geometry.paths);
 
@@ -490,18 +501,100 @@ export default class MapHolder extends Component {
         }*/
 
         if (this.props.card && this.props.card.camera && prevProps.card && this.props.card.camera != prevProps.card.camera && that.esriLoaderContext && that.esriLoaderContext.view) {
-          //  alert(JSON.stringify(this.props.camera));
+            //alert(JSON.stringify(this.props.card.camera));
 
              //const cam = this.props.card.camera;
              //cam.position.z = cam.position.z * 0.90;
-             that.esriLoaderContext.view.goTo(this.props.card.camera, {animate: false, duration: 0});
+             that.esriLoaderContext.view.goTo(this.props.card.camera, {animate: false, duration: 1000}).then(x=> {
+
+
+                 if (false) that.esriLoaderContext.view.watch('updating', function(newValue, oldValue, property, object) {
+
+                     if (!newValue && !that.props.screenshots[that.props.card.id]) {
+
+                         console.log('taking screneshot');
+
+                         that.esriLoaderContext.view.takeScreenshot({
+                             format: "png",
+                             quality: 100
+                         }).then(screenshot => {
+                             that.props.setScreenshot(that.props.card.id, screenshot);
+                         });
+
+                     }
+
+                 });
+
+
+
+
+
+                 that.progress =0;
+
+                 var start = null;
+                 var start2 = null;
+
+                 that.routeRenderer.setTrailLength(0.25);
+                 const time = 6000;
+
+                 function incrementProgress(timestamp) {
+                     if (!start) start = timestamp;
+                     var progress = timestamp - start;
+                     that.routeRenderer.setProgress(progress/time);
+
+                     //if (progress > 5800) that.routeRenderer.setTrailLength(0.25 - 0.25 * (progress/time));
+
+                     that.needsRedraw = true;
+                     if (progress < time) {
+                         window.requestAnimationFrame(incrementProgress);
+                     }
+                 }
+
+
+
+                 window.requestAnimationFrame(incrementProgress);
+
+
+                /* const tween = new TWEEN.Tween(that.coords) // Create a new tween that modifies 'coords'.
+                     .to({ x: 1 }, 5000) // Move to (300, 200) in 1 second.
+
+                     .onUpdate(() => { // Called after tween.js updates 'coords'.
+
+                         that.routeRenderer.setProgress(that.coords.x);
+                         console.log(that.coords.x);
+                        // that.needsRedraw = true;
+                         // Move 'box' to the position described by 'coords' with a CSS translation.
+
+                     })
+                     .start(); // Start the tween immediately.
+*/
+
+
+                /* let clear = window.setInterval(()=> {
+
+                     //that.routeRenderer.setTrailLength(that.progress);
+
+                     this.routeRenderer.setProgress(that.progress);
+
+                     that.needsRedraw = true;
+                     that.progress = that.progress + 0.0003;
+
+                     // console.log(that.progress);
+                     if (that.progress > 1) {
+                         window.clearInterval(clear);
+                     }
+
+                 }, 15)*/
+             });
+
+
         }
 
-        if (this.props.totalProgress != prevProps.totalProgress  ) {
+        /*if (this.props.totalProgress != prevProps.totalProgress  ) {
 
-         /*   if (this.props.currentCard && this.props.currentCard.camera ) {
+         /!*   if (this.props.currentCard && this.props.currentCard.camera ) {
                 that.esriLoaderContext.view.goTo(this.props.currentCard.camera, { animate : false, duration: 0});
-            }*/
+            }*!/
 
            // console.log(this.props.totalProgress);
 
@@ -513,7 +606,7 @@ export default class MapHolder extends Component {
 
                 this.needsRedraw = true;
             }
-        }
+        }*/
     }
 
     componentDidMount() {
@@ -533,11 +626,18 @@ export default class MapHolder extends Component {
 
         let tweens_count = Object.keys(TWEEN._tweens).length;
 
+        //console.log(this.needsRedraw);
+        //TWEEN.update(time);
+
         if (this.needsRedraw || tweens_count || this.animate.last_tweens_count != tweens_count) {
+
+
 
             if (tweens_count || this.animate.last_tweens_count != tweens_count) {
 
+                //alert('in here')
                 TWEEN.update(time);
+                //console.log(time);
             }
 
             if (
@@ -558,7 +658,7 @@ export default class MapHolder extends Component {
     onTailLengthInputChange(event) {
 
         const value = parseFloat(event.target.value) || 0.0;
-
+console.log(event.target.value);
         this.setState({routeTailPercentage: value});
 
         if (this.routeRenderer) {
@@ -609,21 +709,24 @@ export default class MapHolder extends Component {
 
            {/* {this.props.debug && <div>*/}
 
-           {/* <input
+         {/*  <input
                 style = {{position:'fixed', top:'10px', left: '20px', zIndex : 999999, width:'400px'}}
                 type="range" 
                 min="0" max="1"
                 value={self.state.routeLengthPercentage} 
                 onChange={(event) => {self.onRouteLengthInputChange(event);}}
-                step="0.0005"/>
+                step="0.00005"/>
 
-            <input 
+           <input
                 style = {{position:'fixed', top:'50px', left: '20px', zIndex : 999999, width:'400px'}}
                 type="range" 
                 min="0" max="1"
                 value={self.state.routeTailPercentage} 
                 onChange={(event) => {self.onTailLengthInputChange(event);}}
-                step="0.001"/>
+                step="0.001"/>*/}
+
+
+                {/*
 
             <input 
                 style = {{position:'fixed', top:'90px', left: '20px', zIndex : 999999, width:'400px'}}

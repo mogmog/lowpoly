@@ -39,7 +39,7 @@ const AddCard = ({cards, graphics, refetch, scrollTo}) => {
                     addCard({variables : {"objects" : cards}}).then(d=> {
                        scrollTo(cards.length);
                         //setCard(d.data.insert_cards.returning[0]);
-                        alert('done')
+
                     });
 
                 };
@@ -54,13 +54,13 @@ const AddCard = ({cards, graphics, refetch, scrollTo}) => {
 
                                 <div><h1> Add an graphic </h1>
 
-                                    <GraphicsGrid onClick={(filename) => create({"trip_id" : 1, "type" : "Graphic", "offset" : "0%", "duration" : "1000px", "camera":  null, "content":  {filename : filename}} )} graphics={graphics}/>
+                                    <GraphicsGrid onClick={(filename) => create({"trip_id" : 1, "type" : "Graphic", "offset" : "0%", "duration" : 1000, "camera":  null, "content":  {filename : filename}} )} graphics={graphics}/>
 
                                 {/*<Button onClick={create('Graphic',{"objects" : [{"trip_id" : 1, "type" : "Text", "height" : "100vh", "camera":  {"test" :33}, "content":  {"text" :"this is plain text"}}]})} style={{width : '70%', height : '100px', marginBottom : '10px'}}>Add</Button></div>
 */}
                                 </div>
                                 <div>
-                                    <ImageUpload saveImage={(image) => create( {"trip_id" : 1, "type" : "Image", "offset" : "0%", "duration" : "1000px", "camera":  null, "content":  {"image" :image}})} style={{width : '70%', height : '100px', marginBottom : '10px'}}/>
+                                    <ImageUpload saveImage={(image) => create( {"trip_id" : 1, "type" : "Image", "offset" : "0%", "duration" : 1000, "camera":  null, "content":  {"image" :image}})} style={{width : '70%', height : '100px', marginBottom : '10px'}}/>
 
                                 </div>
 

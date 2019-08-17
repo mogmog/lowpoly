@@ -45,6 +45,7 @@ const GET_TRIP = gql`query {
         id
         tile_server
         locations(order_by: {date: asc}) {
+            id
             latitude
             longitude
             date
@@ -60,7 +61,6 @@ const GET_TRIP = gql`query {
             id
             offset
             duration
-            locations
             location_offset
         }
     }
@@ -233,7 +233,7 @@ class STWatcher extends React.Component {
 
 class App extends React.Component {
 
-  state = {swiped : false, newProgress : 0, theposition : 0, speed : 0, gpsRange: null, camera : null, prog : 0, currentCard : null, st : 0.1, totalProgress : 0.0, showButtons : false, card : null, index : 0, visible : false, showCards : true, locations : []}
+  state = {screenshots : {}, swiped : false, newProgress : 0, locationsWithAltitude : [], theposition : 0, speed : 0, gpsRange: null, camera : null, prog : 0, currentCard : null, st : 0.1, totalProgress : 0.0, showButtons : false, card : null, index : 0, visible : false, showCards : true, locations : []}
 
   testTop = (index) => {
 
@@ -309,6 +309,18 @@ class App extends React.Component {
         //this.setState({gpsRange : range});
     }
 
+    setScreenshot= (id, screenshot) => {
+        const { screenshots } = this.state;
+        screenshots[id] = screenshot;
+
+        console.log(this.state.screenshots);
+
+        // update state
+        this.setState({
+            screenshots,
+        });
+    }
+
     render() {
 
    // console.log(this.state.extent);
@@ -334,10 +346,30 @@ class App extends React.Component {
 
                                     const cards = data.trip[0].cards;
 
+                                    if (!this.transformed) {
+
+                                        this.transformed = true;
+
+                                        cards.forEach(card => {
+                                            if (card.location_offset.length > 0) {
+
+                                                let copy = data.trip[0].locations.slice();
+                                                card.locations = copy.splice(card.location_offset[0], card.location_offset[1] - card.location_offset[0]);
+                                                //debugger;
+                                                //console.log(data.trip[0].locations.slice(card.location_offset[0], card.location_offset[1] - card.location_offset[0]));
+
+                                            } else {
+                                                card.locations = [];
+                                            }
+
+                                            console.log(card);
+                                        });
+                                    }
+
                                     //
 
                                      if (cards.length && !this.state.card) {
-                                        // this.setState({card : cards[0]});
+                                        this.setState({card : cards[0]});
 
                                          //cards.push({id : 'spacerCardInsert', type : 'Spacer', duration : '2000px', location_offset : [], locations : []});
 
@@ -351,7 +383,7 @@ class App extends React.Component {
                                     return <div >
 
                                         {this.debug && this.state.showCards && <AddButton  card={this.state.card} onClick={() => this.setState({visible : true})}/> }
-                                        {this.debug && !this.state.showCards && <SaveGPSButton gpsRange={this.state.card.location_offset} card={this.state.card} context={this.esriContext} locations={data.trip[0].locations} extent={this.state.extent} camera={this.state.camera} finish={() => { this.setState({showCards: true})}  }/> }
+                                        {this.debug && !this.state.showCards && <SaveGPSButton gpsRange={this.state.card.location_offset} card={this.state.card} context={this.esriContext} locationsWithAltitude={this.state.locationsWithAltitude} locations={data.trip[0].locations} extent={this.state.extent} camera={this.state.camera} finish={() => { this.setState({showCards: true})}  }/> }
 
 
                                         {/* <pre style={{position : 'fixed'}}>{this.state.totalProgress / cards.length} </pre>*/}
@@ -376,7 +408,11 @@ class App extends React.Component {
                                             </div>
                                         }
 
-                                        <MapHolder tile_server={data.trip[0].tile_server} alllocations={data.trip[0].locations} cards={cards} registerContext={c=> this.esriContext = c} Xcamera={this.state.camera} gpsRange={(this.state.card && this.state.card.location_offset.length) ? this.state.card.location_offset : [0, data.trip[0].locations.length]} debug={this.debug} totalProgress={this.state.newProgress} showCards={this.state.showCards} updateCamera={(cam, extent) => this.setState({camera : cam, extent})} locations={(this.state.card ? this.state.card.locations : [])} scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
+
+
+                                        <MapHolder screenshots={this.state.screenshots} setScreenshot={this.setScreenshot} setLocationsWithAltitude={(l) => {this.setState({locationsWithAltitude : l})}} tile_server={data.trip[0].tile_server} alllocations={data.trip[0].locations} cards={cards} registerContext={c=> this.esriContext = c} Xcamera={this.state.camera} gpsRange={(this.state.card && this.state.card.location_offset.length) ? this.state.card.location_offset : [0, data.trip[0].locations.length]} debug={this.debug} totalProgress={this.state.newProgress} showCards={this.state.showCards} updateCamera={(cam, extent) => this.setState({camera : cam, extent})} locations={(this.state.card ? this.state.card.locations : [])} scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
+
+                                        {false && this.state.card && this.state.screenshots[this.state.card.id] && <div style={{zIndex : 9999999999999, position: 'fixed', width : '100%', height : 'auto', top : 0, left : 0}}><img src={this.state.screenshots[this.state.card.id].dataUrl} /></div>}
 
                                         <div >
 
@@ -392,21 +428,19 @@ class App extends React.Component {
 
                                                 {true && cards && cards.map((card, index) =>
 
-                                                        <Scene ref={card.id} key={card.id}  duration={card.duration} offset={card.duration/2} pin={card.pin} >
+                                                        <Scene ref={card.id} key={card.id}  duration={card.duration + 'px'} offset={card.duration * -0.15} pin={card.pin} >
                                                             {(cardprogresss, event) => {
 
                                                                 //this.setState({cardppp : cardprogress})
 //this.p = cardprogress;
 
                                                                 return (
-                                                                    <div id={`theid${index}`} className="sticky" style={{height: card.duration,  pointerEvents : (this.state.showCards ? 'all' : 'none'), 'opacity' : this.state.showCards ? 1 : 0.1, 'transition': 'opacity .55s ease-in-out' }}  >
+                                                                    <div id={`theid${index}`} className="sticky" style={{ pointerEvents : (this.state.showCards ? 'all' : 'none'), 'opacity' : this.state.showCards ? 1 : 0.1, 'transition': 'opacity .55s ease-in-out' }}  >
 
 
                                                                         {/* <STWatcher updateP={(p) => this.setState({prog : p})} updateTotalProgress={(deltaprogress, card) => this.setState({currentCard : card, deltaprogress})} progress={cardprogresss} card={card} event={event} />*/}
 
                                                                         { card.type === 'Html' && <div className="smallsection" >
-
-                                                                             {JSON.stringify(cardprogresss)}
 
                                                                             <HtmlCard setSpeed={(speed) => this.setState({speed})}
                                                                                       context={this.esriContext}

@@ -158,7 +158,7 @@ export default class RouteRenderer extends AbstractRenderer {
 
     value = parseFloat(value) || 0.0;
 
-    this.meshline.setTrailLength(value);
+    this.meshline.setTrailLength(value );
   }
 
   setGlow(value) {
@@ -170,12 +170,12 @@ export default class RouteRenderer extends AbstractRenderer {
     this.meshline.setGlow(value);
   }
 
-  setProgress(value, speedFactor) {
+  setProgress(value) {
 
     if (!this.meshline) return;
 
     value = parseFloat(value) || 0.0;
-   // console.log(speedFactor)
-    this.meshline.setProgress(value, undefined, speedFactor);
+    if (value > 1) value = 1;
+    this.meshline.setProgress(value, undefined);
   }
 }

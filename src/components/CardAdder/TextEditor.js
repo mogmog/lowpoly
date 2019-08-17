@@ -48,7 +48,7 @@ class TextEditor extends React.Component {
                     onChange={ ( event, editor ) => {
                         const data = editor.getData();
                         this.setState({data : data});
-                        console.log( { event, editor, data } );
+                       // console.log( { event, editor, data } );
                     } }
                     onBlur={ editor => {
                         console.log( 'Blur.', editor );

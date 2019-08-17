@@ -10,44 +10,15 @@ class HtmlCard extends React.Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
 
-        /*if (prevProps.event.type !== this.props.event.type && this.props.event.type === 'start') {
-               this.props.setCard(this.props.card);
-        }*/
+        if (this.props.event != prevProps.event && this.props.event.type === 'enter') {
 
-        console.log("this.props.card.camera")
-        console.log(this.props.card.camera)
-
-        if (prevProps.cardprogresss != this.props.cardprogresss && this.props.card.camera) {
-          //  console.log(this.props.card.id, this.props.cardprogresss);
-
-            if (this.props.card.id === this.props.currentCard.id) {
-                console.log(this.props.cardprogresss);
-                this.props.updateProgress(this.props.cardprogresss );
-            }
-        }
-
-
-
-        if (this.props.event.type != prevProps.event.type && this.props.event.type === 'start') {
-
-           //console.log(this.props.cardprogresss);
-            console.log("started");
-
-            this.props.setCard(this.props.card);
-            //alert('moved to camera' + this.props.card.id)
-            this.props.card.camera && this.props.updateCamera(this.props.card.camera);
-
-
+            this.props.setCard(this.props.card,x=> {
+                this.props.card.camera && this.props.updateCamera(this.props.card.camera);
+              });
 
         }
 
 
-        if (this.props.card && this.props.currentcard && this.props.card.id === this.props.currentcard.id) {
-          // console.log('fired')
-          //  console.log(this.props, this.props.event.state)
-            //alert(JSON.stringify(this.props.card.camera));
-            //this.props.updateCamera(this.props.card.camera);
-        }
 
     }
 

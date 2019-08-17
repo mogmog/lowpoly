@@ -42,7 +42,7 @@ export default class RouteEntityMesh extends THREE.Group {
     for (let i = 0; i < value; i += 0.001 ){
 
       this.trail_progress = i;
-  
+  //console.log(134);
       const v = new THREE.Vector3();
   
       this.trail_curve.getPoint(i , v);
@@ -175,14 +175,14 @@ export default class RouteEntityMesh extends THREE.Group {
       map: null,
       useMap: false,
       color: new THREE.Color( 0xffd300 ),
-      opacity: 0.7,
+      opacity: 0.5,
       blending: THREE.AdditiveBlending,
       /*transparent: true,*/
       //depthWrite: false,
       //depthTest: true,
       depthFunc: THREE.NeverDepth,
       sizeAttenuation : 0, // makes the line width constant regardless distance (1 unit is 1px on screen) (0 - attenuate, 1 - don't attenuate)
-      lineWidth: 10, // float defining width (if sizeAttenuation is true, it's world units; else is screen pixels)
+      lineWidth: 4 * window.devicePixelRatio, // float defining width (if sizeAttenuation is true, it's world units; else is screen pixels)
       near : 1, //camera.near,
       far : 1000, // camera.far,
     });

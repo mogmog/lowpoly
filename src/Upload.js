@@ -76,14 +76,18 @@ class Avatar extends React.Component {
                                 var gpx = new gpxparser(); //Create gpxParser Object
                                 gpx.parse(event.target.result); //
 
+                                let date = gpx.metadata.time;
+
                                 const objects = [];
 
                                 gpx.tracks.forEach(track => {
                                     track.points.forEach(point => {
-                                        objects.push({latitude : point.lat, longitude : point.lon, altitude : point.ele, trip_id : 1, date : gpx.metadata.time});
+                                        //console.log(point);
+                                        //console.log(track);
+                                        objects.push({latitude : point.lat, longitude : point.lon, altitude : point.ele, trip_id : 1, date : point.time});
                                     })
 
-                                    console.log(objects);
+                                   // console.log(objects);
                                 })
 
                                 create(objects);
