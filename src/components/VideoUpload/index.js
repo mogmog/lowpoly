@@ -77,7 +77,7 @@ export default class Demo extends React.Component {
                 <Upload {...props}  fileList={false}>
                     <Spin spinning={uploading}>
                     <Button style={{height : '100px', width : '100%'}}>
-                        <Icon type="upload" /> Select Image
+                        <Icon type="upload" /> Select Video
                     </Button>
                     </Spin>
                 </Upload>

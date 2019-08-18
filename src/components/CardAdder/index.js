@@ -8,6 +8,7 @@ import TextEditor from "./TextEditor";
 import {Image} from 'cloudinary-react';
 import GraphicsGrid from "./GraphicsGrid";  // or 'antd/dist/antd.less'
 import ImageUpload from './../ImageUpload'
+import VideoUpload from './../VideoUpload'
 import ImageCard from './../Cards/Image'
 
 const ADD_CARDS = gql`
@@ -61,6 +62,12 @@ const AddCard = ({cards, graphics, refetch, scrollTo}) => {
                                 </div>
                                 <div>
                                     <ImageUpload saveImage={(image) => create( {"trip_id" : 1, "type" : "Image", "offset" : "0%", "duration" : 1000, "camera":  null, "content":  {"image" :image}})} style={{width : '70%', height : '100px', marginBottom : '10px'}}/>
+
+                                </div>
+
+
+                                <div>
+                                    <VideoUpload saveImage={(image) => create( {"trip_id" : 1, "type" : "Video", "offset" : "0%", "duration" : 1000, "camera":  null, "content":  {"image" :image}})} style={{width : '70%', height : '100px', marginBottom : '10px'}}/>
 
                                 </div>
 
