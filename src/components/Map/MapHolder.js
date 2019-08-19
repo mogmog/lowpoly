@@ -315,28 +315,37 @@ export default class MapHolder extends Component {
                     //console.log(geojson)
                     worldGround.queryElevation(new Polyline(geojson)).then(result => {
 
-                        this.locationsWithAltitude = [result.geometry.paths[0].map(d=> [d[0], d[1], d[2] * (_EXAGURATION * _EXAGURATION_ADJUST)])];
+                        //for
+                       this.props.setLocationsWithAltitude(result.geometry.paths);
 
-                        this.props.setLocationsWithAltitude(this.locationsWithAltitude);
+                       console.log(result.geometry.paths);
 
-                        /*/!*esri yellow line*!/
-                        const yellowLine = new Polyline({
-                            hasZ: true,
-                            paths: [result.geometry.paths[0].map(d=> [d[0], d[1], d[2] * (_EXAGURATION * _EXAGURATION_ADJUST)])],
-                        });
+                       this.props.cards.forEach(card => {
+                           
+                           if (card.locations.length) {
 
-                        const yellowLineGraphic = new Graphic({
-                            geometry: yellowLine,
-                            symbol: yellowLineSymbol
-                        });*/
+                               const yellowLine = new Polyline({
+                                   hasZ: true,
+                                   paths: [result.geometry.paths[0].map(d=> [d[0], d[1], d[2] * (_EXAGURATION * card.altitude_adjust)])],
+                               });
 
-                        var graphicsLayer = new GraphicsLayer({id : 'lineLayer'});
-                        var graphics2Layer = new GraphicsLayer({id : 'lineCardLayer'});
+                               var graphicsLayer = new GraphicsLayer({ id : 'CardLayer' + card.id, visible : false});
 
-                        //graphicsLayer.add(yellowLineGraphic);
+                               //graphicsLayer.hide();
 
-                        map.add(graphicsLayer);
-                        map.add(graphics2Layer);
+                               const redLineGraphic = Graphic({
+                                   geometry: yellowLine,
+                                   symbol: yellowLineSymbol
+                               });
+
+                               graphicsLayer.add(redLineGraphic);
+                               map.add(graphicsLayer);
+                           }
+
+                       });
+                       
+
+
 
                         /*3d stuff*/
                         self.routeRenderer = new RouteRenderer(self.esriLoaderContext, []);
@@ -422,17 +431,61 @@ export default class MapHolder extends Component {
 
         }
 
-        if (prevProps.locations != this.props.locations && this.props.locations && this.props.locations.length && this.esriLoaderContext && this.esriLoaderContext.externalRenderers && this.routeRenderer) {
+        if (true && prevProps.locations != this.props.locations && this.props.locations && this.props.locations.length && this.esriLoaderContext && this.esriLoaderContext.externalRenderers && this.routeRenderer) {
 
             that.routeRenderer.setProgress(0);
             that.needsRedraw = true;
 
-            const wholeroutegeojson = this.props.alllocations.map(d=> [d.longitude, d.latitude])
-            const geojson = this.props.locations.map(d=> [d.longitude, d.latitude])
+            //const wholeroutegeojson = this.props.alllocations.map(d=> [d.longitude, d.latitude])
+            //const geojson = this.props.locations.map(d=> [d.longitude, d.latitude])
+
+            console.log(this.props);
+            const orig = this.props.locationsWithAltitude[0].slice();
+            const result = orig.splice(this.props.card.location_offset[0], this.props.card.location_offset[1] - this.props.card.location_offset[0]);
+
+           // debugger;
+
+            console.log(result);
 
             that.esriLoaderContext.view.goTo(this.props.card.camera, {animate: false, duration: 1000}).then(x=> {
 
-                this.esriLoaderContext.worldGround.queryElevation(new this.esriLoaderContext.Polyline(wholeroutegeojson)).then(result => {
+                that.esriLoaderContext.view.map.layers.items.forEach(layer => {
+                      if (layer.type == 'graphics') layer.visible = false;
+                });
+
+                const cardLayer = that.esriLoaderContext.view.map.findLayerById('CardLayer' + this.props.card.id);
+                cardLayer.visible = true;
+
+                console.log(this.props.card);
+
+                this.routeRenderer.setGPSRange([result.map(d=> [d[0], d[1], d[2] * (_EXAGURATION * this.props.card.altitude_adjust)])],
+                    that.esriLoaderContext.externalRenderers,
+                    that.esriLoaderContext.view,
+                    that.esriLoaderContext.SpatialReference,
+                    that.esriLoaderContext.view.camera);
+
+                that.routeRenderer.setTrailLength(0.25);
+                const time = 6000;
+                var start = null;
+                const incrementProgress = (timestamp) => {
+                    if (!start) start = timestamp;
+                    var progress = timestamp - start;
+                    that.routeRenderer.setProgress(progress/time);
+
+                    //if (progress > 5800) that.routeRenderer.setTrailLength(0.25 - 0.25 * (progress/time));
+
+                    that.needsRedraw = true;
+                    if (progress < time) {
+                        window.requestAnimationFrame(incrementProgress);
+                    }
+                }
+
+                window.requestAnimationFrame(incrementProgress);
+
+                //console.log(cardLayer);
+
+                //cardLayer.show();
+               /* this.esriLoaderContext.worldGround.queryElevation(new this.esriLoaderContext.Polyline(wholeroutegeojson)).then(result => {
 
                     //this.locationsWithAltitude = [result.geometry.paths[0].map(d=> [d[0], d[1], d[2] * (_EXAGURATION * _EXAGURATION_ADJUST)])];
 
@@ -451,12 +504,12 @@ export default class MapHolder extends Component {
                         symbol: yellowLineSymbol
                     });
 
-                    oldLayer.add(redLineGraphic);
+                    oldLayer.add(redLineGraphic);*/
 
 
-                }).then(()=> {
+                //}).then(()=> {
 
-                    return this.esriLoaderContext.worldGround.queryElevation(new this.esriLoaderContext.Polyline(geojson)).then(result => {
+                   /* return this.esriLoaderContext.worldGround.queryElevation(new this.esriLoaderContext.Polyline(geojson)).then(result => {
 
                         if (result) {
 
@@ -466,7 +519,7 @@ export default class MapHolder extends Component {
                                 that.esriLoaderContext.SpatialReference,
                                 that.esriLoaderContext.view.camera);
 
-                            const oldLayer = that.esriLoaderContext.view.map.findLayerById('lineCardLayer');
+                           /!* const oldLayer = that.esriLoaderContext.view.map.findLayerById('lineCardLayer');
                             oldLayer.removeAll();
 
                             const redLine = new that.esriLoaderContext.Polyline({
@@ -477,7 +530,7 @@ export default class MapHolder extends Component {
                             const redLineGraphic = new that.esriLoaderContext.Graphic({
                                 geometry: redLine,
                                 symbol: redLineSymbol
-                            });
+                            });*!/
 
 
 
@@ -504,9 +557,9 @@ export default class MapHolder extends Component {
 
                         }
 
-                    })
+                    })*/
 
-                })
+
 
             });
 

@@ -58,7 +58,7 @@ export default class VideoCard extends React.Component {
 
                             <div style={{height: '100vh'}}>
 
-                                <video autobuffer="autobuffer" preload="preload" ref={this.ref} width="100%" controls id="VideoId" muted={true} autoPlay={true} loop={true}>
+                                <video autobuffer="autobuffer" preload="preload" ref={this.ref} width="100%" controls={false} id="VideoId" muted={true} autoPlay={true} loop={true}>
                                     <source src={this.props.card.content.image.url} type="video/mp4"/>
                                 </video>
 
