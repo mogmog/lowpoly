@@ -7,8 +7,10 @@ import ReactSVG from 'react-svg';
 import {Slider } from 'antd';
 import styled from 'styled-components';
 import { Controller, Scene } from 'react-scrollmagic';
+import {Motion, spring} from 'react-motion';
 import { useSwipeable, Swipeable } from 'react-swipeable';
 
+import InteractButton from './components/InteractButton'
 import AddButton from './components/AddButton'
 import SaveGPSButton from './components/SaveGPSButton'
 import ClearGPSButton from './components/ClearGPSButton'
@@ -18,7 +20,7 @@ import 'antd/dist/antd.css';
 
 import './App.css'
 
-import {Button, Drawer} from 'antd';
+import { Drawer} from 'antd';
 
 import ApolloClient from "apollo-boost";
 
@@ -30,9 +32,10 @@ import HtmlCard from "./components/Cards/Html";
 import ImageCard from "./components/Cards/Image";
 import VideoCard from "./components/Cards/Video";
 import SpacerCard from "./components/Cards/Spacer";
+import Comments from "./components/Comments";
 
 const client = new ApolloClient({
-    uri: "https://graphqlmogmogplatts.herokuapp.com/v1alpha1/graphql"
+    uri: "https://beatroute2019.herokuapp.com/v1/graphql"
 });
 
 const GET_TRIP = gql`query {
@@ -56,13 +59,23 @@ const GET_TRIP = gql`query {
             camera
             type
             content
-            speedFactor
+            
             pin
             id
-            offset
+            
             duration
             location_offset
             altitude_adjust
+            controls
+            rotate
+            hasComments
+
+            comments(order_by: {id : asc}) {
+                id
+                text
+                name
+            }
+
         }
     }
 
@@ -117,7 +130,7 @@ const StickyStyled = styled.div`
   
   .smallsection {
    
-    font-size: 2.7em;
+   
     color: white;
   }
   
@@ -234,7 +247,7 @@ class STWatcher extends React.Component {
 
 class App extends React.Component {
 
-  state = {screenshots : {}, swiped : false, newProgress : 0, locationsWithAltitude : [], theposition : 0, speed : 0, gpsRange: null, camera : null, prog : 0, currentCard : null, st : 0.1, totalProgress : 0.0, showButtons : false, card : null, index : 0, visible : false, showCards : true, locations : []}
+  state = {interactWithMap : false, screenshots : {}, swiped : false, newProgress : 0, locationsWithAltitude : [], theposition : 0, speed : 0, gpsRange: null, camera : null, prog : 0, currentCard : null, st : 0.1, totalProgress : 0.0, showButtons : false, card : null, index : 0, visible : false, showCards : true, locations : []}
 
   testTop = (index) => {
 
@@ -248,7 +261,6 @@ class App extends React.Component {
   }
 
     componentDidMount() {
-      console.log(this.props.debug);
         this.debug = this.props.debug;//!!window.location.href.indexOf('localhost' > -1);
     }
 
@@ -332,197 +344,206 @@ class App extends React.Component {
         <div>
                      <div >
 
-                        <ApolloProvider client={client}>
+                         <Motion defaultStyle={{x: 0}} style={{x: spring(this.state.interactWithMap ? -80 : 0)}}>
+                             {value =>
+                                 <ApolloProvider client={client}>
 
 
-                            <Query
-                                query={GET_TRIP} >
+                                     <Query
+                                         query={GET_TRIP} >
 
-                                {({ loading, error, data, refetch }) => {
+                                         {({ loading, error, data, refetch }) => {
 
-                                    if (loading) return <Loading/>;
-                                    if (error) return <p>Error :(</p>;
+                                             if (loading) return <Loading/>;
+                                             if (error) return <p>Error :(</p>;
 
-                                    if (data.trip.length != 1) return <div>wtf</div>
+                                             if (data.trip.length != 1) return <div>wtf</div>
 
-                                    const cards = data.trip[0].cards;
+                                             const cards = data.trip[0].cards;
 
-                                    if (!this.transformed) {
+                                             if (!this.transformed) {
 
-                                        this.transformed = true;
+                                                 this.transformed = true;
 
-                                        cards.forEach(card => {
-                                            if (card.location_offset.length > 0) {
+                                                 cards.forEach(card => {
+                                                     if (card.location_offset.length > 0) {
 
-                                                let copy = data.trip[0].locations.slice();
-                                                card.locations = copy.splice(card.location_offset[0], card.location_offset[1] - card.location_offset[0]);
-                                                //debugger;
-                                                //console.log(data.trip[0].locations.slice(card.location_offset[0], card.location_offset[1] - card.location_offset[0]));
+                                                         let copy = data.trip[0].locations.slice();
+                                                         card.locations = copy.splice(card.location_offset[0], card.location_offset[1] - card.location_offset[0]);
+                                                         //debugger;
+                                                         //console.log(data.trip[0].locations.slice(card.location_offset[0], card.location_offset[1] - card.location_offset[0]));
 
-                                            } else {
-                                                card.locations = [];
-                                            }
+                                                     } else {
+                                                         card.locations = [];
+                                                     }
 
-                                            console.log(card);
-                                        });
-                                    }
+                                                     console.log(card);
+                                                 });
+                                             }
 
-                                    //
+                                             //
 
-                                     if (cards.length && !this.state.card) {
-                                        this.setState({card : cards[0]});
+                                             if (cards.length && !this.state.card) {
+                                                 this.setState({card : cards[0]});
 
-                                         //cards.push({id : 'spacerCardInsert', type : 'Spacer', duration : '2000px', location_offset : [], locations : []});
+                                                 //cards.push({id : 'spacerCardInsert', type : 'Spacer', duration : '2000px', location_offset : [], locations : []});
 
-                                     }
+                                             }
 
-                                     if (!this.state.gpsRange) {
-                                         this.setState({gpsRange : [0, data.trip[0].locations.length]})
-                                     }
-                                    //return  <MapHolder registerContext={c=> this.esriContext = c} camera={this.state.camera} gpsRange={this.state.gpsRange} debug={this.debug} totalProgress={0.3} showCards={this.state.showCards} updateCamera={(cam) => this.setState({camera : cam})} locations={data.trip[0].locations} scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
+                                             if (!this.state.gpsRange) {
+                                                 this.setState({gpsRange : [0, data.trip[0].locations.length]})
+                                             }
+                                             //return  <MapHolder registerContext={c=> this.esriContext = c} camera={this.state.camera} gpsRange={this.state.gpsRange} debug={this.debug} totalProgress={0.3} showCards={this.state.showCards} updateCamera={(cam) => this.setState({camera : cam})} locations={data.trip[0].locations} scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
 
-                                    return <div >
+                                             return <div >
 
-                                        {this.debug && this.state.showCards && <AddButton  card={this.state.card} onClick={() => this.setState({visible : true})}/> }
-                                        {this.debug && !this.state.showCards && <SaveGPSButton gpsRange={this.state.card.location_offset} card={this.state.card} context={this.esriContext} locationsWithAltitude={this.state.locationsWithAltitude} locations={data.trip[0].locations} extent={this.state.extent} camera={this.state.camera} finish={() => { this.setState({showCards: true})}  }/> }
+                                                 {this.debug && this.state.showCards && <AddButton  card={this.state.card} onClick={() => this.setState({visible : true})}/> }
+                                                 {this.debug && !this.state.showCards && <SaveGPSButton gpsRange={this.state.card.location_offset} card={this.state.card} context={this.esriContext} locationsWithAltitude={this.state.locationsWithAltitude} locations={data.trip[0].locations} extent={this.state.extent} camera={this.state.camera} finish={() => { this.setState({showCards: true})}  }/> }
 
+                                                 <InteractButton interactWithMap={this.state.interactWithMap} onClick={(e) => this.setState({interactWithMap : !this.state.interactWithMap})} />
+                                                 {/* <pre style={{position : 'fixed'}}>{this.state.totalProgress / cards.length} </pre>*/}
 
-                                        {/* <pre style={{position : 'fixed'}}>{this.state.totalProgress / cards.length} </pre>*/}
+                                                 <Drawer
+                                                     title="Add"
+                                                     placement={'top'}
+                                                     closable={true}
+                                                     height = '90vh'
+                                                     style={{zIndex : 99999999}}
+                                                     onClose={() => this.setState({visible : false})}
+                                                     visible={this.state.visible}
+                                                 >
 
-                                        <Drawer
-                                            title="Add"
-                                            placement={'top'}
-                                            closable={true}
-                                            height = '90vh'
-                                            style={{zIndex : 99999999}}
-                                            onClose={() => this.setState({visible : false})}
-                                            visible={this.state.visible}
-                                        >
+                                                     {this.debug && <CardAdder cards={cards} scrollTo={this.testTop} refetch={GET_TRIP} graphics={data.graphics} visible={true}/>}
 
-                                            {this.debug && <CardAdder cards={cards} scrollTo={this.testTop} refetch={GET_TRIP} graphics={data.graphics} visible={true}/>}
+                                                 </Drawer>
 
-                                        </Drawer>
-
-                                        { false && this.debug &&
-                                            <div   style = {{position:'fixed', top:'40px', left: '00px', zIndex : 999999, width:'100%'}}>
-                                                {this.state.gpsRange  &&  this.state.card && <Slider value={this.state.card.location_offset } onChange={(r) => this.moveGPSSlider(r)} range step={1} min={0} max={data.trip[0].locations.length} disabled={false} /> }
-                                            </div>
-                                        }
-
-
-
-                                        <MapHolder screenshots={this.state.screenshots} setScreenshot={this.setScreenshot} locationsWithAltitude={this.state.locationsWithAltitude} setLocationsWithAltitude={(l) => {this.setState({locationsWithAltitude : l})}} tile_server={data.trip[0].tile_server} alllocations={data.trip[0].locations} cards={cards} registerContext={c=> this.esriContext = c} Xcamera={this.state.camera} gpsRange={(this.state.card && this.state.card.location_offset.length) ? this.state.card.location_offset : [0, data.trip[0].locations.length]} debug={this.debug} totalProgress={this.state.newProgress} showCards={this.state.showCards} updateCamera={(cam, extent) => this.setState({camera : cam, extent})} locations={(this.state.card ? this.state.card.locations : [])} scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
-
-                                        {false && this.state.card && this.state.screenshots[this.state.card.id] && <div style={{zIndex : 9999999999999, position: 'fixed', width : '100%', height : 'auto', top : 0, left : 0}}><img src={this.state.screenshots[this.state.card.id].dataUrl} /></div>}
-
-                                        <div >
+                                                 { false && this.debug &&
+                                                 <div   style = {{position:'fixed', top:'40px', left: '00px', zIndex : 999999, width:'100%'}}>
+                                                     {this.state.gpsRange  &&  this.state.card && <Slider value={this.state.card.location_offset } onChange={(r) => this.moveGPSSlider(r)} range step={1} min={0} max={data.trip[0].locations.length} disabled={false} /> }
+                                                 </div>
+                                                 }
 
 
 
-                                                <div>
+                                                 <MapHolder screenshots={this.state.screenshots} setScreenshot={this.setScreenshot} locationsWithAltitude={this.state.locationsWithAltitude} setLocationsWithAltitude={(l) => {this.setState({locationsWithAltitude : l})}} tile_server={data.trip[0].tile_server} alllocations={data.trip[0].locations} cards={cards} registerContext={c=> this.esriContext = c} Xcamera={this.state.camera} gpsRange={(this.state.card && this.state.card.location_offset.length) ? this.state.card.location_offset : [0, data.trip[0].locations.length]} debug={this.debug} totalProgress={this.state.newProgress} showCards={this.state.showCards} updateCamera={(cam, extent) => this.setState({camera : cam, extent})} locations={(this.state.card ? this.state.card.locations : [])} scrollToTop={this.testTop} zoom={this.state.st} card={this.state.card}/>
+
+                                                 {false && this.state.card && this.state.screenshots[this.state.card.id] && <div style={{zIndex : 9999999999999, position: 'fixed', width : '100%', height : 'auto', top : 0, left : 0}}><img src={this.state.screenshots[this.state.card.id].dataUrl} /></div>}
+
+                                                 <div >
+
+
+
+                                                     <div >
 
 
 
 
-                                            <Controller ref={(c) => {this.c = c; }} >
+                                                         <Controller ref={(c) => {this.c = c; }} >
 
 
-                                                {true && cards && cards.map((card, index) =>
+                                                             {true && cards && cards.map((card, index) =>
 
-                                                        <Scene ref={card.id} key={card.id}  duration={card.duration + 'px'} offset={card.duration * -0.15} pin={card.pin} >
-                                                            {(cardprogresss, event) => {
+                                                                     <Scene ref={card.id} key={card.id}  duration={'100%'} offset={card.duration * -0.15} pin={card.pin} >
+                                                                         {(cardprogresss, event) => {
 
-                                                                //this.setState({cardppp : cardprogress})
+                                                                             //this.setState({cardppp : cardprogress})
 //this.p = cardprogress;
 
-                                                                return (
-                                                                    <div id={`theid${index}`} className="sticky" style={{ pointerEvents : (this.state.showCards ? 'all' : 'none'), 'opacity' : this.state.showCards ? 1 : 0.1, 'transition': 'opacity .55s ease-in-out' }}  >
+                                                                             return (
+                                                                                 <div id={`theid${index}`} className="sticky" style={{ transform : `translateX(${value.x}%)`, pointerEvents : (this.state.showCards ? 'all' : 'none'), 'opacity' : this.state.showCards ? 1 : 0.1, 'transition': 'opacity .55s ease-in-out' }}  >
 
 
-                                                                        {/* <STWatcher updateP={(p) => this.setState({prog : p})} updateTotalProgress={(deltaprogress, card) => this.setState({currentCard : card, deltaprogress})} progress={cardprogresss} card={card} event={event} />*/}
+                                                                                     {/* <STWatcher updateP={(p) => this.setState({prog : p})} updateTotalProgress={(deltaprogress, card) => this.setState({currentCard : card, deltaprogress})} progress={cardprogresss} card={card} event={event} />*/}
 
-                                                                        { card.type === 'Html' && <div className="smallsection" >
+                                                                                     { card.type === 'Html' && <div className="smallsection" >
 
-                                                                            <HtmlCard setSpeed={(speed) => this.setState({speed})}
-                                                                                      context={this.esriContext}
-                                                                                      updateCamera={(camera) => { this.setState({camera : camera})} }
-                                                                                      index={index}
-                                                                                      debug={this.debug}
-                                                                                      clear={<ClearGPSButton finish={()=> { refetch() } } card={card}/>}
-                                                                                      cardprogresss={cardprogresss}
-                                                                                      updateProgress={(p) => this.setState({newProgress : p})}
-                                                                                      currentCard={this.state.card}
-                                                                                      card={card}
-                                                                                      event={event}
-                                                                                      hideCards={(card) => this.setState({card : card, showCards : false})}
-                                                                                      setCard={(card) => {  this.setState({card : card})}} > ️ </HtmlCard>
-                                                                        </div>}
-
-                                                                        { card.type === 'Video' && <div className="smallsection" style={{height : card.duration}}>
-
-                                                                            <VideoCard context={this.esriContext} debug={this.debug} clear={<ClearGPSButton finish={()=> { refetch() } } card={card}/>} cardprogress={this.state.prog} currentCard={this.state.currentCard} card={card} event={event} hideCards={() => this.setState({showCards : false})} setCard={(card) => { this.setState({card})}} > ️ </VideoCard>
-                                                                        </div>}
-
-                                                                        { card.type === 'Image' && <div className="smallsection" style={{height : card.duration}}>
-
-                                                                            <ImageCard
-                                                                                context={this.esriContext}
-                                                                                updateCamera={(camera) => { this.setState({camera : camera})} }
-                                                                                cardprogresss={cardprogresss}
-                                                                                updateProgress={(p) => this.setState({newProgress : p})}
-                                                                                debug={this.debug}
-                                                                                index={index}
-                                                                                clear={<ClearGPSButton finish={refetch} card={card}/>}
-                                                                                card={card}
-                                                                                event={event}
-                                                                                currentCard={this.state.card}
-                                                                                hideCards={() => this.setState({showCards : false})}
-                                                                                setCard={(card) => { this.setState({card})}} />
-                                                                        </div>}
-
-                                                                        { card.type === 'Graphic' && <div className="smallsection" style={{width : '100%', textAlign : 'center'}}>
-
-                                                                            <ReactSVG
-                                                                                beforeInjection={svg => {
-                                                                                    svg.setAttribute('style', 'width: 50%;');
-                                                                                }}
-                                                                                wrapper="span" src={`./svg/${card.content.filename}`}/>
-
-                                                                        </div>}
-
-                                                                        { card.type === 'Spacer' && <div className="smallsection" >
-                                                                            <SpacerCard
-                                                                                index={index}
-                                                                                updateCamera={(camera) => { this.setState({camera : camera})} }
-                                                                                debug={this.debug}
-                                                                                clear={<ClearGPSButton finish={refetch} card={card}/>}
-                                                                                hideCards={() => this.setState({showCards : false})}
-                                                                                card={card}
-                                                                                currentCard={this.state.card}
-                                                                                event={event}
-                                                                                setCard={(card) => {  this.setState({card : card})}} />
-                                                                        </div>}
+                                                                                         <HtmlCard setSpeed={(speed) => this.setState({speed})}
+                                                                                                   context={this.esriContext}
+                                                                                                   updateCamera={(camera) => { this.setState({camera : camera})} }
+                                                                                                   index={index}
+                                                                                                   debug={this.debug}
+                                                                                                   clear={<ClearGPSButton finish={()=> { refetch() } } card={card}/>}
+                                                                                                   cardprogresss={cardprogresss}
+                                                                                                   updateProgress={(p) => this.setState({newProgress : p})}
+                                                                                                   currentCard={this.state.card}
+                                                                                                   card={card}
+                                                                                                   event={event}
+                                                                                                   hideCards={(card) => this.setState({card : card, showCards : false})}
+                                                                                                   setCard={(card) => {  this.setState({card : card})}} > ️ </HtmlCard>
 
 
-                                                                    </div>
-                                                                )}}
+                                                                                     </div>}
 
-                                                        </Scene>
+                                                                                     { card.type === 'Video' && <div className="smallsection" xstyle={{height : card.duration}}>
 
-                                                )}
+                                                                                         <VideoCard context={this.esriContext} debug={this.debug} clear={<ClearGPSButton finish={()=> { refetch() } } card={card}/>} cardprogress={this.state.prog} currentCard={this.state.currentCard} card={card} event={event} hideCards={() => this.setState({showCards : false})} setCard={(card) => { this.setState({card})}} > ️ </VideoCard>
+                                                                                     </div>}
+
+                                                                                     { card.type === 'Image' && <div className="smallsection" xstyle={{height : card.duration}}>
+
+                                                                                         <ImageCard
+                                                                                             context={this.esriContext}
+                                                                                             updateCamera={(camera) => { this.setState({camera : camera})} }
+                                                                                             cardprogresss={cardprogresss}
+                                                                                             updateProgress={(p) => this.setState({newProgress : p})}
+                                                                                             debug={this.debug}
+                                                                                             index={index}
+                                                                                             clear={<ClearGPSButton finish={refetch} card={card}/>}
+                                                                                             card={card}
+                                                                                             event={event}
+                                                                                             currentCard={this.state.card}
+                                                                                             hideCards={() => this.setState({showCards : false})}
+                                                                                             setCard={(card) => { this.setState({card})}} />
+                                                                                     </div>}
+
+                                                                                     { card.type === 'Graphic' && <div className="smallsection" style={{width : '100%', textAlign : 'center'}}>
+
+                                                                                         <ReactSVG
+                                                                                             beforeInjection={svg => {
+                                                                                                 svg.setAttribute('style', 'width: 50%;');
+                                                                                             }}
+                                                                                             wrapper="span" src={`./svg/${card.content.filename}`}/>
+
+                                                                                     </div>}
+
+                                                                                     { card.type === 'Spacer' && <div className="smallsection" >
+                                                                                         <SpacerCard
+                                                                                             index={index}
+                                                                                             updateCamera={(camera) => { this.setState({camera : camera})} }
+                                                                                             debug={this.debug}
+                                                                                             clear={<ClearGPSButton finish={refetch} card={card}/>}
+                                                                                             hideCards={() => this.setState({showCards : false})}
+                                                                                             card={card}
+                                                                                             currentCard={this.state.card}
+                                                                                             event={event}
+                                                                                             setCard={(card) => {  this.setState({card : card})}} />
+                                                                                     </div>}
 
 
-                                            </Controller>
+                                                                                 </div>
+                                                                             )}}
 
-                                                </div>
-                                        </div>
+                                                                     </Scene>
 
-                                    </div>
+                                                             )}
 
 
-                                }}
+                                                         </Controller>
 
-                            </Query></ApolloProvider>
+                                                     </div>
+                                                 </div>
+
+                                             </div>
+
+
+                                         }}
+
+                                     </Query></ApolloProvider>
+
+                             }
+                         </Motion>
+
+
 
                     </div>
 

@@ -1,0 +1,116 @@
+
+.commentcontainer {
+    width: 100%;
+
+    margin: 0 auto;
+}
+
+.commentmsg {
+    width: 100%;
+    height: auto;
+    display: block;
+    overflow: hidden;
+}
+.commentmsg .bubble {
+    float: left;
+    max-width: 75%;
+    width: auto;
+    height: auto;
+    display: block;
+    background: #ebebeb;
+    border-radius: 5px;
+    position: relative;
+    margin: 10px 0 3px 25px;
+    box-shadow: 0px 2px 1px rgba(0, 0, 0, 0.2);
+}
+.commentmsg .bubble.alt {
+    margin: 10px 25px 3px 0px;
+    background: #DCF8C6;
+    float: right;
+}
+.commentmsg .bubble.follow {
+    margin: 2px 0 3px 25px;
+}
+.commentmsg .bubble.altfollow {
+    margin: 2px 25px 3px 0px;
+    background: #DCF8C6;
+    float: right;
+    max-width: 50%;
+
+}
+.commentmsg .bubble .txt {
+    padding: 8px 0 8px 0;
+    width: 100%;
+    text-align:right;
+}
+.commentmsg .bubble .txt .name {
+    font-weight: 600;
+    font-size: 14px;
+
+    padding: 0 8px 0 18px;
+    margin: 0 0 4px 0;
+    color: #3498db;
+
+}
+.commentmsg .bubble .txt .name span {
+    font-weight: normal;
+    color: #b3b3b3;
+    overflow: hidden;
+}
+.commentmsg .bubble .txt .name.alt {
+    color: #2ecc51;
+}
+.commentmsg .bubble .txt .message {
+    font-size: 14px;
+    font-weight: 500;
+    padding: 0 8px 0 8px;
+    margin: auto;
+    color: #2b2b2b;
+    text-align: right;
+}
+.commentmsg .bubble .txt .timestamp {
+    font-size: 11px;
+    margin: auto;
+    padding: 0 15px 0 0;
+    display: table;
+    float: right;
+    position: relative;
+    text-transform: uppercase;
+    color: #999;
+}
+.commentmsg .bubble .bubble-arrow {
+    position: absolute;
+    float: left;
+    left: -11px;
+    top: 0px;
+}
+.commentmsg .bubble .bubble-arrow.alt {
+    bottom: 20px;
+    left: auto;
+    right: 4px;
+    float: right;
+}
+.commentmsg .bubble .bubble-arrow:after {
+    content: "";
+    position: absolute;
+    border-top: 15px solid #ebebeb;
+    border-left: 15px solid transparent;
+    border-radius: 4px 0 0 0px;
+    width: 0;
+    height: 0;
+}
+.commentmsg .bubble .bubble-arrow.alt:after {
+    border-top: 15px solid #DCF8C6;
+    transform: scaleX(-1);
+}
+
+@media only screen and (max-width: 450px) {
+    .commentcontainer {
+        width: 100%;
+    }
+
+    .timestamp {
+        display: none;
+        color: red;
+    }
+}

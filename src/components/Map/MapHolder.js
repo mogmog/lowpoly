@@ -318,11 +318,28 @@ export default class MapHolder extends Component {
                         //for
                        this.props.setLocationsWithAltitude(result.geometry.paths);
 
-                       console.log(result.geometry.paths);
+                        const redLine = new Polyline({
+                            hasZ: true,
+                            paths: [result.geometry.paths[0].map(d=> [d[0], d[1], d[2] * (_EXAGURATION * 1.05)])],
+                        });
+
+                        const redLineGraphic = Graphic({
+                            geometry: redLine,
+                            symbol: redLineSymbol
+                        });
+
+                        var wholeRouteGraphicsLayer = new GraphicsLayer({ id : 'WholeRouteLayer' , visible : this.props.debug});
+
+                        wholeRouteGraphicsLayer.add(redLineGraphic);
+                        map.add(wholeRouteGraphicsLayer);
+
+                       //console.log(result.geometry.paths);
 
                        this.props.cards.forEach(card => {
                            
                            if (card.locations.length) {
+
+                               //card.camera && console.log(card.camera.position.z/23685);
 
                                const yellowLine = new Polyline({
                                    hasZ: true,
@@ -352,7 +369,7 @@ export default class MapHolder extends Component {
                         externalRenderers.add(view, self.routeRenderer);
 
 
-                        const images = [{"description":{"title":"Lagoon"},"id":1,"location":{"geometry":{"coordinates":[42,42,1400.79999923706055],"type":"Point"},"properties":{},"type":"Feature"}},{"description":{"title":"church"},"id":2,"location":{"geometry":{"coordinates":[42,42.1,400.79999923706055],"type":"Point"},"properties":{},"type":"Feature"}}];
+                        //const images = [{"description":{"title":"Lagoon"},"id":1,"location":{"geometry":{"coordinates":[42,42,1400.79999923706055],"type":"Point"},"properties":{},"type":"Feature"}},{"description":{"title":"church"},"id":2,"location":{"geometry":{"coordinates":[42,42.1,400.79999923706055],"type":"Point"},"properties":{},"type":"Feature"}}];
                         //const { images } = self.props;
 
                         //self.routeRenderer = new RouteRenderer(self.esriLoaderContext);
@@ -404,31 +421,33 @@ export default class MapHolder extends Component {
         const camera = this.props.card && this.props.card.camera;
 
 
-        /*if gps range slider is changed*/
-        if (false && that.esriLoaderContext && that.locationsWithAltitude && prevProps.gpsRange !== this.props.gpsRange)         {
 
+        if (prevProps.card !== this.props.card && this.esriLoaderContext && this.esriLoaderContext.view) {
+            var startrotate = null;
+            //let cancelrotate = null;
 
+            if (this.props.card.rotate > 0) {
+                const incrementRotate = (timestamp) => {
+                    if (!startrotate) startrotate = timestamp;
+                    var progress = timestamp - startrotate;
 
-            const oldLayer = that.esriLoaderContext.view.map.findLayerById('lineLayer');
-            if (oldLayer) oldLayer.removeAll();
+                    var camera = that.esriLoaderContext.view.camera.clone();
+                    camera.heading += this.props.card.rotate;
 
-            const orig = this.locationsWithAltitude[0].slice();
-            const result = orig.splice(this.props.gpsRange[0], this.props.gpsRange[1] - this.props.gpsRange[0]);
+                    that.esriLoaderContext.view.goTo(camera, { animate: false });
 
-            //console.log(result);
+                    //if (progress < time) {
+                    this.cancelrotate = window.requestAnimationFrame(incrementRotate);
+                    //}
+                }
 
-            const yellowLine = new that.esriLoaderContext.Polyline({
-                hasZ: true,
-                paths: [result]
-            });
-
-            const yellowLineGraphic = new that.esriLoaderContext.Graphic({
-                geometry: yellowLine,
-                symbol: yellowLineSymbol
-            });
-
-            if (oldLayer) oldLayer.add(yellowLineGraphic);
-
+                window.requestAnimationFrame(incrementRotate);
+            } else {
+                if (this.cancelrotate) {
+                    window.cancelAnimationFrame(this.cancelrotate);
+                    this.cancelrotate = null;
+                }
+            }
         }
 
         if (true && prevProps.locations != this.props.locations && this.props.locations && this.props.locations.length && this.esriLoaderContext && this.esriLoaderContext.externalRenderers && this.routeRenderer) {
@@ -439,24 +458,53 @@ export default class MapHolder extends Component {
             //const wholeroutegeojson = this.props.alllocations.map(d=> [d.longitude, d.latitude])
             //const geojson = this.props.locations.map(d=> [d.longitude, d.latitude])
 
-            console.log(this.props);
+            //console.log(this.props);
             const orig = this.props.locationsWithAltitude[0].slice();
             const result = orig.splice(this.props.card.location_offset[0], this.props.card.location_offset[1] - this.props.card.location_offset[0]);
 
            // debugger;
 
-            console.log(result);
+            //console.log(result);
 
             that.esriLoaderContext.view.goTo(this.props.card.camera, {animate: false, duration: 1000}).then(x=> {
 
                 that.esriLoaderContext.view.map.layers.items.forEach(layer => {
-                      if (layer.type == 'graphics') layer.visible = false;
+                      if (layer.type == 'graphics' && layer.id.indexOf('CardLayer') > -1) layer.visible = false;
                 });
 
                 const cardLayer = that.esriLoaderContext.view.map.findLayerById('CardLayer' + this.props.card.id);
                 cardLayer.visible = true;
 
-                console.log(this.props.card);
+                //console.log(this.props.card);
+
+                    let self = that;
+
+                    var camera = that.esriLoaderContext.view.camera.clone();
+                    self.originalCamera = that.esriLoaderContext.view.camera.clone();
+                    var center = that.esriLoaderContext.view.center.clone();
+                    var scale = that.esriLoaderContext.view.scale;
+
+                    var i = 0;
+
+                   /* if (self.rotator) window.clearInterval(self.rotator);
+
+
+                    if (true) self.rotator = window.setInterval(d=> {
+
+                        var newCenter = center.clone();
+                        //newCenter.x -= i * scale /1000 ;
+                        //i++;
+
+                        var camera = that.esriLoaderContext.view.camera.clone();
+                        camera.heading += 0.05;
+
+                        //console.log(camera.position);
+
+                        that.esriLoaderContext.view.goTo(camera, { animate: false });
+                    }, 1/60);*/
+
+
+
 
                 this.routeRenderer.setGPSRange([result.map(d=> [d[0], d[1], d[2] * (_EXAGURATION * this.props.card.altitude_adjust)])],
                     that.esriLoaderContext.externalRenderers,
@@ -481,6 +529,7 @@ export default class MapHolder extends Component {
                 }
 
                 window.requestAnimationFrame(incrementProgress);
+
 
                 //console.log(cardLayer);
 

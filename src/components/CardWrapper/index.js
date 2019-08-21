@@ -2,6 +2,7 @@ import React, {Fragment} from 'react'
 import {Button, Slider} from 'antd';
 
 import './index.css'
+import Comments from "../Comments";
 
 class CardWrapper extends React.Component {
 
@@ -38,7 +39,8 @@ class CardWrapper extends React.Component {
         return (
             <div className={'CardWrapper'} style={{  transition:'all 0.3s ease', height : '100%', width: '100%', backgroundColor: this.props.index % 2 ===0 ? 'transparent' : 'rgba(0,0,0,0.1)'}} >
 
-                <div id="container" style={{height : this.props.card.duration}}>
+                {this.props.children}
+                <div id="container" style={{height : '100%'}}>
 
                    {/* <pre> CC{JSON.stringify(this.props.cardprogress)} {this.state.height} </pre>*/}
 
@@ -47,9 +49,12 @@ class CardWrapper extends React.Component {
                     <div id="navb" >
 
 
-                        {this.props.children}
+
 
                     </div>
+
+
+
                     {this.props.debug && <Fragment>
 
 
@@ -68,6 +73,8 @@ class CardWrapper extends React.Component {
 
 
                 </div>
+
+
             </div>
         )
 

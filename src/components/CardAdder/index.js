@@ -34,7 +34,7 @@ const AddCard = ({cards, graphics, refetch, scrollTo}) => {
                 let create = (card) => {
                    //e.preventDefault();
 
-                    const spacer = {"trip_id" : 1, "type" : "Spacer", "offset" : "0px", "height" : 1000, "camera":  null, "content":  {}}
+                    const spacer = {"trip_id" : 1, "type" : "Spacer", "height" : 1000, "camera":  null, "content":  {}}
                     const cards = [card]
 
                     addCard({variables : {"objects" : cards}}).then(d=> {
@@ -55,19 +55,25 @@ const AddCard = ({cards, graphics, refetch, scrollTo}) => {
 
                                 <div><h1> Add an graphic </h1>
 
-                                    <GraphicsGrid onClick={(filename) => create({"trip_id" : 1, "type" : "Graphic", "offset" : "0%", "duration" : 1000, "camera":  null, "content":  {filename : filename}} )} graphics={graphics}/>
+                                    <GraphicsGrid onClick={(filename) => create({"trip_id" : 1, "type" : "Graphic",  "duration" : 1000, "camera":  null, "content":  {filename : filename}} )} graphics={graphics}/>
 
                                 {/*<Button onClick={create('Graphic',{"objects" : [{"trip_id" : 1, "type" : "Text", "height" : "100vh", "camera":  {"test" :33}, "content":  {"text" :"this is plain text"}}]})} style={{width : '70%', height : '100px', marginBottom : '10px'}}>Add</Button></div>
 */}
                                 </div>
                                 <div>
-                                    <ImageUpload saveImage={(image) => create( {"trip_id" : 1, "type" : "Image", "offset" : "0%", "duration" : 1000, "camera":  null, "content":  {"image" :image}})} style={{width : '70%', height : '100px', marginBottom : '10px'}}/>
+                                    <ImageUpload saveImage={(image) => create( {"trip_id" : 1, "type" : "Image",  "duration" : 1000, "camera":  null, "content":  {"image" :image}})} style={{width : '70%', height : '100px', marginBottom : '10px'}}/>
 
                                 </div>
 
 
                                 <div>
-                                    <VideoUpload saveImage={(image) => create( {"trip_id" : 1, "type" : "Video", "offset" : "0%", "duration" : 1000, "camera":  null, "content":  {"image" :image}})} style={{width : '70%', height : '100px', marginBottom : '10px'}}/>
+                                    <VideoUpload saveImage={(image) => create( {"trip_id" : 1, "type" : "Video","duration" : 1000, "camera":  null, "content":  {"image" :image}})} style={{width : '70%', height : '100px', marginBottom : '10px'}}/>
+
+                                </div>
+
+                                <div>
+
+                                    <Button onClick={() => create( {"trip_id" : 1, "type" : "Spacer", "duration" : 1000, "camera":  null, "content":  {}})} style={{width : '70%', height : '100px', marginBottom : '10px'}}>Spacer</Button>
 
                                 </div>
 

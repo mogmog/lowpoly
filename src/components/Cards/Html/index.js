@@ -5,8 +5,15 @@ import './index.css'
 import {Mutation} from "react-apollo";
 
 import gql from "graphql-tag";
+import Comments from "./../../Comments";
 
 class HtmlCard extends React.Component {
+
+    state = {comments : []};
+
+    componentDidMount() {
+        this.setState({comments : this.props.card.comments})
+    }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
 
@@ -44,10 +51,13 @@ class HtmlCard extends React.Component {
                 {(update, { data }) => {
 
                     return <CardWrapper index={this.props.index} setGPSRange={this.props.setGPSRange} debug={this.props.debug} clear={clear} card={this.props.card} update={update} clearMap={this.props.clearMap} hideCards={this.props.hideCards}>
-                            <div className={'htmlcard'} style={{height : this.props.card.duration }}>
+                            <div className={'htmlcard'} xstyle={{height : this.props.card.duration }}>
 
                                 <div dangerouslySetInnerHTML={{ __html: this.props.card.content.html }}/>
-                               {/* <pre style={{position : 'absolute', textAlign : 'bottom'}}>{this.props.cardprogress} </pre>*/}
+
+                                {this.props.card.hasComments && <Comments card={this.props.card} updateComments={(c) => {
+                                    this.setState({comments : this.state.comments.concat(c)})
+                                }} comments={this.state.comments}/> }
 
                             </div>
                         </CardWrapper>

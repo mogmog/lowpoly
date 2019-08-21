@@ -12,7 +12,7 @@ import gpxparser from './lib/gpx-parse'
 import {ApolloProvider, Mutation} from "react-apollo";
 
 const client = new ApolloClient({
-    uri: "https://graphqlmogmogplatts.herokuapp.com/v1alpha1/graphql"
+    uri: "https://beatroute2019.herokuapp.com/v1/graphql"
 });
 
 const ADD_LOCATION = gql`
@@ -81,10 +81,10 @@ class Avatar extends React.Component {
                                 const objects = [];
 
                                 gpx.tracks.forEach(track => {
-                                    track.points.forEach(point => {
+                                    track.points.forEach((point, i) => {
                                         //console.log(point);
                                         //console.log(track);
-                                        objects.push({latitude : point.lat, longitude : point.lon, altitude : point.ele, trip_id : 1, date : point.time});
+                                        if (i % 3 === 0) objects.push({latitude : point.lat, longitude : point.lon, altitude : point.ele, trip_id : 1, date : point.time});
                                     })
 
                                    // console.log(objects);

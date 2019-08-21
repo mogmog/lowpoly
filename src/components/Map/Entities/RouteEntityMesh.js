@@ -175,7 +175,7 @@ export default class RouteEntityMesh extends THREE.Group {
       map: null,
       useMap: false,
       color: new THREE.Color( 0xffd300 ),
-      opacity: 0.5,
+      opacity: 0.9,
       blending: THREE.AdditiveBlending,
       /*transparent: true,*/
       //depthWrite: false,

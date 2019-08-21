@@ -78,6 +78,7 @@
         "react-dom": "^16.8.6",
         "react-easy-crop": "^1.13.0",
         "react-emotion": "^10.0.0",
+        "react-facebook": "^8.0.4",
         "react-gsap": "^1.2.0",
         "react-masonry-css": "^1.0.12",
         "react-motion": "^0.5.2",
