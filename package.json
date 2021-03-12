@@ -63,7 +63,7 @@
         "react": "^16.8.6",
         "react-apollo": "^2.5.4",
         "react-app-polyfill": "^0.2.2",
-        "react-dev-utils": "^8.0.0",
+        "react-dev-utils": "^11.0.4",
         "react-dom": "^16.8.6",
         "react-emotion": "^10.0.0",
         "react-gsap": "^1.2.0",
